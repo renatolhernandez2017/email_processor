@@ -1,0 +1,9 @@
+<% if @classes.present? %>
+  <%= @form.submit @label, id: @id, class: "#{@classes.present? ? 'btn bg-secondary hover:bg-accent text-white w-48 font-canvas' : 'btn rounded-full w-24 bg-primary text-dsop-default-white'}" %>
+<% else %>
+  <section class="navbar flex justify-end gap-4 mt-4">
+    <div class="modal-action">
+      <%= @form.submit @label, id: @id, class: "btn rounded-full w-24 bg-primary text-dsop-default-white font-canvas" %>
+    </div>
+  </section>
+<% end %>

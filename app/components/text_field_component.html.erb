@@ -1,0 +1,5 @@
+<div class="form-control">
+  <%= @form.label @field_name, @label, class: 'label label-text' %>
+  <%= @form.text_field @field_name, type: "#{@type if @type.present?}", min: 0, class: "input input-bordered #{'input-error' if @error_message.present?}", data: @data, readonly: @readonly %>
+  <p class='text-sm text-red-500'><%= @error_message.join(', ') if @error_message.present? %></p>
+</div>

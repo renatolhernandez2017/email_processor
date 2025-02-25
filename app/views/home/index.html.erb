@@ -1,0 +1,6 @@
+<div id="countdown" class="flex flex-col items-center justify-center mt-12 text-black">
+  Novo projeto
+  <%= link_to destroy_user_session_path, data: { turbo_method: :delete } do %>
+    <span class="material-symbols-outlined" title="Sair">logout</span>
+  <% end %>
+</div>

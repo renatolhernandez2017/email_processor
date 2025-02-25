@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": ["../../javascript/cable.js"],
+  "sourcesContent": ["// Action Cable provides the framework to deal with WebSockets in Rails.\n// You can generate new channels where WebSocket features live using the `rails generate channel` command.\n//\n//= require action_cable\n//= require_self\n//= require_tree ./channels\n\n(function() {\n  this.App || (this.App = {});\n\n  App.cable = ActionCable.createConsumer();\n  consumer  = App.cable;\n\n}).call(this);\n"],
+  "mappings": ";;;;;;AAAA;AAAA;AAOA,KAAC,WAAW;AACV,WAAK,QAAQ,KAAK,MAAM,CAAC;AAEzB,UAAI,QAAQ,YAAY,eAAe;AACvC,iBAAY,IAAI;AAAA,IAElB,GAAG,KAAK,OAAI;AAAA;AAAA;",
+  "names": []
+}

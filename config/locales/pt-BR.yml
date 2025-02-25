@@ -1,0 +1,77 @@
+pt-BR:
+  faker:
+    address:
+      zip_code: "CEP"
+      number: "Número"
+      kind: "Tipo"
+      district: "Bairro"
+      complement: "Complemento"
+      street:
+        - "Rua das Flores"
+        - "Rua dos Bobos"
+        - "Rua XV de Novembro"
+        - "Avenida Brasil"
+      city:
+        - "São Paulo"
+        - "Belo Horizonte"
+        - "Porto Alegre"
+        - "Salvador"
+      state:
+        - "São Paulo"
+        - "Rio de Janeiro"
+        - "Minas Gerais"
+        - "Rio Grande do Sul"
+      country:
+        - "Brasil"
+  activerecord:
+    models:
+      cart: Carrinho
+      cart_item: Item do carrinho
+      client: Cliente
+      guest: Convidado
+      payment: Pagamento
+      product: Produto
+      sale: Venda
+      user: Usuário
+    attributes:
+      cart:
+        status: Status
+        status/created: Criado
+        status/paid: Pago
+        status/canceled: Cancelado
+        status/confirmed: Confirmado
+        status/processing: Processando
+        status/delivered: Entregue
+        status/received: Recebido
+        status/refunded: Reembolsado
+        status/returned: Devolvido
+        status/failed: Falhou
+        status/cancelled: Cancelado
+        status/pending: Pendente
+        status/processing_payment: Processando pagamento
+      product:
+        title: Título
+        description: Descrição
+        quantity: Quantidade
+        image: Imagem
+        price: Preço
+        discount: Desconto
+      sale:
+        status: Status
+        status/created: Criado
+        status/paid: Pago
+        status/canceled: Cancelado
+        status/confirmed: Confirmado
+        status/processing: Processando
+        status/delivered: Entregue
+        status/received: Recebido
+        status/refunded: Reembolsado
+        status/returned: Devolvido
+        status/failed: Falhou
+        status/cancelled: Cancelado
+        status/pending: Pendente
+        status/processing_payment: Processando pagamento
+      user:
+        name: Nome
+        email: E-mail
+        role: Perfil

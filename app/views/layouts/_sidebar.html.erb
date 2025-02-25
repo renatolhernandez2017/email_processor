@@ -1,0 +1,8 @@
+<ul class="menu bg-white border w-full h-screen p-5 max-[768px]:p-3 font-jost">
+  <li class="hover:bg-secondary rounded <%= 'bg-secondary text-white' if current_page?(users_path) %>">
+    <%= link_to users_path do %>
+      <span>Usuários</span>
+      <div class="badge badge-secondary badge-lg text-white hover:text-white"><%= @users_count %></div>
+    <% end %>
+  </li>
+</ul>
