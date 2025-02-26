@@ -23,9 +23,18 @@
     <%= javascript_include_tag "application", "data-turbo-track": "reload", type: "module" %>
   </head>
 
-  <body class="bg-primary font-canvas min-h-screen">
-    <!---<p class="notice"><%#= notice %></p>
-    <p class="alert"><%#= alert %></p>--->
+  <body class="bg-gray-100 min-h-screen">
+    <div id="flash-message" data-controller="home" data-home-timeout-value="6000" class="fixed p-5 w-full z-50">
+      <% flash.each do |type, message| %>
+        <div role="alert" class="alert alert-<%= type %> shadow-lg p-4 gap-2 w-full text-black">
+          <span><%= message %></span>
+
+          <div class="flex justify-end w-full">
+            <button type="button" data-action="click->home#close" class="btn btn-ghost">✕</button>
+          </div>
+        </div>
+      <% end %>
+    </div>
 
     <%= render 'layouts/header' unless params[:controller].include?('users/sessions') %>
     <main class="flex"><%= yield %></main>

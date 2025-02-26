@@ -18,3 +18,8 @@
   letter-spacing: 1px;
   font-family: 'Jost', sans-serif;
 }
+
+.hidden {
+  opacity: 0;
+  transition: opacity 0.5s ease-out;
+}

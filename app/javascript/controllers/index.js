@@ -10,8 +10,8 @@ application.register("auto-expand-textarea", AutoExpandTextareaController)
 import AutosubmitselectController from "./autosubmitselect_controller"
 application.register("autosubmitselect", AutosubmitselectController)
 
-import HelloController from "./hello_controller"
-application.register("hello", HelloController)
+import HomeController from "./home_controller"
+application.register("home", HomeController)
 
 import MaskController from "./mask_controller"
 application.register("mask", MaskController)

@@ -6,12 +6,19 @@ class Users::SessionsController < Devise::SessionsController
   # GET /resource/sign_in
   def new
     if params[:user].present?
-      user = User.find_by(email: params[:user][:email])
+      user = User.search_global(params[:user][:name])&.last
 
-      if user.present? && user.valid_password?(params[:user][:password])
-        sign_in(user)
-        redirect_to root_path
+      if user.present?
+        if user.valid_password?(params[:user][:password])
+          sign_in(user)
+          flash[:success] = "Logado com sucesso!"
+          redirect_to root_path
+        else
+          flash[:error] = "Senha inválida."
+          redirect_to user_session_path
+        end
       else
+        flash[:error] = "Usuário não encontrado."
         redirect_to user_session_path
       end
     else

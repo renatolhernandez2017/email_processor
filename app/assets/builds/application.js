@@ -8329,10 +8329,17 @@ var autosubmitselect_controller_default = class extends Controller {
   }
 };
 
-// app/javascript/controllers/hello_controller.js
-var hello_controller_default = class extends Controller {
+// app/javascript/controllers/home_controller.js
+var home_controller_default = class extends Controller {
   connect() {
-    this.element.textContent = "Hello World!";
+    setTimeout(() => {
+      this.element.classList.add("hidden");
+    }, this.timeoutValue || 1e4);
+    setTimeout(() => this.close(), this.timeoutValue || 1e4);
+  }
+  close() {
+    this.element.classList.add("opacity-0", "transition-opacity", "duration-500");
+    setTimeout(() => this.element.remove(), 500);
   }
 };
 
@@ -11867,7 +11874,7 @@ var upload_controller_default = class extends Controller {
 // app/javascript/controllers/index.js
 application.register("auto-expand-textarea", auto_expand_textarea_controller_default);
 application.register("autosubmitselect", autosubmitselect_controller_default);
-application.register("hello", hello_controller_default);
+application.register("home", home_controller_default);
 application.register("mask", mask_controller_default);
 application.register("upload", upload_controller_default);
 
