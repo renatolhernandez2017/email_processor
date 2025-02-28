@@ -1,0 +1,25 @@
+<section class="flex mt-16">
+  <div class="flex flex-col w-full">
+    <ul role="tablist" class="tabs tabs-lifted grid grid-cols-[1fr,1fr,1fr,1fr,1fr]">
+      <li role="tab" class="tab text-center checked:[--tab-bg:darkblue] checked:bg-blue-900 checked:text-primary-content h-12 <%= 'bg-primary checked text-white' if current_page?(root_path) || current_page?(closings_path) %>">
+        <%= link_to "Fechamentos e relatórios", closings_path, class: "lg:text-base md:text-sm" %>
+      </li>
+
+      <li role="tab" class="tab text-center checked:[--tab-bg:darkblue] checked:text-primary-content h-12 <%= 'bg-primary checked text-white' if current_page?(representatives_path) %>">
+        <%= link_to "Representantes", representatives_path, class: "lg:text-base md:text-sm" %>
+      </li>
+
+      <li role="tab" class="tab text-center checked:[--tab-bg:darkblue] checked:text-primary-content h-12">
+        <%= link_to "Prescritores", "#", class: "lg:text-base md:text-sm" %>
+      </li>
+
+      <li role="tab" class="tab text-center checked:[--tab-bg:darkblue] checked:text-primary-content h-12">
+        <%= link_to "Filiais", "#", class: "lg:text-base md:text-sm" %>
+      </li>
+
+      <li role="tab" class="tab text-center checked:[--tab-bg:darkblue] checked:text-primary-content h-12">
+        <%= link_to "Descontos", "#", class: "lg:text-base md:text-sm" %>
+      </li>
+    </ul>
+  </div>
+</section>

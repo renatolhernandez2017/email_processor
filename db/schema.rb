@@ -10,10 +10,19 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_09_09_040144) do
+ActiveRecord::Schema[7.1].define(version: 2025_02_26_123939) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
   enable_extension "unaccent"
+
+  create_table "closings", force: :cascade do |t|
+    t.datetime "start_date"
+    t.datetime "end_date"
+    t.string "closing", limit: 20
+    t.integer "last_envelope"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
 
   create_table "users", force: :cascade do |t|
     t.string "email", default: "", null: false
@@ -26,6 +35,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_09_09_040144) do
     t.string "name"
     t.string "role"
     t.string "image"
+    t.string "salt"
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end

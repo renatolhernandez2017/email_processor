@@ -1,8 +1,45 @@
-<ul class="menu bg-white border w-full h-screen p-5 max-[768px]:p-3 font-jost">
-  <li class="hover:bg-secondary rounded <%= 'bg-secondary text-white' if current_page?(users_path) %>">
-    <%= link_to users_path do %>
-      <span>Usuários</span>
-      <div class="badge badge-secondary badge-lg text-white hover:text-white"><%= @users_count %></div>
-    <% end %>
-  </li>
-</ul>
+<div class="fixed h-screen w-80 bg-white shadow-lg overflow-y-auto">
+  <ul class="menu w-80 bg-white p-5 my-16">
+    <li class="menu-title text-center lg:text-xl md:text-base bg-gray-200 mb-5 font-bold">Menu</li>
+
+    <li>
+      <%= link_to "Divisão de notas", "#", class: "text-primary lg:text-lg md:text-base font-semibold" %>
+
+      <span class="lg:text-sm md:text-xs pointer-events-none">
+        Imprime quantas notas serão necessárias por cada representante.
+      </span>
+    </li>
+
+    <li>
+      <%= link_to "Executa fechamento agora", "#", class: "text-primary lg:text-lg md:text-base font-semibold" %>
+
+      <span class="lg:text-sm md:text-xs pointer-events-none">
+        Executa o fechamento nesse exato momento, fique atento para receber o email com o LOG.
+      </span>
+    </li>
+
+    <li>
+      <%= link_to "Novo fechamento", "#", class: "text-primary lg:text-lg md:text-base font-semibold" %>
+
+      <span class="lg:text-sm md:text-xs pointer-events-none">
+        Cria novo fechamento!
+      </span>
+    </li>
+
+    <li>
+      <%= link_to "Depósito em bancos", "#", class: "text-primary lg:text-lg md:text-base font-semibold" %>
+
+      <span class="lg:text-sm md:text-xs pointer-events-none">
+        Imprime relatórios que seguem para os bancos.
+      </span>
+    </li>
+
+    <li>
+      <%= link_to "Auditoria de fechamento", "#", class: "text-primary lg:text-lg md:text-base font-semibold" %>
+
+      <span class="lg:text-sm md:text-xs pointer-events-none">
+        Relatório de auditoria de fechamento
+      </span>
+    </li>
+  </ul>
+</div>

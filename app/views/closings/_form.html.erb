@@ -1,0 +1,18 @@
+<%= turbo_frame_tag 'form_new_closing' do %>
+  <%= form_with model: closing, url: closing.persisted? ? closing_path(closing) : closings_path do |f| %>
+    <h3 class="text-lg font-bold"><%= title %></h3>
+    <hr class="left-0 absolute w-full mt-5 border-black">
+
+    <section class="p-6 md:max-w-4xl">
+      <div class="grid grid-cols-1 my-2">
+        <%= render TextFieldComponent.new(form: f, field_name: :closing, label: "Fechamento", error_message: closing.errors.messages[:closing])%>
+        <%= render TextFieldComponent.new(form: f, field_name: :start_date, type: "date", label: "Data inicial", error_message: closing.errors.messages[:start_date])%>
+        <%= render TextFieldComponent.new(form: f, field_name: :end_date, type: "date", label: "Data final", error_message: closing.errors.messages[:end_date])%>
+      </div>
+
+      <hr class="left-0 absolute w-full mt-5 border-black">
+
+      <%= render ButtonComponent.new(form: f, label: 'Salvar') %>
+    </section>
+  <% end %>
+<% end %>

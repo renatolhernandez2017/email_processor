@@ -10,7 +10,6 @@
 
     <title>UniPharmus</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <%#= render "layouts/favicons" %>
 
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
@@ -23,10 +22,12 @@
     <%= javascript_include_tag "application", "data-turbo-track": "reload", type: "module" %>
   </head>
 
-  <body class="bg-gray-100 min-h-screen">
-    <div id="flash-message" data-controller="home" data-home-timeout-value="6000" class="fixed p-5 w-full z-50">
+  <body class="bg-gray-100">
+    <div id="flash-message" data-controller="home" data-home-timeout-value="6000" class="w-full fixed z-50">
       <% flash.each do |type, message| %>
-        <div role="alert" class="alert alert-<%= type %> shadow-lg p-4 gap-2 w-full text-black">
+        <% daisy_class = { notice: "alert-info", success: "alert-success", error: "alert-error", alert: "alert-warning" }[type.to_sym] || "alert-info" %>
+
+        <div role="alert" class="alert <%= daisy_class %> shadow-lg p-4 gap-2 w-[98%] text-black mx-auto mt-4">
           <span><%= message %></span>
 
           <div class="flex justify-end w-full">
@@ -37,7 +38,18 @@
     </div>
 
     <%= render 'layouts/header' unless params[:controller].include?('users/sessions') %>
-    <main class="flex"><%= yield %></main>
+
+    <div class="grid grid-cols-12 font-jost h-screen">
+      <div class="col-start-1 col-span-2">
+        <%= render 'layouts/sidebar' unless params[:controller].include?('users/sessions') %>
+      </div>
+
+      <div class="lg:col-start-3 lg:col-span-10 md:col-start-5 md:col-span-8 p-5">
+        <%= render "layouts/navbar" unless params[:controller].include?('users/sessions') %>
+        <main><%= yield %></main>
+      </div>
+    </div>
+
     <%= render 'layouts/footer' unless params[:controller].include?('users/sessions') %>
   </body>
 </html>

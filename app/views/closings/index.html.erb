@@ -1,0 +1,58 @@
+<div class="flex justify-between items-center my-3">
+  <h1 class="text-2xl text-center text-primary mx-auto">Listagem de fechamentos e relatórios</h1>
+  
+  <button class="btn btn-primary" onclick="modal_closing_create.showModal()">
+    Novo fechamento
+  </button>
+</div>
+
+<div class="flex w-full flex-col my-12">
+  <div class="place-items-center overflow-x-auto">
+    <table class="table table-zebra">
+      <thead>
+        <tr>
+          <th>Fechamento</th>
+          <th>Data inicial</th>
+          <th>Data final</th>
+          <th>Último envelope</th>
+          <th>Ações</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <% @closings.each do |closing| %>
+          <tr>
+            <td>
+              <%= link_to closing.closing, modify_for_this_closure_closings_path(closing),
+                  data: { turbo_confirm: "Tem certeza que deseja passar a trabalhar com um novo fechamento?" },
+                  class: "text-primary"
+              %>
+            </td>
+
+            <td><%= closing.start_date.strftime("%d/%m/%Y") %></td>
+            <td><%= closing.end_date.strftime("%d/%m/%Y") %></td>
+            <td><%= closing.last_envelope.to_s.rjust(6, '0') %></td>
+            <td><%= link_to "Editar", closings_path(closing), class: "text-primary" %></td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="divider border-t"></div>
+
+  <div class="grid place-items-center">
+    <%== pagy_nav(@pagy) if @pagy.pages > 1 %>
+  </div>
+</div>
+
+<dialog id="modal_closing_create" class="modal place-items-center">
+  <div class="modal-box h-[510px] overflow-hidden">
+    <form method="dialog" title="Fechar">
+      <button class="btn btn-sm btn-circle hover:bg-gray-300 absolute right-2 top-2">x</button>
+    </form>
+
+    <%= render "form", closing: @closing, title: "Novo fechamento" %>
+    <button class="btn relative -top-20 left-5 hover:bg-gray-300" type="button" onclick="this.closest('dialog').close()">Fechar</button>
+  </div>
+</dialog>

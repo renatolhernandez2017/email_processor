@@ -1,2 +1,19 @@
-<header class="">
-</header>
+<div class="navbar bg-primary text-white fixed z-40">
+  <div class="flex-1">
+    <%= link_to "UniPharmus", root_path, class: "btn btn-ghost lg:text-xl md:text-base" %>
+  </div>
+
+  <div class="navbar-center gap-5">
+    <div class="form-control text-black">
+      <input type="text" placeholder="Search" class="input input-bordered w-96" />
+    </div>
+  </div>
+
+  <div class="navbar-end gap-2">
+    <span class="lg:text-lg md:text-base">
+      <%= current_user.name %>
+    </span>
+
+    <%= link_to "Sair", destroy_user_session_path, class: "btn btn-ghost lg:text-xl md:text-base", data: { turbo_method: :delete } %>
+  </div>
+</div>
