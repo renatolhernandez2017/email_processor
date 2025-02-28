@@ -17,13 +17,11 @@ class ClosingsController < ApplicationController
   def create
     @closing = Closing.new(closing_params)
 
-    quebrar
-
     if @closing.save
-      flash[:success] = "Fechamento was successfully created."
-      render turbo_stream: turbo_stream.action(:redirect, closings_path(@closing))
+      flash[:success] = "Fechamento foi criado com sucesso!"
+      render turbo_stream: turbo_stream.action(:redirect, closings_path)
     else
-      render turbo_stream: turbo_stream.replace("form_new_closing", partial: "closings/form", locals: {closing: @closing})
+      render turbo_stream: turbo_stream.replace("form_new_closing", partial: "closings/form", locals: {closing: @closing, title: "Novo fechamento"})
     end
   end
 

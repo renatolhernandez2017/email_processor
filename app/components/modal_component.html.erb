@@ -1,0 +1,11 @@
+<div class="modal-box h-[630px] overflow-hidden">
+  <form method="dialog" title="<%= @btn_title %>">
+    <button class="btn btn-sm btn-circle hover:bg-gray-300 absolute right-2 top-2">x</button>
+  </form>
+
+  <%= @form.html_safe %>
+
+  <button class="btn relative -top-20 left-5 hover:bg-gray-300" type="button" onclick="this.closest('dialog').close()">
+    <%= @btn_title %>
+  </button>
+</div>
