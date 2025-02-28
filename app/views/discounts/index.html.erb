@@ -1,9 +1,5 @@
 <div class="flex justify-between items-center my-3">
-  <h1 class="text-2xl text-center text-primary mx-auto">Listagem de fechamentos e relatórios</h1>
-  
-  <button class="btn btn-primary" onclick="modal_discounts_create.showModal()">
-    Novo fechamento
-  </button>
+  <h1 class="text-2xl text-center text-primary mx-auto">Listagem de descontos</h1>
 </div>
 
 <div class="flex w-full flex-col my-12">
@@ -11,30 +7,14 @@
     <table class="table table-zebra">
       <thead class="text-base">
         <tr>
-          <th>Fechamento</th>
-          <th>Data inicial</th>
-          <th>Data final</th>
-          <th>Último envelope</th>
+          <th>Filial Id</th>
+          <th>descrição</th>
+          <th>Valor</th>
           <th>Ações</th>
         </tr>
       </thead>
 
       <tbody>
-        <% @closings.each do |closing| %>
-          <tr>
-            <td>
-              <%= link_to closing.closing, modify_for_this_closure_closings_path(closing),
-                  data: { turbo_confirm: "Tem certeza que deseja passar a trabalhar com um novo fechamento?" },
-                  class: "text-primary"
-              %>
-            </td>
-
-            <td><%= closing.start_date.strftime("%d/%m/%Y") %></td>
-            <td><%= closing.end_date.strftime("%d/%m/%Y") %></td>
-            <td><%= closing.last_envelope.to_s.rjust(6, '0') %></td>
-            <td><%= link_to "Editar", closings_path(closing), class: "text-primary" %></td>
-          </tr>
-        <% end %>
       </tbody>
     </table>
   </div>
@@ -42,7 +22,7 @@
   <div class="divider border-t"></div>
 
   <div class="grid place-items-center">
-    <%== pagy_nav(@pagy) if @pagy.pages > 1 %>
+    <%#== pagy_nav(@pagy) if @pagy.pages > 1 %>
   </div>
 </div>
 
