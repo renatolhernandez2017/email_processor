@@ -9,7 +9,13 @@ Rails.application.routes.draw do
 
   get "up" => "rails/health#show", :as => :rails_health_check
 
-  root "home#index"
+  root "closings#index"
+
+  resources :closings, only: %i[index show create update destroy] do
+    post :modify_for_this_closure, on: :collection
+  end
+
+  resources :representatives, only: %i[index show create update destroy]
 
   ###############
   ###   API22  ###
