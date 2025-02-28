@@ -4,8 +4,12 @@
   </div>
 
   <div class="navbar-center gap-5">
+    <span class="lg:text-base md:text-xs">
+      Fechamento - <%= @current_closing.closing if @current_closing.present? %>
+    </span>
+
     <div class="form-control text-black">
-      <input type="text" placeholder="Search" class="input input-bordered w-96" />
+      <input type="text" placeholder="Search" class="input input-bordered w-80" />
     </div>
   </div>
 

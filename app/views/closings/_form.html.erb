@@ -1,4 +1,4 @@
-<%= turbo_frame_tag 'form_new_closing' do %>
+<%= turbo_frame_tag 'form_closing' do %>
   <%= form_with model: closing, url: closing.persisted? ? closing_path(closing) : closings_path do |f| %>
     <h3 class="text-lg font-bold"><%= title %></h3>
     <hr class="left-0 absolute w-full mt-5 border-black">
@@ -13,7 +13,7 @@
 
       <hr class="left-0 absolute w-full mt-5 border-black">
 
-      <%= render ButtonComponent.new(form: f, label: 'Salvar') %>
+      <%= render ButtonComponent.new(form: f, label: btn_save) %>
     </section>
   <% end %>
 <% end %>

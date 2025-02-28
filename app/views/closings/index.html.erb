@@ -6,9 +6,9 @@
   </button>
 </div>
 
-<div class="flex w-full flex-col my-12">
-  <div class="place-items-center overflow-x-auto">
-    <table class="table table-zebra">
+<div class="flex w-full flex-col my-12 md:my-16">
+  <div class="overflow-x-auto">
+    <table class="table-auto w-full text-sm font-semibold">
       <thead class="text-base">
         <tr>
           <th>Fechamento</th>
@@ -21,10 +21,10 @@
 
       <tbody>
         <% @closings.each do |closing| %>
-          <tr>
+          <tr class="border-t border-black">
             <td>
-              <%= link_to closing.closing, modify_for_this_closure_closings_path(closing),
-                  data: { turbo_confirm: "Tem certeza que deseja passar a trabalhar com um novo fechamento?" },
+              <%= link_to closing.closing, modify_for_this_closure_closings_path(id: closing.id),
+                  data: { turbo_confirm: "Tem certeza que deseja passar a trabalhar com um novo fechamento?", turbo_method: :post },
                   class: "text-primary"
               %>
             </td>
@@ -32,7 +32,16 @@
             <td><%= closing.start_date.strftime("%d/%m/%Y") %></td>
             <td><%= closing.end_date.strftime("%d/%m/%Y") %></td>
             <td><%= closing.last_envelope.to_s.rjust(6, '0') %></td>
-            <td><%= link_to "Editar", closings_path(closing), class: "text-primary" %></td>
+
+            <td>
+              <button onclick="document.getElementById('edit_closing<%= closing.id %>').showModal();" title="Editar" class="p-2 rounded-full">
+                <span class="material-symbols-outlined">edit</span>
+              </button>
+
+              <dialog id="edit_closing<%= closing.id %>" class="modal place-items-center">
+                <%= render ModalComponent.new(form: render("form", closing: closing, title: "Editar fechamento", btn_save: "Atualizar")) %>
+              </dialog>
+            </td>
           </tr>
         <% end %>
       </tbody>
@@ -47,5 +56,5 @@
 </div>
 
 <dialog id="modal_closing_create" class="modal place-items-center">
-  <%= render ModalComponent.new(form: render("form", closing: @closing, title: "Novo fechamento"), btn_title: "Fechar sem salvar") %>
+  <%= render ModalComponent.new(form: render("form", closing: @closing, title: "Novo fechamento", btn_save: "Salvar"), btn_back: "Fechar sem salvar") %>
 </dialog>

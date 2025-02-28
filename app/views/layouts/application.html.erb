@@ -44,7 +44,7 @@
         <%= render 'layouts/sidebar' unless params[:controller].include?('users/sessions') %>
       </div>
 
-      <div class="lg:col-start-3 lg:col-span-10 md:col-start-5 md:col-span-8 p-5">
+      <div class="lg:col-start-3 lg:col-span-10 md:col-start-5 md:col-span-8 p-5 bg-gray-100">
         <%= render "layouts/navbar" unless params[:controller].include?('users/sessions') %>
         <main><%= yield %></main>
       </div>

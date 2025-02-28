@@ -1,6 +1,8 @@
 class ClosingsController < ApplicationController
   include Pagy::Backend
 
+  before_action :get_closing, only: %i[update destroy modify_for_this_closure]
+
   def index
     @pagy, @closings = pagy(Closing.all.order(start_date: :desc))
 
@@ -10,10 +12,6 @@ class ClosingsController < ApplicationController
     @closing.closing = (closing.end_date + 1.month).strftime("%b/%y")
   end
 
-  def show
-    @closing = Closing.find(params[:id])
-  end
-
   def create
     @closing = Closing.new(closing_params)
 
@@ -21,31 +19,31 @@ class ClosingsController < ApplicationController
       flash[:success] = "Fechamento foi criado com sucesso!"
       render turbo_stream: turbo_stream.action(:redirect, closings_path)
     else
-      render turbo_stream: turbo_stream.replace("form_new_closing", partial: "closings/form", locals: {closing: @closing, title: "Novo fechamento"})
+      render turbo_stream: turbo_stream.replace("form_closing", partial: "closings/form", locals: {closing: @closing, title: "Novo fechamento", btn_save: "Salvar"})
     end
   end
 
   def update
-    @closing = Closing.find(params[:id])
-
-    if @closing.update_attributes(closing_params)
+    if @closing.update(closing_params)
       flash[:success] = "Fechamento foi atualizado com sucesso."
-      redirect_to closing_path(@closing)
+      render turbo_stream: turbo_stream.action(:redirect, closings_path)
     else
-      render action: "edit"
+      render turbo_stream: turbo_stream.replace("form_closing", partial: "closings/form", locals: {closing: @closing, title: "Novo fechamento", btn_save: "Salvar"})
     end
   end
 
   def destroy
-    Closing.find(params[:id]).destroy
-    redirect_to closings_path
+    @closing.destroy
+    render turbo_stream: turbo_stream.action(:redirect, closings_path)
   end
 
   def modify_for_this_closure
-    @closing = Closing.find(params[:id])
-
     flash[:notice] = "O sistema está utilizando o fechamento de #{@closing.closing}!"
-    redirect_to closings_path
+
+    @current_closing.update(active: false)
+    @closing.update(active: true)
+
+    render turbo_stream: turbo_stream.action(:redirect, closings_path)
   end
 
   private
@@ -57,5 +55,9 @@ class ClosingsController < ApplicationController
       :closing,
       :last_envelope
     )
+  end
+
+  def get_closing
+    @closing = Closing.find(params[:id])
   end
 end
