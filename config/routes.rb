@@ -16,6 +16,9 @@ Rails.application.routes.draw do
   end
 
   resources :representatives, only: %i[index show create update destroy]
+  resources :prescribers, only: %i[index show create update destroy]
+  resources :offices, only: %i[index show create update destroy]
+  resources :discounts, only: %i[index show create update destroy]
 
   ###############
   ###   API22  ###

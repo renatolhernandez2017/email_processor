@@ -1,4 +1,4 @@
-class RepresentativesController < ApplicationController
+class PrescribersController < ApplicationController
   include Pagy::Backend
 
   def index

@@ -1,4 +1,4 @@
-class RepresentativesController < ApplicationController
+class DiscountsController < ApplicationController
   include Pagy::Backend
 
   def index
