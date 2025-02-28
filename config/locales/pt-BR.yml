@@ -34,43 +34,11 @@ pt-BR:
       sale: Venda
       user: Usuário
     attributes:
-      cart:
-        status: Status
-        status/created: Criado
-        status/paid: Pago
-        status/canceled: Cancelado
-        status/confirmed: Confirmado
-        status/processing: Processando
-        status/delivered: Entregue
-        status/received: Recebido
-        status/refunded: Reembolsado
-        status/returned: Devolvido
-        status/failed: Falhou
-        status/cancelled: Cancelado
-        status/pending: Pendente
-        status/processing_payment: Processando pagamento
-      product:
-        title: Título
-        description: Descrição
-        quantity: Quantidade
-        image: Imagem
-        price: Preço
-        discount: Desconto
-      sale:
-        status: Status
-        status/created: Criado
-        status/paid: Pago
-        status/canceled: Cancelado
-        status/confirmed: Confirmado
-        status/processing: Processando
-        status/delivered: Entregue
-        status/received: Recebido
-        status/refunded: Reembolsado
-        status/returned: Devolvido
-        status/failed: Falhou
-        status/cancelled: Cancelado
-        status/pending: Pendente
-        status/processing_payment: Processando pagamento
+      closing:
+        closing: Fechamento
+        start_date: Data inicial
+        end_date: Data final
+        last_envelope: Último envelope
       user:
         name: Nome
         email: E-mail
