@@ -8333,9 +8333,10 @@ var autosubmitselect_controller_default = class extends Controller {
 var home_controller_default = class extends Controller {
   connect() {
     setTimeout(() => {
+      console.log(this.element.dataset.homeTimeoutValue);
       this.element.classList.add("hidden");
-    }, this.timeoutValue || 1e4);
-    setTimeout(() => this.close(), this.timeoutValue || 1e4);
+    }, this.element.dataset.homeTimeoutValue || 1e4);
+    setTimeout(() => this.close(), this.element.dataset.homeTimeoutValue || 1e4);
   }
   close() {
     this.element.classList.add("opacity-0", "transition-opacity", "duration-500");
