@@ -1,14 +1,14 @@
 <div class="flex justify-between items-center my-3">
-  <h1 class="text-2xl text-center text-primary mx-auto">Listagem de fechamentos e relatórios</h1>
+  <h1 class="text-2xl text-center text-primary mx-auto">Listagem de Fechamentos e Relatórios</h1>
 
   <button class="btn btn-primary" onclick="modal_closing_create.showModal()">
     Novo fechamento
   </button>
 </div>
 
-<div class="flex w-full flex-col my-12 md:my-16">
+<div class="flex w-full flex-col lg:my-12 md:my-16">
   <div class="overflow-x-auto">
-    <table class="table-auto w-full text-sm font-semibold">
+    <table class="table-auto w-full text-sm font-semibold text-left">
       <thead class="text-base">
         <tr>
           <th>Fechamento</th>
@@ -35,7 +35,7 @@
 
             <td>
               <button onclick="document.getElementById('edit_closing<%= closing.id %>').showModal();" title="Editar" class="p-2 rounded-full">
-                <span class="material-symbols-outlined">edit</span>
+                <span class="material-symbols-outlined text-primary">edit</span>
               </button>
 
               <dialog id="edit_closing<%= closing.id %>" class="modal place-items-center">

@@ -20,4 +20,22 @@ date = Date.today
   )
 end
 
+puts "Criando Representantes"
+kind = ["prescriber", "representative"]
+
+15.times do |i|
+  Person.create!(
+    name: Faker::Name.name,
+    cpf: Faker::IDNumber.brazilian_citizen_number,
+    birthdate: Faker::Date.birthday(min_age: 18, max_age: 65),
+    kind: kind.sample,
+    cnpj: Faker::Company.brazilian_company_number,
+    rg: Faker::IDNumber.brazilian_id,
+    representative_number: i + 1,
+    class_concil: Faker::Educator.course_name,
+    uf_concil: Faker::Address.state_abbr,
+    number_concil: Faker::IDNumber.valid
+  )
+end
+
 puts "FIM!"
