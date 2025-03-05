@@ -25,6 +25,13 @@
             </label>
 
             <%= f.password_field :password, autocomplete: "current-password", class: "input input-bordered" %>
+          
+            <% if devise_mapping.rememberable? %>
+              <label class="label">
+                <%= f.check_box :remember_me %>
+                <%= f.label "Lembrar-me" %>
+              </label>
+            <% end %>
           </div>
 
           <div class="form-control mt-6 text-white">
