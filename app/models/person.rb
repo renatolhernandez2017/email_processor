@@ -3,5 +3,5 @@ class Person < ApplicationRecord
 
   include PgSearch::Model
 
-  belongs_to :address, optional: true
+  has_many :addresses, dependent: :destroy
 end

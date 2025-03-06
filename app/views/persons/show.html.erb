@@ -1,56 +1,70 @@
-<div class="my-5">
-  <ul class="list bg-base-100 rounded-box shadow-md p-5">
-    <li class="p-4 pb-2 text-xs opacity-60 tracking-wide">Most played songs this week</li>
+<div class="flex w-full my-5">
+  <div class="card card-body bg-secondary rounded-box grid w-full">
+    <div class="flex">
+      <h2 class="text-3xl font-bold">Representante:
+        <%= @person.representative_number %>
+      </h2>
+    </div>
 
-    <li class="list-row">
-      <div><img class="size-10 rounded-box" src="https://img.daisyui.com/images/profile/demo/1@94.webp"/></div>
-      <div>
-        <div>Dio Lupa</div>
-        <div class="text-xs uppercase font-semibold opacity-60">Remaining Reason</div>
-      </div>
-      <p class="list-col-wrap text-xs">
-        "Remaining Reason" became an instant hit, praised for its haunting sound and emotional depth. A viral performance brought it widespread recognition, making it one of Dio Lupa’s most iconic tracks.
-      </p>
-      <button class="btn btn-square btn-ghost">
-        <svg class="size-[1.2em]" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><g stroke-linejoin="round" stroke-linecap="round" stroke-width="2" fill="none" stroke="currentColor"><path d="M6 3L20 12 6 21 6 3z"></path></g></svg>
-      </button>
-      <button class="btn btn-square btn-ghost">
-        <svg class="size-[1.2em]" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><g stroke-linejoin="round" stroke-linecap="round" stroke-width="2" fill="none" stroke="currentColor"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"></path></g></svg>
-      </button>
-    </li>
+    <ul class="mt-6 flex flex-col gap-4 text-base">
+      <li>
+        <span class="font-semibold">Nome:</span>
+        <%= @person.name %>
+      </li>
 
-    <li class="list-row">
-      <div><img class="size-10 rounded-box" src="https://img.daisyui.com/images/profile/demo/4@94.webp"/></div>
-      <div>
-        <div>Ellie Beilish</div>
-        <div class="text-xs uppercase font-semibold opacity-60">Bears of a fever</div>
-      </div>
-      <p class="list-col-wrap text-xs">
-        "Bears of a Fever" captivated audiences with its intense energy and mysterious lyrics. Its popularity skyrocketed after fans shared it widely online, earning Ellie critical acclaim.
-      </p>
-      <button class="btn btn-square btn-ghost">
-        <svg class="size-[1.2em]" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><g stroke-linejoin="round" stroke-linecap="round" stroke-width="2" fill="none" stroke="currentColor"><path d="M6 3L20 12 6 21 6 3z"></path></g></svg>
-      </button>
-      <button class="btn btn-square btn-ghost">
-        <svg class="size-[1.2em]" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><g stroke-linejoin="round" stroke-linecap="round" stroke-width="2" fill="none" stroke="currentColor"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"></path></g></svg>
-      </button>
-    </li>
+      <li>
+        <span class="font-semibold">Número:</span>
+        <%= @person.representative_number %>
+      </li>
 
-    <li class="list-row">
-      <div><img class="size-10 rounded-box" src="https://img.daisyui.com/images/profile/demo/3@94.webp"/></div>
-      <div>
-        <div>Sabrino Gardener</div>
-        <div class="text-xs uppercase font-semibold opacity-60">Cappuccino</div>
-      </div>
-      <p class="list-col-wrap text-xs">
-        "Cappuccino" quickly gained attention for its smooth melody and relatable themes. The song’s success propelled Sabrino into the spotlight, solidifying their status as a rising star.
-      </p>
-      <button class="btn btn-square btn-ghost">
-        <svg class="size-[1.2em]" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><g stroke-linejoin="round" stroke-linecap="round" stroke-width="2" fill="none" stroke="currentColor"><path d="M6 3L20 12 6 21 6 3z"></path></g></svg>
-      </button>
-      <button class="btn btn-square btn-ghost">
-        <svg class="size-[1.2em]" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><g stroke-linejoin="round" stroke-linecap="round" stroke-width="2" fill="none" stroke="currentColor"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"></path></g></svg>
-      </button>
-    </li>
-  </ul>
+      <li>
+        <span class="font-semibold">Filial:</span>
+        <%= "Nome da Filial" %>
+      </li>
+
+      <li>
+        <span class="font-semibold">Parceria:</span>
+        <%= "2.5%" %>
+      </li>
+    </ul>
+
+    <div class="mt-6 flex justify-center items-center gap-2">
+      <button class="btn btn-primary btn-wide">Editar</button>
+      <button class="btn btn-primary btn-wide">Listar Todos</button>
+    </div>
+  </div>
+
+  <div class="divider divider-horizontal"></div>
+
+  <div class="card card-body bg-secondary rounded-box grid w-full">
+    <div class="flex justify-between">
+      <h2 class="text-3xl font-bold">Contas Correntes</h2>
+    </div>
+
+    <ul class="mt-6 flex flex-col gap-4 text-base">
+      <li>
+        <span class="font-semibold">ATIVA</span>
+
+        <a href="#" class="text-primary">
+          Clique aqui para <span class="font-semibold">desativar</span> esta conta
+        </a>
+      </li>
+
+      <li>
+        <span class="font-semibold">Banco:</span>
+        <%= @person.name %>
+      </li>
+
+      <li>
+        <span class="font-semibold">Favorecido:</span>
+        <%= @person.name %>
+      </li>
+    </ul>
+
+    <div class="mt-6 flex justify-center items-center gap-2">
+      <button class="btn btn-primary btn-wide">Editar</button>
+      <button class="btn btn-primary btn-wide">Remover</button>
+      <button class="btn btn-primary btn-wide">Adicionar nova conta corrente</button>
+    </div>
+  </div>
 </div>

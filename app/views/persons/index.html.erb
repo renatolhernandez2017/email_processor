@@ -19,12 +19,12 @@
   </fieldset>
 </div>
 
-<div class="flex w-full flex-col lg:my-0 md:my-16">
+<div class="flex w-full flex-col my-4">
   <div class="overflow-x-auto">
-    <table class="table-auto w-full text-sm font-semibold text-left">
+    <table class="table-auto w-full text-sm font-semibold text-center">
       <thead class="text-base">
         <tr>
-          <th class="p-2"><input type="checkbox" class="checkbox checkbox-primary" /></th>
+          <th><input type="checkbox" class="checkbox checkbox-primary" /></th>
           <th>Id</th>
           <th>Representante</th>
           <th>Número</th>
@@ -55,7 +55,7 @@
               </button>
 
               <dialog id="edit_person<%= person.id %>" class="modal place-items-center">
-                <%= render ModalComponent.new(form: render("form", person: person, title: "Editar fechamento", btn_save: "Atualizar")) %>
+                <%= render ModalComponent.new(form: render("form", person: person, title: "Editar Representante : #{person.id}", btn_save: "Atualizar")) %>
               </dialog>
 
               <button onclick="document.getElementById('description_person<%= person.id %>').showModal();" title="Resumo" class="p-2 rounded-full">
