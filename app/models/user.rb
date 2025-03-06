@@ -1,4 +1,6 @@
 class User < ApplicationRecord
+  audited
+
   include PgSearch::Model
 
   # Include default devise modules. Others available are:
