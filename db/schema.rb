@@ -10,10 +10,27 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_03_06_130702) do
+ActiveRecord::Schema[7.1].define(version: 2025_03_06_132843) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
   enable_extension "unaccent"
+
+  create_table "addresses", force: :cascade do |t|
+    t.string "street"
+    t.string "district"
+    t.string "number"
+    t.string "complement"
+    t.string "city"
+    t.string "uf"
+    t.string "zip_code"
+    t.string "phone"
+    t.string "cellphone"
+    t.string "fax"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.bigint "person_id"
+    t.index ["person_id"], name: "index_addresses_on_person_id"
+  end
 
   create_table "audits", force: :cascade do |t|
     t.integer "auditable_id"
@@ -78,4 +95,5 @@ ActiveRecord::Schema[7.1].define(version: 2025_03_06_130702) do
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
 
+  add_foreign_key "addresses", "people"
 end
