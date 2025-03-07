@@ -29,8 +29,15 @@
     </ul>
 
     <div class="mt-6 flex justify-center items-center gap-2">
-      <button class="btn btn-primary btn-wide">Editar</button>
-      <button class="btn btn-primary btn-wide">Listar Todos</button>
+      <button onclick="document.getElementById('edit_representative<%= @representative.id %>').showModal();" class="btn btn-primary btn-wide">
+        Editar
+      </button>
+
+      <dialog id="edit_representative<%= @representative.id %>" class="modal place-items-center">
+        <%= render ModalComponent.new(form: render("form", representative: @representative, branches: @branches, title: "Editar Representante : #{@representative.id}", btn_save: "Atualizar")) %>
+      </dialog>
+
+      <%= link_to "Listar Todos", representatives_path, class: "btn btn-primary btn-wide" %>
     </div>
   </div>
 

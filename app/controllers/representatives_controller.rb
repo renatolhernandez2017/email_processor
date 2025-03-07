@@ -10,26 +10,15 @@ class RepresentativesController < ApplicationController
     @representative = Representative.new
   end
 
-  def create
-    @representative = Representative.new(representative_params)
-
-    if @representative.save
-      flash[:success] = "Representante foi criado com sucesso!"
-      render turbo_stream: turbo_stream.action(:redirect, representatives_path)
-    else
-      render turbo_stream: turbo_stream.replace("form_representative", partial: "representatives/form", locals: {representative: @representative, title: "Novo fechamento", btn_save: "Salvar"})
-    end
-  end
-
   def update
     if @representative.update(representative_params)
-      flash[:success] = "Representante foi atualizado com sucesso."
+      flash[:success] = "Representante atualizado com sucesso."
       render turbo_stream: turbo_stream.action(:redirect, representatives_path)
     else
-      render turbo_stream: turbo_stream.replace("form_representative", partial: "representatives/form", locals: {representative: @representative, title: "Novo fechamento", btn_save: "Salvar"})
+      render turbo_stream: turbo_stream.replace("form_representative", partial: "representatives/form", locals: {representative: @representative, branches: @branches, title: "Novo fechamento", btn_save: "Salvar"})
     end
   end
-  
+
   def show
   end
 
@@ -39,7 +28,8 @@ class RepresentativesController < ApplicationController
     params.require(:representative).permit(
       :name,
       :partnership,
-      :performs_closing
+      :performs_closing,
+      :branch_id
     )
   end
 

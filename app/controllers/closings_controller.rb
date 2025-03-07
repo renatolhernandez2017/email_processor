@@ -16,7 +16,7 @@ class ClosingsController < ApplicationController
     @closing = Closing.new(closing_params)
 
     if @closing.save
-      flash[:success] = "Fechamento foi criado com sucesso!"
+      flash[:success] = "Fechamento criado com sucesso!"
       render turbo_stream: turbo_stream.action(:redirect, closings_path)
     else
       render turbo_stream: turbo_stream.replace("form_closing", partial: "closings/form", locals: {closing: @closing, title: "Novo fechamento", btn_save: "Salvar"})
@@ -25,7 +25,7 @@ class ClosingsController < ApplicationController
 
   def update
     if @closing.update(closing_params)
-      flash[:success] = "Fechamento foi atualizado com sucesso."
+      flash[:success] = "Fechamento atualizado com sucesso."
       render turbo_stream: turbo_stream.action(:redirect, closings_path)
     else
       render turbo_stream: turbo_stream.replace("form_closing", partial: "closings/form", locals: {closing: @closing, title: "Novo fechamento", btn_save: "Salvar"})

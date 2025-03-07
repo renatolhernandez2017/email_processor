@@ -43,7 +43,7 @@
             <td><%= representative.id %></td>
 
             <td>
-              <%= link_to representative.name, representative_path(representative.id), class: "text-primary" %>
+              <%= link_to representative.name, representative_path(representative), class: "text-primary" %>
             </td>
 
             <td><%= representative.branch.branch_number.to_s.rjust(3, '0') %></td>

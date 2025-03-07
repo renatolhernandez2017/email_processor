@@ -4,11 +4,11 @@
 
 <div class="flex w-full flex-col my-12">
   <div class="overflow-x-auto">
-    <table class="table-auto w-full text-sm font-semibold">
+    <table class="table-auto w-full text-sm font-semibold text-left">
       <thead class="text-base">
         <tr>
           <th>Id</th>
-          <th>Filial</th>
+          <th>Nome</th>
           <th>Número</th>
           <th>%</th>
           <th>Ações</th>
@@ -16,6 +16,28 @@
       </thead>
 
       <tbody>
+        <% @branches.each do |branch| %>
+          <tr class="border-t border-black">
+            <td><%= branch.id %></td>
+
+            <td>
+              <%= link_to branch.name, "#", class: "text-primary" %>
+            </td>
+
+            <td><%= branch.branch_number %></td>
+            <td><%= branch.discount_request %></td>
+
+            <td>
+              <button onclick="document.getElementById('edit_branch<%= branch.id %>').showModal();" title="Editar" class="p-2 rounded-full">
+                <span class="material-symbols-outlined text-primary">edit</span>
+              </button>
+
+              <dialog id="edit_branch<%= branch.id %>" class="modal place-items-center">
+                <%= render ModalComponent.new(form: render("form", branch: branch, title: "Editar Filial : #{branch.id}", btn_save: "Atualizar")) %>
+              </dialog>
+            </td>
+          </tr>
+        <% end %>
       </tbody>
     </table>
   </div>
@@ -23,10 +45,10 @@
   <div class="divider border-t"></div>
 
   <div class="grid place-items-center">
-    <%#== pagy_nav(@pagy) if @pagy.pages > 1 %>
+    <%== pagy_nav(@pagy) if @pagy.pages > 1 %>
   </div>
 </div>
 
 <dialog id="modal_offices_create" class="modal place-items-center">
-  <%#= render ModalComponent.new(form: render("form", closing: @closing, title: "Novo fechamento"), btn_back: "Fechar sem salvar") %>
+  <%#= render ModalComponent.new(form: render("form", branch: @branch, title: "Novo fechamento"), btn_back: "Fechar sem salvar") %>
 </dialog>
