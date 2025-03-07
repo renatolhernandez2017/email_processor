@@ -46,8 +46,8 @@
               <%= link_to representative.name, representative_path(representative.id), class: "text-primary" %>
             </td>
 
-            <td><%= "Filial ID" %></td>
-            <td><%= "Nomde da Filial" %></td>
+            <td><%= representative.branch.branch_number.to_s.rjust(3, '0') %></td>
+            <td><%= representative.branch.name %></td>
 
             <td>
               <button onclick="document.getElementById('edit_representative<%= representative.id %>').showModal();" title="Editar" class="p-2 rounded-full">
@@ -55,7 +55,7 @@
               </button>
 
               <dialog id="edit_representative<%= representative.id %>" class="modal place-items-center">
-                <%= render ModalComponent.new(form: render("form", representative: representative, title: "Editar Representante : #{representative.id}", btn_save: "Atualizar")) %>
+                <%= render ModalComponent.new(form: render("form", representative: representative, branches: @branches, title: "Editar Representante : #{representative.id}", btn_save: "Atualizar")) %>
               </dialog>
 
               <button onclick="document.getElementById('description_representative<%= representative.id %>').showModal();" title="Resumo" class="p-2 rounded-full">

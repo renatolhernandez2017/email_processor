@@ -2,7 +2,7 @@
   <div class="card card-body bg-secondary rounded-box grid w-full">
     <div class="flex">
       <h2 class="text-3xl font-bold">Representante:
-        <%#= @representative.representative_number %>
+        <%= @representative.id %>
       </h2>
     </div>
 
@@ -14,17 +14,17 @@
 
       <li>
         <span class="font-semibold">Número:</span>
-        <%#= @representative.representative_number %>
+        <%= @representative.branch.branch_number.to_s.rjust(3, '0') %>
       </li>
 
       <li>
         <span class="font-semibold">Filial:</span>
-        <%= "Nome da Filial" %>
+        <%= @representative.branch.name %>
       </li>
 
       <li>
         <span class="font-semibold">Parceria:</span>
-        <%= "2.5%" %>
+        <%= @representative.partnership %> %
       </li>
     </ul>
 

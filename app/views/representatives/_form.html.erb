@@ -6,7 +6,7 @@
     <section class="p-6 md:max-w-4xl">
       <div class="grid grid-cols-1 my-2">
         <%= render TextFieldComponent.new(form: f, field_name: :name, label: "Nome", error_message: representative.errors.messages[:representative])%>
-        <%#= render SelectFieldComponent.new(form: f, field_name: :office_id, label: "Filial", options: offices, error_message: representative.errors.messages[:office_id])%>
+        <%= render SelectFieldComponent.new(form: f, field_name: :branch_id, label: "Filial", options: branches, error_message: representative.errors.messages[:branch_id])%>
         <%= render TextFieldComponent.new(form: f, field_name: :partnership, label: "Parceria %", error_message: representative.errors.messages[:partnership])%>
         <%= render CheckboxFieldComponent.new(form: f, field_name: :performs_closing, label: "Efetua Fechamento", error_message: representative.errors.messages[:performs_closing])%>
       </div>

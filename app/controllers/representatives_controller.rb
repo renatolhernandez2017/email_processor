@@ -1,6 +1,7 @@
 class RepresentativesController < ApplicationController
   include Pagy::Backend
 
+  before_action :get_branches
   before_action :get_representative, only: %i[update show]
 
   def index
@@ -44,5 +45,9 @@ class RepresentativesController < ApplicationController
 
   def get_representative
     @representative = Representative.find(params[:id])
+  end
+
+  def get_branches
+    @branches = Branch.all.map { |b| [b.name, b.id] }
   end
 end
