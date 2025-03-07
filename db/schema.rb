@@ -28,8 +28,6 @@ ActiveRecord::Schema[7.1].define(version: 2025_03_07_134923) do
     t.string "fax"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.bigint "representative_id"
-    t.index ["representative_id"], name: "index_addresses_on_representative_id"
   end
 
   create_table "audits", force: :cascade do |t|
@@ -71,29 +69,6 @@ ActiveRecord::Schema[7.1].define(version: 2025_03_07_134923) do
     t.datetime "updated_at", null: false
   end
 
-  create_table "people", force: :cascade do |t|
-    t.string "kind"
-    t.string "name"
-    t.string "cnpj"
-    t.string "rg"
-    t.integer "representative_number"
-    t.string "class_concil"
-    t.string "uf_concil"
-    t.string "number_concil"
-    t.datetime "birthdate"
-    t.string "cpf"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-  end
-
-  create_table "representatives", force: :cascade do |t|
-    t.string "name"
-    t.decimal "partnership", default: "0.0"
-    t.boolean "performs_closing", default: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-  end
-
   create_table "users", force: :cascade do |t|
     t.string "email", default: "", null: false
     t.string "encrypted_password", default: "", null: false
@@ -109,6 +84,4 @@ ActiveRecord::Schema[7.1].define(version: 2025_03_07_134923) do
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
-
-  add_foreign_key "addresses", "representatives"
 end
