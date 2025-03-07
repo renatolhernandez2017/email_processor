@@ -1,0 +1,11 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  name: MyString
+  partnership: 9.99
+  performs_closing: false
+
+two:
+  name: MyString
+  partnership: 9.99
+  performs_closing: false

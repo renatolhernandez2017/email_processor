@@ -3,7 +3,7 @@ User.destroy_all
 Closing.destroy_all
 Address.destroy_all
 Representative.destroy_all
-# Office.destroy_all
+# Branch.destroy_all
 
 puts "Criando user Admin"
 User.create!(name: "renato", email: "renatolhernandez@gmail.com", password: "123123", role: "admin")
@@ -32,7 +32,7 @@ sp_cities = [
 ]
 
 15.times do |i|
-  # office = Office.create!(
+  # branch = Branch.create!(
   #   name: sp_cities[i - 1],
   #   cdfil_id: i
   # )
