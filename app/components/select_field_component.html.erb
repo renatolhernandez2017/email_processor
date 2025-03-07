@@ -1,0 +1,6 @@
+<label class="label label-text"><%= @label %></label>
+
+<select class="select select-bordered">
+  <%= options_for_select(@options, class: "#{'input-error' if @error_message.present?}") %>
+  <p class="text-sm text-red-500"><%= @error_message.join(', ') if @error_message.present? %></p>
+</select>
