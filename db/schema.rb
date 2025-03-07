@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_03_07_143934) do
+ActiveRecord::Schema[7.1].define(version: 2025_03_06_132644) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
   enable_extension "unaccent"
@@ -62,14 +62,6 @@ ActiveRecord::Schema[7.1].define(version: 2025_03_07_143934) do
     t.boolean "active", default: false
   end
 
-  create_table "representatives", force: :cascade do |t|
-    t.string "name"
-    t.decimal "partnership", default: "0.0"
-    t.boolean "performs_closing", default: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-  end
-
   create_table "users", force: :cascade do |t|
     t.string "email", default: "", null: false
     t.string "encrypted_password", default: "", null: false
@@ -85,4 +77,5 @@ ActiveRecord::Schema[7.1].define(version: 2025_03_07_143934) do
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
+
 end
