@@ -1,0 +1,88 @@
+<div class="flex justify-between items-center">
+  <h1 class="text-2xl text-center text-primary mx-auto">Listagem de Representantes</h1>
+
+  <fieldset class="fieldset w-96 border border-primary p-2 rounded-box">
+    <legend class="fieldset-legend text-primary">Com os itens selecionados ...</legend>
+
+    <div class="join border border-primary join-item rounded-r-full">
+      <select class="select">
+        <option disabled selected>Selecione uma opção</option>
+        <option>Salva Listagem de Pacientes</option>
+        <option>Salva Listagem de Pacientes resumida</option>
+        <option>Resumido Mensal</option>
+        <option>Etiquetas</option>
+        <option>Relatório de Endereços</option>
+      </select>
+
+      <button class="btn btn-primary join-item">Ok</button>
+    </div>
+  </fieldset>
+</div>
+
+<div class="flex w-full flex-col my-4">
+  <div class="overflow-x-auto">
+    <table class="table-auto w-full text-sm font-semibold text-center">
+      <thead class="text-base">
+        <tr>
+          <th><input type="checkbox" class="checkbox checkbox-primary" /></th>
+          <th>Id</th>
+          <th>Representante</th>
+          <th>Número</th>
+          <th>Filial</th>
+          <th>Ações</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <% @representatives.each do |representative| %>
+          <tr class="border-t border-black">
+            <td class="p-2">
+              <input type="checkbox" class="checkbox checkbox-primary" />
+            </td>
+
+            <td><%= representative.id %></td>
+
+            <td>
+              <%= link_to representative.name, representative_path(representative.id), class: "text-primary" %>
+            </td>
+
+            <td><%= "Filial ID" %></td>
+            <td><%= "Nomde da Filial" %></td>
+
+            <td>
+              <button onclick="document.getElementById('edit_representative<%= representative.id %>').showModal();" title="Editar" class="p-2 rounded-full">
+                <span class="material-symbols-outlined text-primary">edit</span>
+              </button>
+
+              <dialog id="edit_representative<%= representative.id %>" class="modal place-items-center">
+                <%= render ModalComponent.new(form: render("form", representative: representative, title: "Editar Representante : #{representative.id}", btn_save: "Atualizar")) %>
+              </dialog>
+
+              <button onclick="document.getElementById('description_representative<%= representative.id %>').showModal();" title="Resumo" class="p-2 rounded-full">
+                <span class="material-symbols-outlined text-primary">description</span>
+              </button>
+
+              <button onclick="document.getElementById('list_representative<%= representative.id %>').showModal();" title="Listagem" class="p-2 rounded-full">
+                <span class="material-symbols-outlined text-primary">list_alt</span>
+              </button>
+
+              <button onclick="document.getElementById('content_paste_representative<%= representative.id %>').showModal();" title="Lista Resumida" class="p-2 rounded-full">
+                <span class="material-symbols-outlined text-primary">content_paste</span>
+              </button>
+
+              <button onclick="document.getElementById('home_representative<%= representative.id %>').showModal();" title="Endereço" class="p-2 rounded-full">
+                <span class="material-symbols-outlined text-primary">home</span>
+              </button>
+            </td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="divider border-t"></div>
+
+  <div class="grid place-items-center">
+    <%== pagy_nav(@pagy) if @pagy.pages > 1 %>
+  </div>
+</div>

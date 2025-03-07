@@ -2,7 +2,7 @@ puts "apagando dados antigos..."
 User.destroy_all
 Closing.destroy_all
 Address.destroy_all
-# Representative.destroy_all
+Representative.destroy_all
 # Office.destroy_all
 
 puts "Criando user Admin"
@@ -37,9 +37,9 @@ sp_cities = [
   #   cdfil_id: i
   # )
 
-  # representative = Representative.create!(
-  #   name: Faker::Name.name
-  # )
+  representative = Representative.create!(
+    name: Faker::Name.name
+  )
 
   Address.create!(
     street: Faker::Address.street_name,
