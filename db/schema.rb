@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_03_07_163047) do
+ActiveRecord::Schema[7.1].define(version: 2025_03_07_163824) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
   enable_extension "unaccent"
@@ -28,6 +28,8 @@ ActiveRecord::Schema[7.1].define(version: 2025_03_07_163047) do
     t.string "fax"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.bigint "representative_id"
+    t.index ["representative_id"], name: "index_addresses_on_representative_id"
   end
 
   create_table "audits", force: :cascade do |t|
@@ -86,4 +88,5 @@ ActiveRecord::Schema[7.1].define(version: 2025_03_07_163047) do
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
 
+  add_foreign_key "addresses", "representatives"
 end
