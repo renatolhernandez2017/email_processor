@@ -15,7 +15,7 @@ Rails.application.routes.draw do
     post :modify_for_this_closure, on: :collection
   end
 
-  resources :persons, only: %i[index show create update destroy]
+  resources :representatives, only: %i[index show create update destroy]
   resources :prescribers, only: %i[index create update destroy]
   resources :offices, only: %i[index create update destroy]
   resources :discounts, only: %i[index create update destroy]

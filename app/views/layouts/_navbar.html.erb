@@ -5,8 +5,8 @@
         <%= link_to "Fechamentos e Relatórios", closings_path, class: "lg:text-base md:text-sm" %>
       </li>
 
-      <li role="tab" class="tab text-center checked:[--tab-bg:darkblue] checked:text-primary-content h-12 <%= 'bg-primary checked text-white' if current_page?(persons_path) || (params[:action] == "show" && current_page?(person_path)) %>">
-        <%= link_to "Representantes", persons_path, class: "lg:text-base md:text-sm" %>
+      <li role="tab" class="tab text-center checked:[--tab-bg:darkblue] checked:text-primary-content h-12 <%= 'bg-primary checked text-white' if current_page?(representatives_path) || (params[:action] == "show" && current_page?(representative_path)) %>">
+        <%= link_to "Representantes", representatives_path, class: "lg:text-base md:text-sm" %>
       </li>
 
       <li role="tab" class="tab text-center checked:[--tab-bg:darkblue] checked:text-primary-content h-12 <%= 'bg-primary checked text-white' if current_page?(prescribers_path) %>">

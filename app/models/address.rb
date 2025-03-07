@@ -3,5 +3,5 @@ class Address < ApplicationRecord
 
   include PgSearch::Model
 
-  belongs_to :person, optional: true
+  # belongs_to :representative, optional: true
 end
