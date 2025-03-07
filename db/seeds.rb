@@ -2,8 +2,8 @@ puts "apagando dados antigos..."
 User.destroy_all
 Closing.destroy_all
 Address.destroy_all
+Branch.destroy_all
 Representative.destroy_all
-# Branch.destroy_all
 
 puts "Criando user Admin"
 User.create!(name: "renato", email: "renatolhernandez@gmail.com", password: "123123", role: "admin")
@@ -32,13 +32,14 @@ sp_cities = [
 ]
 
 15.times do |i|
-  # branch = Branch.create!(
-  #   name: sp_cities[i - 1],
-  #   cdfil_id: i
-  # )
-
   representative = Representative.create!(
     name: Faker::Name.name
+  )
+
+  Branch.create!(
+    name: sp_cities[i - 1],
+    branch_number: i,
+    representative_id: representative.id
   )
 
   Address.create!(
@@ -51,7 +52,8 @@ sp_cities = [
     zip_code: Faker::Address.zip_code,
     phone: Faker::PhoneNumber.phone_number,
     cellphone: Faker::PhoneNumber.cell_phone,
-    fax: Faker::PhoneNumber.phone_number
+    fax: Faker::PhoneNumber.phone_number,
+    representative_id: representative.id
   )
 end
 
