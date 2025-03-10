@@ -18,7 +18,11 @@
         <% @prescribers.each do |prescriber| %>
           <tr class="border-t border-black">
             <td><%= prescriber.id %></td>
-            <td><%= prescriber.name %></td>
+
+            <td>
+              <%= link_to prescriber.name, "#", class: "text-primary" %>
+            </td>
+
             <td><%= prescriber.council %></td>
 
             <td>
