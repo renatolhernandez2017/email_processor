@@ -4,6 +4,7 @@ Closing.destroy_all
 Address.destroy_all
 Representative.destroy_all
 Branch.destroy_all
+Prescriber.destroy_all
 
 puts "Criando user Admin"
 User.create!(name: "renato", email: "renatolhernandez@gmail.com", password: "123123", role: "admin")
@@ -54,6 +55,16 @@ sp_cities = [
     cellphone: Faker::PhoneNumber.cell_phone,
     fax: Faker::PhoneNumber.phone_number,
     representative_id: representative.id
+  )
+end
+
+puts "Criando Prescritores"
+15.times do |i|
+  Prescriber.create!(
+    name: Faker::Name.name,
+    council: "#{Faker::Name.first_name} - Conselho",
+    secretary: "#{Faker::Name.first_name} - Secretaria",
+    note: Faker::Lorem.sentence
   )
 end
 

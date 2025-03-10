@@ -1,0 +1,2 @@
+class Prescriber < ApplicationRecord
+end
