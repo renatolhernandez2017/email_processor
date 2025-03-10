@@ -1,20 +1,37 @@
 <div class="flex justify-between items-center my-3">
-  <h1 class="text-2xl text-center text-primary mx-auto">Listagem de prescritores</h1>
+  <h1 class="text-2xl text-center text-primary mx-auto">Listagem de Prescritores</h1>
 </div>
 
 <div class="flex w-full flex-col my-12">
   <div class="overflow-x-auto">
-    <table class="table-auto w-full text-sm font-semibold">
+    <table class="table-auto w-full text-sm font-semibold text-left">
       <thead class="text-base">
         <tr>
           <th>Id</th>
           <th>Nome</th>
-          <th>Cons.</th>
+          <th>Conselho</th>
           <th>Ações</th>
         </tr>
       </thead>
 
       <tbody>
+        <% @prescribers.each do |prescriber| %>
+          <tr class="border-t border-black">
+            <td><%= prescriber.id %></td>
+            <td><%= prescriber.name %></td>
+            <td><%= prescriber.council %></td>
+
+            <td>
+              <button onclick="document.getElementById('edit_prescriber<%= prescriber.id %>').showModal();" title="Editar" class="p-2 rounded-full">
+                <span class="material-symbols-outlined text-primary">edit</span>
+              </button>
+
+              <dialog id="edit_prescriber<%= prescriber.id %>" class="modal place-items-center">
+                <%= render ModalComponent.new(form: render("form", prescriber: prescriber, title: "Editar Prescritor : #{prescriber.id}", btn_save: "Atualizar")) %>
+              </dialog>
+            </td>
+          </tr>
+        <% end %>
       </tbody>
     </table>
   </div>
@@ -22,10 +39,6 @@
   <div class="divider border-t"></div>
 
   <div class="grid place-items-center">
-    <%#== pagy_nav(@pagy) if @pagy.pages > 1 %>
+    <%== pagy_nav(@pagy) if @pagy.pages > 1 %>
   </div>
 </div>
-
-<dialog id="modal_prescribers_create" class="modal place-items-center">
-  <%#= render ModalComponent.new(form: render("form", closing: @closing, title: "Novo fechamento"), btn_back: "Fechar sem salvar") %>
-</dialog>
