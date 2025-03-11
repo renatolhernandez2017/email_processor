@@ -4,7 +4,6 @@ import { Controller } from "@hotwired/stimulus"
 export default class extends Controller {
   connect() {
     setTimeout(() => {
-      console.log(this.element.dataset.homeTimeoutValue);
       this.element.classList.add("hidden"); // Esconde o alerta
     }, this.element.dataset.homeTimeoutValue || 10000); // Usa o valor do HTML ou 7s por padrão
 

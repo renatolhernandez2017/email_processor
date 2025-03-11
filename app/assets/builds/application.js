@@ -8333,7 +8333,6 @@ var autosubmitselect_controller_default = class extends Controller {
 var home_controller_default = class extends Controller {
   connect() {
     setTimeout(() => {
-      console.log(this.element.dataset.homeTimeoutValue);
       this.element.classList.add("hidden");
     }, this.element.dataset.homeTimeoutValue || 1e4);
     setTimeout(() => this.close(), this.element.dataset.homeTimeoutValue || 1e4);
@@ -11844,6 +11843,19 @@ var mask_controller_default = class extends Controller {
   }
 };
 
+// app/javascript/controllers/toggle_controller.js
+var toggle_controller_default = class extends Controller {
+  connect() {
+  }
+  tableTr(id) {
+    const trId = id.currentTarget.dataset.trId;
+    const hiddenRow = document.getElementById(trId);
+    if (hiddenRow) {
+      hiddenRow.classList.toggle("hidden");
+    }
+  }
+};
+
 // app/javascript/controllers/upload_controller.js
 var upload_controller_default = class extends Controller {
   static targets = ["file"];
@@ -11877,6 +11889,7 @@ application.register("auto-expand-textarea", auto_expand_textarea_controller_def
 application.register("autosubmitselect", autosubmitselect_controller_default);
 application.register("home", home_controller_default);
 application.register("mask", mask_controller_default);
+application.register("toggle", toggle_controller_default);
 application.register("upload", upload_controller_default);
 
 // app/javascript/application.js

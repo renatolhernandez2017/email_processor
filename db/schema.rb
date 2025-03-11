@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_03_10_135019) do
+ActiveRecord::Schema[7.1].define(version: 2025_03_10_141537) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
   enable_extension "unaccent"
@@ -60,8 +60,6 @@ ActiveRecord::Schema[7.1].define(version: 2025_03_10_135019) do
     t.decimal "discount_request", default: "0.0"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.bigint "representative_id"
-    t.index ["representative_id"], name: "index_branches_on_representative_id"
   end
 
   create_table "closings", force: :cascade do |t|
@@ -88,6 +86,10 @@ ActiveRecord::Schema[7.1].define(version: 2025_03_10_135019) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.bigint "representative_id"
+    t.string "class_council", limit: 1
+    t.string "number_council"
+    t.string "uf_council", limit: 2
+    t.date "birthdate"
     t.index ["representative_id"], name: "index_prescribers_on_representative_id"
   end
 
@@ -118,7 +120,6 @@ ActiveRecord::Schema[7.1].define(version: 2025_03_10_135019) do
   end
 
   add_foreign_key "addresses", "representatives"
-  add_foreign_key "branches", "representatives"
   add_foreign_key "prescribers", "representatives"
   add_foreign_key "representatives", "branches"
 end

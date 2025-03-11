@@ -5,5 +5,5 @@ class Representative < ApplicationRecord
 
   belongs_to :branch, optional: true
 
-  has_many :addresses, dependent: :destroy
+  has_one :address, dependent: :destroy
 end

@@ -62,6 +62,9 @@ sp_cities = [
     council: "#{Faker::Name.first_name} - Conselho",
     secretary: "#{Faker::Name.first_name} - Secretaria",
     note: Faker::Lorem.sentence,
+    class_council: rand(1..9),
+    uf_council: Faker::Address.state_abbr,
+    number_council: Array.new(6) { rand(1..9) }.join(" "),
     representative_id: representative.id
   )
 end

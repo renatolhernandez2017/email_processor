@@ -16,5 +16,8 @@ application.register("home", HomeController)
 import MaskController from "./mask_controller"
 application.register("mask", MaskController)
 
+import ToggleController from "./toggle_controller"
+application.register("toggle", ToggleController)
+
 import UploadController from "./upload_controller"
 application.register("upload", UploadController)
