@@ -1,29 +1,33 @@
-<div class="flex justify-between items-center my-3">
+<div class="flex justify-between prescribers-center my-5 mb-10">
   <h1 class="text-2xl text-center text-primary mx-auto">Listagem de Prescritores</h1>
 </div>
 
-<div class="flex w-full flex-col my-12">
+<div class="flex flex-col h-screen">
   <div class="overflow-x-auto">
-    <table class="table-auto w-full text-sm font-semibold text-left">
+    <table class="table-auto w-full text-sm font-semibold text-center">
       <thead class="text-base">
         <tr>
-          <th>Id</th>
+          <th>ID</th>
           <th>Nome</th>
+          <th>Representante</th>
           <th>Conselho</th>
           <th>Ações</th>
+          <th></th>
         </tr>
       </thead>
 
       <tbody>
-        <% @prescribers.each do |prescriber| %>
-          <tr class="border-t border-black">
+        <% @prescribers.each_with_index do |prescriber, index| %>
+          <tr class="border-t border-black <%= index % 2 == 0 ? "bg-gray-200" : "bg-gray-100" %>">
             <td><%= prescriber.id %></td>
+            <td><%= link_to prescriber.name, "#", class: "text-primary" %></td>
+            <td><%= link_to prescriber.representative.name, "#" %></td>
 
             <td>
-              <%= link_to prescriber.name, "#", class: "text-primary" %>
+              <%= prescriber.class_council %> -
+              <%= prescriber.uf_council %> -
+              <%= prescriber.number_council %>
             </td>
-
-            <td><%= prescriber.council %></td>
 
             <td>
               <button onclick="document.getElementById('edit_prescriber<%= prescriber.id %>').showModal();" title="Editar" class="p-2 rounded-full">
@@ -33,6 +37,36 @@
               <dialog id="edit_prescriber<%= prescriber.id %>" class="modal place-items-center">
                 <%= render ModalComponent.new(form: render("form", prescriber: prescriber, title: "Editar Prescritor : #{prescriber.id}", btn_save: "Atualizar")) %>
               </dialog>
+            </td>
+
+            <td class="cursor-pointer" data-controller="toggle" data-action="click->toggle#tableTr" data-tr-id="tr_hidden_<%= index %>">
+              <details class="collapse collapse-arrow">
+                <summary class="collapse-title font-semibold"></summary>
+              </details>
+            </td>
+          </tr>
+
+          <tr class="hidden bg-white" id="tr_hidden_<%= index %>">
+            <td colspan="8">
+              <section class="menu">
+                <div class="join btn-disabled">
+                  <div class="border border-black join-item h-full w-3/6">
+                    <%= render BoxGroupHozirontalComponent.new(label: "Secretaria", field_name: prescriber.secretary) %>
+                    <%= render BoxGroupHozirontalComponent.new(label: "Parceria", field_name: prescriber.partnership) %>
+                    <%= render BoxGroupHozirontalComponent.new(label: "Repetições", field_name: prescriber.repetitions) %>
+                    <%= render BoxGroupHozirontalComponent.new(label: "Desconto %", field_name: prescriber.percentage_ciscount) %>
+                    <%= render BoxGroupHozirontalComponent.new(label: "Considera desconto de até", field_name: prescriber.consider_discount_of_up_to) %>
+                  </div>
+
+                  <div class="border border-black join-item h-full w-3/6">
+                    <%= render BoxGroupHozirontalComponent.new(label: "Endereço", field_name: prescriber.full_address) %>
+                    <%= render BoxGroupHozirontalComponent.new(label: "Telefone1", field_name: prescriber.address.phone || "Não disponível") %>
+                    <%= render BoxGroupHozirontalComponent.new(label: "Telefone2", field_name: prescriber.address.cellphone || "Não disponível") %>
+                    <%= render BoxGroupHozirontalComponent.new(label: "Fax", field_name: prescriber.address.fax || "Não disponível") %>
+                    <%= render BoxGroupHozirontalComponent.new(label: "Observação", field_name: prescriber.note || "Não disponível") %>
+                  </div>
+                </div>
+              </section>
             </td>
           </tr>
         <% end %>

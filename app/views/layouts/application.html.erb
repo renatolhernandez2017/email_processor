@@ -22,7 +22,7 @@
     <%= javascript_include_tag "application", "data-turbo-track": "reload", type: "module" %>
   </head>
 
-  <body class="bg-gray-100">
+  <body>
     <div id="flash-message" data-controller="home" data-home-timeout-value="6000" class="w-full fixed z-50">
       <% flash.each do |type, message| %>
         <% daisy_class = { notice: "alert-info", success: "alert-success", error: "alert-error", alert: "alert-warning" }[type.to_sym] || "alert-info" %>
@@ -44,7 +44,7 @@
         <%= render 'layouts/sidebar' unless params[:controller].include?('users/sessions') %>
       </div>
 
-      <div class="lg:col-start-3 lg:col-span-10 md:col-start-5 md:col-span-8 p-5 bg-gray-100">
+      <div class="xl:col-start-3 xl:col-span-10 lg:col-start-4 lg:col-span-10 md:col-start-5 md:col-span-8 p-5">
         <%= render "layouts/navbar" unless params[:controller].include?('users/sessions') %>
         <main><%= yield %></main>
       </div>
