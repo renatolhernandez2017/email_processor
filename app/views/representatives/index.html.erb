@@ -25,7 +25,7 @@
       <thead class="text-base">
         <tr>
           <th><input type="checkbox" class="checkbox checkbox-primary" /></th>
-          <th>Id</th>
+          <th>ID</th>
           <th>Representante</th>
           <th>Número</th>
           <th>Filial</th>
@@ -34,8 +34,8 @@
       </thead>
 
       <tbody>
-        <% @representatives.each do |representative| %>
-          <tr class="border-t border-black">
+        <% @representatives.each_with_index do |representative, index| %>
+          <tr class="border-t border-black <%= "bg-gray-200" if index % 2 == 0 %>">
             <td class="p-2">
               <input type="checkbox" class="checkbox checkbox-primary" />
             </td>

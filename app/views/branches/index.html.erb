@@ -7,7 +7,7 @@
     <table class="table-auto w-full text-sm font-semibold text-left">
       <thead class="text-base">
         <tr>
-          <th>Id</th>
+          <th>ID</th>
           <th>Nome</th>
           <th>Número</th>
           <th>Repetições %</th>
@@ -16,8 +16,8 @@
       </thead>
 
       <tbody>
-        <% @branches.each do |branch| %>
-          <tr class="border-t border-black">
+        <% @branches.each_with_index do |branch, index| %>
+          <tr class="border-t border-black <%= "bg-gray-200" if index % 2 == 0 %>">
             <td><%= branch.id %></td>
 
             <td>

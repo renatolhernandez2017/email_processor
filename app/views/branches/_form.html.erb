@@ -5,8 +5,8 @@
 
     <section class="p-6 md:max-w-4xl">
       <div class="grid grid-cols-1 my-2">
-        <%= render TextFieldComponent.new(form: f, field_name: :name, label: "Nome", error_message: branch.errors.messages[:branch])%>
-        <%= render TextFieldComponent.new(form: f, field_name: :discount_request, label: "Repetições %", error_message: branch.errors.messages[:discount_request])%>
+        <%= render TextFieldComponent.new(form: f, field_name: :name, label: "Nome", error_message: branch.errors.messages[:branch]) %>
+        <%= render TextFieldComponent.new(form: f, field_name: :discount_request, label: "Repetições %", error_message: branch.errors.messages[:discount_request]) %>
       </div>
 
       <hr class="left-0 absolute w-full mt-5 border-black">
