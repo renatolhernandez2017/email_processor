@@ -18,10 +18,10 @@
 
       <tbody>
         <% @prescribers.each_with_index do |prescriber, index| %>
-          <tr class="border-t border-black <%= index % 2 == 0 ? "bg-gray-200" : "bg-gray-100" %>">
+          <tr class="border-t border-black <%= index % 2 == 0 ? "bg-gray-200" : "bg-gray-50" %>">
             <td><%= prescriber.id %></td>
-            <td><%= link_to prescriber.name, "#", class: "text-primary" %></td>
-            <td><%= link_to prescriber.representative.name, "#" %></td>
+            <td><%= prescriber.name %></td>
+            <td><%= prescriber.representative.name %></td>
 
             <td>
               <%= prescriber.class_council %> -
@@ -30,12 +30,12 @@
             </td>
 
             <td>
-              <button onclick="document.getElementById('edit_prescriber<%= prescriber.id %>').showModal();" title="Editar" class="p-2 rounded-full">
+              <button onclick="document.getElementById('edit_prescriber<%= prescriber.id %>').showModal();" title="Editar">
                 <span class="material-symbols-outlined text-primary">edit</span>
               </button>
 
               <dialog id="edit_prescriber<%= prescriber.id %>" class="modal place-items-center">
-                <%= render ModalComponent.new(form: render("form", prescriber: prescriber, title: "Editar Prescritor : #{prescriber.id}", btn_save: "Atualizar")) %>
+                <%= render ModalComponent.new(form: render("form", prescriber: prescriber, representatives: @representatives, title: "Editar Prescritor : #{prescriber.id}", btn_save: "Atualizar")) %>
               </dialog>
             </td>
 
@@ -59,7 +59,7 @@
                   </div>
 
                   <div class="border border-black join-item h-full w-3/6">
-                    <%= render BoxGroupHozirontalComponent.new(label: "Endereço", field_name: prescriber.full_address) %>
+                    <%= render BoxGroupHozirontalComponent.new(label: "Endereço", field_name: prescriber&.full_address) %>
                     <%= render BoxGroupHozirontalComponent.new(label: "Telefone1", field_name: prescriber.address.phone || "Não disponível") %>
                     <%= render BoxGroupHozirontalComponent.new(label: "Telefone2", field_name: prescriber.address.cellphone || "Não disponível") %>
                     <%= render BoxGroupHozirontalComponent.new(label: "Fax", field_name: prescriber.address.fax || "Não disponível") %>

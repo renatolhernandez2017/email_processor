@@ -5,6 +5,8 @@ class Prescriber < ApplicationRecord
 
   belongs_to :representative, optional: true
 
+  accepts_nested_attributes_for :representative
+
   def address
     representative&.address
   end

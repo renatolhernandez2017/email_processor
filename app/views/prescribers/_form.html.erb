@@ -1,12 +1,53 @@
 <%= turbo_frame_tag 'form_prescriber' do %>
-  <%= form_with model: prescriber, url: prescriber.persisted? ? prescriber_path(prescriber) : prescribers_path do |f| %>
+  <%= form_with model: prescriber, url: prescriber.persisted? ? prescriber_path(prescriber) : prescribers_path, data: {controller: "change"} do |f| %>
     <h3 class="text-lg font-bold"><%= title %></h3>
     <hr class="left-0 absolute w-full mt-5 border-black">
 
     <section class="p-6 md:max-w-4xl">
-      <div class="grid grid-cols-1 my-2">
+      <div class="grid grid-cols-2 gap-5">
         <%= render TextFieldComponent.new(form: f, field_name: :name, label: "Nome", error_message: prescriber.errors.messages[:prescriber]) %>
-        <%#= render TextFieldComponent.new(form: f, field_name: :discount_request, label: "Repetições %", error_message: prescriber.errors.messages[:discount_request]) %>
+        <%= render SelectFieldComponent.new(form: f, field_name: :representative_id, label: "Representante", options: representatives, data: { action: "change->change#updateAddress" }) %>
+      </div>
+
+      <%= f.fields_for :representative do |representative| %>
+        <%= representative.fields_for :address do |address| %>
+          <div id="address-fields">
+            <div class="grid grid-cols-2 gap-5">
+              <%= render TextFieldComponent.new(form: address, field_name: :street, label: "Endereço") %>
+              <%= render TextFieldComponent.new(form: address, field_name: :district, label: "Bairro") %>
+            </div>
+
+            <div class="grid grid-cols-4 gap-5">
+              <%= render TextFieldComponent.new(form: address, field_name: :number, label: "Número") %>
+              <%= render TextFieldComponent.new(form: address, field_name: :complement, label: "Complemento") %>
+              <%= render TextFieldComponent.new(form: address, field_name: :city, label: "Cidade") %>
+              <%= render TextFieldComponent.new(form: address, field_name: :uf, label: "UF") %>
+            </div>
+
+            <div class="grid grid-cols-2 gap-5">
+              <%= render TextFieldComponent.new(form: address, field_name: :zip_code, label: "CEP") %>
+              <%= render TextFieldComponent.new(form: address, field_name: :fax, label: "Fax") %>
+            </div>
+
+            <div class="grid grid-cols-2 gap-5">
+              <%= render TextFieldComponent.new(form: address, field_name: :phone, label: "Telefone 1") %>
+              <%= render TextFieldComponent.new(form: address, field_name: :cellphone, label: "Telefone 2") %>
+            </div>
+          </div>
+        <% end %>
+      <% end %>
+
+      <div class="grid grid-cols-2 gap-5">
+        <%= render TextFieldComponent.new(form: f, field_name: :partnership, label: "Parceria", error_message: prescriber.errors.messages[:prescriber]) %>
+        <%= render TextFieldComponent.new(form: f, field_name: :repetitions, label: "Repeticoes", error_message: prescriber.errors.messages[:prescriber]) %>        
+      </div>
+
+      <%= render CheckboxFieldComponent.new(form: f, field_name: :allows_changes_values, label: "Não permite mudança no cadastro", error_message: prescriber.errors.messages[:prescriber]) %>
+        
+      <div class="grid grid-cols-3 gap-5">
+        <%= render TextFieldComponent.new(form: f, field_name: :percentage_ciscount, label: "Desconto %", error_message: prescriber.errors.messages[:prescriber]) %>
+        <%= render TextFieldComponent.new(form: f, field_name: :discount_value, label: "Desconto valor", error_message: prescriber.errors.messages[:prescriber]) %>
+        <%= render TextFieldComponent.new(form: f, field_name: :consider_discount_of_up_to, label: "Considera desconto de ate", error_message: prescriber.errors.messages[:prescriber]) %>
       </div>
 
       <hr class="left-0 absolute w-full mt-5 border-black">

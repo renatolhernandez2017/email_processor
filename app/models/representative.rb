@@ -3,7 +3,10 @@ class Representative < ApplicationRecord
 
   include PgSearch::Model
 
+  belongs_to :prescriber, optional: true
   belongs_to :branch, optional: true
 
   has_one :address, dependent: :destroy
+
+  accepts_nested_attributes_for :address
 end
