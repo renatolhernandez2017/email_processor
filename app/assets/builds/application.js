@@ -11792,7 +11792,9 @@ var mask_controller_default = class extends Controller {
     "cnpjMask",
     "cpfMask",
     "cepMask",
-    "moneyMask"
+    "moneyMask",
+    "percentageMask",
+    "ufMask"
   ];
   connect() {
     this.applyMasks();
@@ -11869,6 +11871,27 @@ var mask_controller_default = class extends Controller {
         }
       }
       IMask(element, moneyMaskOptions);
+    });
+    const percentageMaskOptions = {
+      mask: Number,
+      scale: 2,
+      radix: ".",
+      normalizeZeros: false,
+      padFractionalZeros: false,
+      min: 0,
+      max: 100,
+      signed: true
+    };
+    this.percentageMaskTargets.forEach((element) => {
+      IMask(element, percentageMaskOptions);
+    });
+    this.ufMaskTargets.forEach((element) => {
+      IMask(element, {
+        mask: /^[A-Za-z]{0,2}$/,
+        // Aceita apenas letras, até 2 caracteres
+        prepare: (str) => str.toUpperCase()
+        // Converte para maiúsculas
+      });
     });
   }
 };

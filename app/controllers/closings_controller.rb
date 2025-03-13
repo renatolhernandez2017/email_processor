@@ -38,12 +38,14 @@ class ClosingsController < ApplicationController
   end
 
   def modify_for_this_closure
-    flash[:notice] = "O sistema está utilizando o fechamento de #{@closing.closing}!"
+    return if @current_closing.id == @closing.id
 
     @current_closing.update(active: false)
     @closing.update(active: true)
 
-    render turbo_stream: turbo_stream.action(:redirect, closings_path)
+    flash[:notice] = "O sistema está utilizando o fechamento de #{@closing.closing}!"
+
+    render turbo_stream: turbo_stream.action(:redirect, root_path)
   end
 
   private

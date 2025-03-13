@@ -3,7 +3,7 @@ import IMask from "imask"
 
 export default class extends Controller {
   static targets = [
-    "phoneMask", "mobileMask", "cnpjMask", "cpfMask", "cepMask", "moneyMask"
+    "phoneMask", "mobileMask", "cnpjMask", "cpfMask", "cepMask", "moneyMask", "percentageMask", "ufMask"
   ]
 
   connect() {
@@ -89,6 +89,30 @@ export default class extends Controller {
 
       // Aplicar a máscara no campo (IMask irá gerenciar a exibição formatada)
       IMask(element, moneyMaskOptions);
+    });
+
+    // Máscara de Porcentagem
+    const percentageMaskOptions = {
+      mask: Number,
+      scale: 2,
+      radix: '.',
+      normalizeZeros: false,
+      padFractionalZeros: false,
+      min: 0,
+      max: 100,
+      signed: true
+    }
+
+    this.percentageMaskTargets.forEach((element) => {
+      IMask(element, percentageMaskOptions);
+    });
+
+    // Mascara de UF
+    this.ufMaskTargets.forEach((element) => {
+      IMask(element, {
+        mask: /^[A-Za-z]{0,2}$/, // Aceita apenas letras, até 2 caracteres
+        prepare: (str) => str.toUpperCase() // Converte para maiúsculas
+      });
     });
   }
 }

@@ -1,28 +1,33 @@
 pt-BR:
-  faker:
-    address:
-      zip_code: "CEP"
-      number: "Número"
-      kind: "Tipo"
-      district: "Bairro"
-      complement: "Complemento"
-      street:
-        - "Rua das Flores"
-        - "Rua dos Bobos"
-        - "Rua XV de Novembro"
-        - "Avenida Brasil"
-      city:
-        - "São Paulo"
-        - "Belo Horizonte"
-        - "Porto Alegre"
-        - "Salvador"
-      state:
-        - "São Paulo"
-        - "Rio de Janeiro"
-        - "Minas Gerais"
-        - "Rio Grande do Sul"
-      country:
-        - "Brasil"
+  address:
+    state:
+      "AC": "AC"
+      "AL": "AL"
+      "AP": "AP"
+      "AM": "AM"
+      "BA": "BA"
+      "CE": "CE"
+      "DF": "DF"
+      "ES": "ES"
+      "GO": "GO"
+      "MA": "MA"
+      "MT": "MT"
+      "MS": "MS"
+      "MG": "MG"
+      "PA": "PA"
+      "PB": "PB"
+      "PR": "PR"
+      "PE": "PE"
+      "PI": "PI"
+      "RJ": "RJ"
+      "RN": "RN"
+      "RS": "RS"
+      "RO": "RO"
+      "RR": "RR"
+      "SC": "SC"
+      "SP": "SP"
+      "SE": "SE"
+      "TO": "TO"
   activerecord:
     models:
       cart: Carrinho

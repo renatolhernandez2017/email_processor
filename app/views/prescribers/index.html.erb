@@ -2,7 +2,7 @@
   <h1 class="text-2xl text-center text-primary mx-auto">Listagem de Prescritores</h1>
 </div>
 
-<div class="flex flex-col h-screen">
+<div class="flex flex-col">
   <div class="overflow-x-auto">
     <table class="table-auto w-full text-sm font-semibold text-center">
       <thead class="text-base">
@@ -40,7 +40,7 @@
             </td>
 
             <td class="cursor-pointer" data-controller="toggle" data-action="click->toggle#tableTr" data-tr-id="tr_hidden_<%= index %>">
-              <details class="collapse collapse-arrow">
+              <details class="collapse collapse-arrow -top-1 h-12 flex justify-center items-center">
                 <summary class="collapse-title font-semibold"></summary>
               </details>
             </td>
@@ -54,7 +54,7 @@
                     <%= render BoxGroupHozirontalComponent.new(label: "Secretaria", field_name: prescriber.secretary) %>
                     <%= render BoxGroupHozirontalComponent.new(label: "Parceria", field_name: prescriber.partnership) %>
                     <%= render BoxGroupHozirontalComponent.new(label: "Repetições", field_name: prescriber.repetitions) %>
-                    <%= render BoxGroupHozirontalComponent.new(label: "Desconto %", field_name: prescriber.percentage_ciscount) %>
+                    <%= render BoxGroupHozirontalComponent.new(label: "Desconto", field_name: prescriber.percentage_ciscount) %>
                     <%= render BoxGroupHozirontalComponent.new(label: "Considera desconto de até", field_name: prescriber.consider_discount_of_up_to) %>
                   </div>
 
