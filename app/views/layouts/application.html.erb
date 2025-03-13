@@ -22,7 +22,7 @@
     <%= javascript_include_tag "application", "data-turbo-track": "reload", type: "module" %>
   </head>
 
-  <body>
+  <body class="bg-white">
     <div id="flash-message" data-controller="home" data-home-timeout-value="6000" class="w-full fixed z-50">
       <% flash.each do |type, message| %>
         <% daisy_class = { notice: "alert-info", success: "alert-success", error: "alert-error", alert: "alert-warning" }[type.to_sym] || "alert-info" %>
