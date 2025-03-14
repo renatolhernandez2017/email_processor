@@ -5,8 +5,8 @@ Address.destroy_all
 Prescriber.destroy_all
 Representative.destroy_all
 Branch.destroy_all
-# CurrentAccount.destroy_all
-# Bank.destroy_all
+CurrentAccount.destroy_all
+Bank.destroy_all
 
 puts "Criando user Admin"
 User.create!(name: "renato", email: "renatolhernandez@gmail.com", password: "123123", role: "admin")
@@ -27,7 +27,7 @@ date = Date.today
   )
 end
 
-puts "Criando Representantes com Endereços, Filiais e Prescritores"
+puts "Criando Representantes com Endereços, Filiais, Prescritores, Bancos e Contas Correntes"
 sp_cities = [
   "São Paulo", "Vila Mariana", "Tatuape", "Lapa", "Santo Amaro",
   "Angélica", "Santana", "Bauru", "Diadema", "Piracicaba", "Jundiaí",
@@ -70,18 +70,18 @@ sp_cities = [
     representative_id: representative.id
   )
 
-  # bank = Bank.create!(
-  #   name: Faker::Bank.name,
-  #   bank_number: Faker::Number.number(digits: 3),
-  #   agency_number: Faker::Number.number(digits: 4),
-  #   account_number: Faker::Bank.account_number
-  # )
+  bank = Bank.create!(
+    name: Faker::Bank.name,
+    bank_number: Faker::Number.number(digits: 3),
+    agency_number: Faker::Number.number(digits: 4),
+    account_number: Faker::Bank.account_number
+  )
 
-  # CurrentAccount.create!(
-  #   favored: representative.name,
-  #   bank_id: bank.id,
-  #   representative_id: representative.id
-  # )
+  CurrentAccount.create!(
+    favored: representative.name,
+    bank_id: bank.id,
+    representative_id: representative.id
+  )
 end
 
 puts "FIM!"

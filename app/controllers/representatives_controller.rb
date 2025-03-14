@@ -11,6 +11,7 @@ class RepresentativesController < ApplicationController
   end
 
   def update
+    quebrar
     if @representative.update(representative_params)
       flash[:success] = "Representante atualizado com sucesso."
       render turbo_stream: turbo_stream.action(:redirect, representatives_path)

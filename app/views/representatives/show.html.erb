@@ -1,49 +1,5 @@
 <div class="flex w-full my-5">
-  <div class="card card-body bg-secondary rounded-box grid w-full">
-    <div class="flex">
-      <h2 class="text-3xl font-bold">Representante:
-        <%= @representative.id %>
-      </h2>
-    </div>
-
-    <ul class="mt-6 flex flex-col gap-4 text-base">
-      <li>
-        <span class="font-semibold">Nome:</span>
-        <%= @representative.name %>
-      </li>
-
-      <li>
-        <span class="font-semibold">Número:</span>
-        <%= @representative.branch.branch_number.to_s.rjust(3, '0') %>
-      </li>
-
-      <li>
-        <span class="font-semibold">Filial:</span>
-        <%= @representative.branch.name %>
-      </li>
-
-      <li>
-        <span class="font-semibold">Parceria:</span>
-        <%= @representative.partnership %> %
-      </li>
-    </ul>
-
-    <div class="mt-6 flex justify-center items-center gap-2">
-      <button onclick="document.getElementById('edit_representative<%= @representative.id %>').showModal();" class="btn btn-primary btn-wide">
-        Editar
-      </button>
-
-      <dialog id="edit_representative<%= @representative.id %>" class="modal place-items-center">
-        <%= render ModalComponent.new(form: render("form", representative: @representative, branches: @branches, title: "Editar Representante : #{@representative.id}", btn_save: "Atualizar")) %>
-      </dialog>
-
-      <%= link_to "Listar Todos", representatives_path, class: "btn btn-primary btn-wide" %>
-    </div>
-  </div>
-
-  <div class="divider divider-horizontal"></div>
-
-  <div class="card card-body bg-secondary rounded-box grid w-full">
+  <div class="flex card card-body bg-gray-100 rounded-box">
     <div class="flex justify-between">
       <h2 class="text-3xl font-bold">Contas Correntes</h2>
     </div>
@@ -59,7 +15,7 @@
 
       <li>
         <span class="font-semibold">Banco:</span>
-        <%= @representative.id %>
+        <%= @representative.current_account.bank.name %>
       </li>
 
       <li>

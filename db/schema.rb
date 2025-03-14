@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_03_10_141537) do
+ActiveRecord::Schema[7.1].define(version: 2025_03_14_131639) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
   enable_extension "unaccent"
@@ -54,6 +54,16 @@ ActiveRecord::Schema[7.1].define(version: 2025_03_10_141537) do
     t.index ["user_id", "user_type"], name: "user_index"
   end
 
+  create_table "banks", force: :cascade do |t|
+    t.string "name"
+    t.boolean "rouding"
+    t.string "bank_number"
+    t.string "agency_number"
+    t.string "account_number"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "branches", force: :cascade do |t|
     t.string "name"
     t.integer "branch_number"
@@ -72,6 +82,13 @@ ActiveRecord::Schema[7.1].define(version: 2025_03_10_141537) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.boolean "active", default: false
+  end
+
+  create_table "current_accounts", force: :cascade do |t|
+    t.boolean "standard", default: false
+    t.string "favored"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "prescribers", force: :cascade do |t|

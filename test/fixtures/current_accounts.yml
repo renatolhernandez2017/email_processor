@@ -1,0 +1,11 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  standard: false
+  favored: MyString
+  bank: one
+
+two:
+  standard: false
+  favored: MyString
+  bank: two

@@ -4,12 +4,21 @@
     <hr class="left-0 absolute w-full mt-5 border-black">
 
     <section class="p-6 md:max-w-4xl">
-      <div class="grid grid-cols-1 my-2">
+      <div class="grid grid-cols-1 gap-5">
         <%= render TextFieldComponent.new(form: f, field_name: :name, label: "Nome", error_message: representative.errors.messages[:representative]) %>
+      </div>
+
+      <div class="grid grid-cols-3 gap-5">
         <%= render SelectFieldComponent.new(form: f, field_name: :branch_id, label: "Filial", options: branches, error_message: representative.errors.messages[:branch_id]) %>
         <%= render TextFieldComponent.new(form: f, field_name: :partnership, label: "Parceria %", error_message: representative.errors.messages[:partnership]) %>
         <%= render CheckboxFieldComponent.new(form: f, field_name: :performs_closing, label: "Efetua Fechamento", error_message: representative.errors.messages[:performs_closing]) %>
       </div>
+
+      <%= f.fields_for :current_account do |current_account| %>
+        <%= current_account.fields_for :bank do |bank| %>
+          <%= render SelectFieldComponent.new(form: f, field_name: :name, label: "Banco", options: I18n.t('bank.name').invert.keys.map { |name| [name, name] }) %>
+        <% end %>
+      <% end %>
 
       <hr class="left-0 absolute w-full mt-5 border-black">
 

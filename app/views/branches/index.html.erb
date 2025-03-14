@@ -10,7 +10,7 @@
           <th>ID</th>
           <th>Nome</th>
           <th>Número</th>
-          <th>Repetições %</th>
+          <th>Repetições</th>
           <th>Ações</th>
         </tr>
       </thead>
@@ -19,13 +19,9 @@
         <% @branches.each_with_index do |branch, index| %>
           <tr class="border-t border-black <%= "bg-gray-200" if index % 2 == 0 %>">
             <td><%= branch.id %></td>
-
-            <td>
-              <%= link_to branch.name, "#", class: "text-primary" %>
-            </td>
-
+            <td><%= branch.name %></td>
             <td><%= branch.branch_number %></td>
-            <td><%= branch.discount_request %></td>
+            <td><%= branch.discount_request %> %</td>
 
             <td>
               <button onclick="document.getElementById('edit_branch<%= branch.id %>').showModal();" title="Editar" class="p-2 rounded-full">

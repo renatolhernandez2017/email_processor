@@ -28,6 +28,14 @@ pt-BR:
       "SP": "SP"
       "SE": "SE"
       "TO": "TO"
+  bank:
+    name:
+      "BRADESCO": "BRADESCO"
+      "BANCO DO BRASIL": "BANCO DO BRASIL"
+      "CAIXA ECONOMICA": "CAIXA ECONOMICA"
+      "HSBC": "HSBC"
+      "ITAU": "ITAU"
+      "SANTANDER": SANTANDER""
   activerecord:
     models:
       cart: Carrinho
