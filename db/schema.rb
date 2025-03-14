@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_03_13_173919) do
+ActiveRecord::Schema[7.1].define(version: 2025_03_10_141537) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
   enable_extension "unaccent"
@@ -54,16 +54,6 @@ ActiveRecord::Schema[7.1].define(version: 2025_03_13_173919) do
     t.index ["user_id", "user_type"], name: "user_index"
   end
 
-  create_table "bank_informations", force: :cascade do |t|
-    t.string "name"
-    t.boolean "rounding", default: false
-    t.string "bank_number"
-    t.string "agency_number"
-    t.string "account_number"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-  end
-
   create_table "branches", force: :cascade do |t|
     t.string "name"
     t.integer "branch_number"
@@ -82,17 +72,6 @@ ActiveRecord::Schema[7.1].define(version: 2025_03_13_173919) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.boolean "active", default: false
-  end
-
-  create_table "current_accounts", force: :cascade do |t|
-    t.boolean "standard", default: false
-    t.string "favored"
-    t.bigint "bank_information_id"
-    t.bigint "representative_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["bank_information_id"], name: "index_current_accounts_on_bank_information_id"
-    t.index ["representative_id"], name: "index_current_accounts_on_representative_id"
   end
 
   create_table "prescribers", force: :cascade do |t|
@@ -144,8 +123,6 @@ ActiveRecord::Schema[7.1].define(version: 2025_03_13_173919) do
 
   add_foreign_key "addresses", "representatives"
   add_foreign_key "branches", "representatives"
-  add_foreign_key "current_accounts", "bank_informations"
-  add_foreign_key "current_accounts", "representatives"
   add_foreign_key "prescribers", "representatives"
   add_foreign_key "representatives", "branches"
 end

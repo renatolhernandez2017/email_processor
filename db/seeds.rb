@@ -5,6 +5,8 @@ Address.destroy_all
 Prescriber.destroy_all
 Representative.destroy_all
 Branch.destroy_all
+# CurrentAccount.destroy_all
+# Bank.destroy_all
 
 puts "Criando user Admin"
 User.create!(name: "renato", email: "renatolhernandez@gmail.com", password: "123123", role: "admin")
@@ -67,6 +69,19 @@ sp_cities = [
     number_council: Array.new(6) { rand(1..9) }.join(" "),
     representative_id: representative.id
   )
+
+  # bank = Bank.create!(
+  #   name: Faker::Bank.name,
+  #   bank_number: Faker::Number.number(digits: 3),
+  #   agency_number: Faker::Number.number(digits: 4),
+  #   account_number: Faker::Bank.account_number
+  # )
+
+  # CurrentAccount.create!(
+  #   favored: representative.name,
+  #   bank_id: bank.id,
+  #   representative_id: representative.id
+  # )
 end
 
 puts "FIM!"

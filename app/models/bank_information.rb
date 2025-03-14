@@ -1,2 +1,0 @@
-class BankInformation < ApplicationRecord
-end
