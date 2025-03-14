@@ -1,0 +1,13 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  standard: false
+  favored: MyString
+  bank_information: one
+  representative: one
+
+two:
+  standard: false
+  favored: MyString
+  bank_information: two
+  representative: two

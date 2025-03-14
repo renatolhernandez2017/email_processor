@@ -7,6 +7,7 @@ class Representative < ApplicationRecord
   belongs_to :branch, optional: true
 
   has_one :address, dependent: :destroy
+  has_one :current_account, dependent: :destroy
 
   accepts_nested_attributes_for :address
 end
