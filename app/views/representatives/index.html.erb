@@ -19,7 +19,7 @@
   </fieldset>
 </div>
 
-<div class="flex w-full flex-col my-4">
+<div class="flex flex-col">
   <div class="overflow-x-auto">
     <table class="table-auto w-full text-sm font-semibold text-center">
       <thead class="text-base">
@@ -31,6 +31,7 @@
           <th>Filial</th>
           <th>Parceria</th>
           <th>Ações</th>
+          <th></th>
         </tr>
       </thead>
 
@@ -75,6 +76,54 @@
               <button onclick="document.getElementById('home_representative<%= representative.id %>').showModal();" title="Endereço" class="p-2 rounded-full">
                 <span class="material-symbols-outlined text-primary">home</span>
               </button>
+            </td>
+
+            <td class="cursor-pointer" data-controller="toggle" data-action="click->toggle#tableTr" data-tr-id="representative_tr_hidden_<%= index %>">
+              <details class="collapse collapse-arrow -top-1 h-12 flex justify-center items-center">
+                <summary class="collapse-title font-semibold"></summary>
+              </details>
+            </td>
+          </tr>
+
+          <tr class="hidden bg-white" id="representative_tr_hidden_<%= index %>">
+            <td colspan="8">
+              <section class="menu">
+                <div class="join">
+                  <div class="border border-black join-item px-4 h-[42px] w-full text-left flex items-center">
+                    <%= render BoxGroupHozirontalComponent.new(label: "Banco", field_name: representative.current_account.bank.name) %>
+                  </div>
+
+                  <div class="border border-black join-item px-4 h-[42px] w-full text-left flex items-center">
+                    <%= render BoxGroupHozirontalComponent.new(label: "Agencia", field_name: representative.current_account.bank.agency_number) %>
+                  </div>
+
+                  <div class="border border-black join-item px-4 h-[42px] w-full text-left flex items-center">
+                    <%= render BoxGroupHozirontalComponent.new(label: "Conta", field_name: representative.current_account.bank.account_number) %>
+                  </div>
+
+                  <div class="border border-black join-item px-4 h-[42px] w-full text-left flex items-center">
+                    <%= render BoxGroupHozirontalComponent.new(label: "Favorecido", field_name: representative.current_account.favored) %>
+                  </div>
+
+                  <div class="border border-black join-item px-4 h-[42px] w-full text-left flex items-center">
+                    <span class="text-base">Ações : </span>
+
+                    <span class="text-primary ml-5">
+                      <button onclick="document.getElementById('edit_representative<%= representative.id %>').showModal();" title="Editar Conta">
+                        <span class="material-symbols-outlined text-primary">edit</span>
+                      </button>
+
+                      <button onclick="document.getElementById('edit_representative<%= representative.id %>').showModal();" title="Remover">
+                        <span class="material-symbols-outlined text-primary">edit</span>
+                      </button>
+
+                      <button onclick="document.getElementById('edit_representative<%= representative.id %>').showModal();" title="Adicionar Nova Conta">
+                        <span class="material-symbols-outlined text-primary">edit</span>
+                      </button>
+                    </span>
+                  </div>
+                </div>
+              </section>
             </td>
           </tr>
         <% end %>

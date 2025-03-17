@@ -4,20 +4,32 @@
     <hr class="left-0 absolute w-full mt-5 border-black">
 
     <section class="p-6 md:max-w-4xl">
-      <div class="grid grid-cols-1 gap-5">
-        <%= render TextFieldComponent.new(form: f, field_name: :name, label: "Nome", error_message: representative.errors.messages[:representative]) %>
-      </div>
-
-      <div class="grid grid-cols-3 gap-5">
+      <div class="grid grid-cols-2 gap-5">
+        <%= render TextFieldComponent.new(form: f, field_name: :name, label: "Nome", error_message: representative.errors.messages[:name]) %>
         <%= render SelectFieldComponent.new(form: f, field_name: :branch_id, label: "Filial", options: branches, error_message: representative.errors.messages[:branch_id]) %>
-        <%= render TextFieldComponent.new(form: f, field_name: :partnership, label: "Parceria %", error_message: representative.errors.messages[:partnership]) %>
-        <%= render CheckboxFieldComponent.new(form: f, field_name: :performs_closing, label: "Efetua Fechamento", error_message: representative.errors.messages[:performs_closing]) %>
       </div>
 
       <%= f.fields_for :current_account do |current_account| %>
         <%= current_account.fields_for :bank do |bank| %>
-          <%= render SelectFieldComponent.new(form: f, field_name: :name, label: "Banco", options: I18n.t('bank.name').invert.keys.map { |name| [name, name] }) %>
+          <div class="card bg-gray-200 p-5">
+            <h3 class="text-lg font-bold">Conta Corrente</h3>
+
+            <div class="grid grid-cols-2 gap-5">
+              <%= render SelectFieldComponent.new(form: bank, field_name: :name, label: "Banco", options: I18n.t('bank.name').invert.keys.map { |name| [name, name] }) %>
+              <%= render TextFieldComponent.new(form: bank, field_name: :agency_number, label: "Agencia") %>
+            </div>
+
+            <div class="grid grid-cols-2 gap-5">
+              <%= render TextFieldComponent.new(form: bank, field_name: :account_number, label: "Conta") %>
+              <%= render TextFieldComponent.new(form: current_account, field_name: :favored, label: "Favorecido") %>
+            </div>
+          </div>
         <% end %>
+
+        <div class="grid grid-cols-3 gap-5">
+          <%= render TextFieldComponent.new(form: f, field_name: :partnership, label: "Parceria %", error_message: representative.errors.messages[:partnership]) %>
+          <%= render CheckboxFieldComponent.new(form: f, field_name: :performs_closing, label: "Efetua Fechamento", error_message: representative.errors.messages[:performs_closing]) %>
+        </div>
       <% end %>
 
       <hr class="left-0 absolute w-full mt-5 border-black">
