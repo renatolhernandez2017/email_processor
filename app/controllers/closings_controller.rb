@@ -28,7 +28,10 @@ class ClosingsController < ApplicationController
       flash[:success] = "Fechamento atualizado com sucesso."
       render turbo_stream: turbo_stream.action(:redirect, closings_path)
     else
-      render turbo_stream: turbo_stream.replace("form_closing", partial: "closings/form", locals: {closing: @closing, title: "Novo fechamento", btn_save: "Salvar"})
+      render turbo_stream: turbo_stream.replace("form_closing",
+        partial: "closings/form", locals: {
+          closing: @closing, title: "Novo fechamento", btn_save: "Salvar"
+        })
     end
   end
 

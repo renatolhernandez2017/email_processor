@@ -37,17 +37,13 @@
 
       <tbody>
         <% @representatives.each_with_index do |representative, index| %>
-          <tr class="border-t border-black <%= "bg-gray-200" if index % 2 == 0 %>">
+          <tr class="border-t border-black <%= index % 2 == 0 ? "bg-gray-200" : "bg-gray-50" %>">
             <td class="p-2">
               <input type="checkbox" class="checkbox checkbox-primary" />
             </td>
 
             <td><%= representative.id %></td>
-
-            <td>
-              <%= link_to representative.name, representative_path(representative), class: "text-primary" %>
-            </td>
-
+            <td><%= representative.name %></td>
             <td><%= representative.branch.branch_number.to_s.rjust(3, '0') %></td>
             <td><%= representative.branch.name %></td>
             <td><%= representative.partnership %> %</td>

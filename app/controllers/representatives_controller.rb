@@ -47,7 +47,7 @@ class RepresentativesController < ApplicationController
   end
 
   def get_branches
-    @branches = Branch.all.map { |b| [b.name, b.id] }
+    @branches = Branch.all.map { |branch| [branch.name, branch.id] }
   end
 
   def update_bank

@@ -12,7 +12,10 @@ class BranchesController < ApplicationController
       flash[:success] = "Filial atualizada com sucesso."
       render turbo_stream: turbo_stream.action(:redirect, branches_path)
     else
-      render turbo_stream: turbo_stream.replace("form_branch", partial: "branchs/form", locals: {branch: @branch, title: "Novo fechamento", btn_save: "Salvar"})
+      render turbo_stream: turbo_stream.replace("form_branch",
+        partial: "branchs/form", locals: {
+          branch: @branch, title: "Novo fechamento", btn_save: "Salvar"
+        })
     end
   end
 

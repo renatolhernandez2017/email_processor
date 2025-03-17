@@ -52,19 +52,19 @@ class PrescribersController < ApplicationController
   end
 
   def get_representatives
-    @representatives = Representative.all.map do |rep|
-      [rep.name, rep.id, {
-        "data-id": rep.id,
-        "data-address": rep.address.street,
-        "data-district": rep.address.district,
-        "data-number": rep.address.number,
-        "data-complement": rep.address.complement,
-        "data-city": rep.address.city,
-        "data-uf": rep.address.uf,
-        "data-zip": rep.address.zip_code,
-        "data-phone": rep.address.phone,
-        "data-cellphone": rep.address.cellphone,
-        "data-fax": rep.address.fax
+    @representatives = Representative.all.map do |representative|
+      [representative.name, representative.id, {
+        "data-id": representative.id,
+        "data-address": representative.address.street,
+        "data-district": representative.address.district,
+        "data-number": representative.address.number,
+        "data-complement": representative.address.complement,
+        "data-city": representative.address.city,
+        "data-uf": representative.address.uf,
+        "data-zip": representative.address.zip_code,
+        "data-phone": representative.address.phone,
+        "data-cellphone": representative.address.cellphone,
+        "data-fax": representative.address.fax
       }]
     end
   end
