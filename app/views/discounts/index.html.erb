@@ -8,6 +8,7 @@
       <thead class="text-base">
         <tr>
           <th>Visivel</th>
+          <th>Filial</th>
           <th>Valor</th>
           <th>Criado em</th>
           <th>Atualizado em</th>
@@ -18,8 +19,9 @@
 
       <tbody>
         <% @discounts.each_with_index do |discount, index| %>
-          <tr class="border-t border-black <%= "bg-gray-200" if index % 2 == 0 %>">
+          <tr class="border-t border-black <%= index % 2 == 0 ? "bg-gray-200" : "bg-gray-50" %>">
             <td><%= t("view.discount.visible.#{discount.visible}") %></td>
+            <td><%= discount.branch.name %></td>
             <td><%= number_to_currency(discount.price) %></td>
             <td><%= discount.created_at.strftime("%d/%m/%Y") %></td>
             <td><%= discount.updated_at.strftime("%d/%m/%Y") %></td>
@@ -31,8 +33,15 @@
               </button>
 
               <dialog id="edit_discount<%= discount.id %>" class="modal place-items-center">
-                <%= render ModalComponent.new(form: render("form", discount: discount, title: "Editar Desconto : #{discount.id}", btn_save: "Atualizar")) %>
+                <%= render ModalComponent.new(form: render("form", discount: discount, title: "Editar Desconto : #{discount.id}", branches: @branches, btn_save: "Atualizar")) %>
               </dialog>
+
+              <%= link_to "#",
+                  data: { turbo_confirm: "Tem certeza que deseja apagar?", turbo_method: :delete },
+                  title: "Apagar" do
+              %>
+                <span class="material-symbols-outlined text-primary">delete</span>
+              <% end %>
             </td>
           </tr>
         <% end %>

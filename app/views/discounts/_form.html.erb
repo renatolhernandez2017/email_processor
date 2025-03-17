@@ -5,8 +5,10 @@
 
     <section class="p-6 md:max-w-4xl">
       <div class="grid grid-cols-1 my-2">
-        <%= render TextFieldComponent.new(form: f, field_name: :price, label: "Valor", error_message: discount.errors.messages[:price]) %>
+        <%= render SelectFieldComponent.new(form: f, field_name: :branch_id, label: "Filial", options: branches) %>
         <%= render TextFieldComponent.new(form: f, field_name: :description, label: "Descrição", error_message: discount.errors.messages[:description]) %>
+        <%= render TextFieldComponent.new(form: f, field_name: :price, label: "Valor", data: { mask_target: "moneyMask" }, error_message: discount.errors.messages[:price]) %>
+        <%= render RadioButtonFieldComponent.new(form: f, field_name: :visible, label: "Visivel?", error_message: discount.errors.messages[:visible]) %>
       </div>
 
       <hr class="left-0 absolute w-full mt-5 border-black">
