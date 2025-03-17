@@ -40,9 +40,21 @@ sp_cities = [
     branch_number: i + 1
   )
 
+  bank = Bank.create!(
+    name: Faker::Bank.name,
+    agency_number: Faker::Number.number(digits: 4),
+    account_number: Faker::Bank.account_number
+  )
+
+  current_account = CurrentAccount.create!(
+    favored: Faker::Name.name,
+    bank_id: bank.id
+  )
+
   representative = Representative.create!(
     name: Faker::Name.name,
-    branch_id: branch.id
+    branch_id: branch.id,
+    current_account_id: current_account.id
   )
 
   Address.create!(
@@ -67,19 +79,6 @@ sp_cities = [
     class_council: rand(1..9),
     uf_council: Faker::Address.state_abbr,
     number_council: Array.new(6) { rand(1..9) }.join(" "),
-    representative_id: representative.id
-  )
-
-  bank = Bank.create!(
-    name: Faker::Bank.name,
-    bank_number: Faker::Number.number(digits: 3),
-    agency_number: Faker::Number.number(digits: 4),
-    account_number: Faker::Bank.account_number
-  )
-
-  CurrentAccount.create!(
-    favored: representative.name,
-    bank_id: bank.id,
     representative_id: representative.id
   )
 end
