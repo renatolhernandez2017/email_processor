@@ -1,1 +1,11 @@
-<div>Add RadioButtonField template here</div>
+<label class="my-4"><%= @label %></label>
+
+<div class="flex items-center gap-4">
+  <div class="flex items-center gap-2">
+    <%= @form.collection_radio_buttons @field_name, [["Não", false], ["Sim", true]], :last, :first, include_hidden: false do |f| %>
+      <%= f.radio_button class: "radio radio-primary" %>
+      <%= f.label %>
+    <% end %>
+  </div>
+</div>
+
