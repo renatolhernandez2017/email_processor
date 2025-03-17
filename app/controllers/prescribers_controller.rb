@@ -15,39 +15,17 @@ class PrescribersController < ApplicationController
       flash[:success] = "Prescritor atualizado com sucesso."
       render turbo_stream: turbo_stream.action(:redirect, prescribers_path)
     else
-      render turbo_stream: turbo_stream.replace("form_prescriber", partial: "prescribers/form", locals: {
-        prescriber: @prescriber,
-        representatives: @representatives,
-        title: "Editar Prescritor : #{@prescriber.id}",
-        btn_save: "Atualizar"
-      })
+      render turbo_stream: turbo_stream.replace("form_prescriber",
+        partial: "prescribers/form", locals: {
+          prescriber: @prescriber,
+          representatives: @representatives,
+          title: "Editar Prescritor : #{@prescriber.id}",
+          btn_save: "Atualizar"
+        })
     end
   end
 
   private
-
-  def update_address
-    return unless params["prescriber"]["representative_id"] == params["prescriber"]["representative_attributes"]["id"]
-
-    if params.dig("prescriber", "representative_attributes", "address_attributes").present?
-      address_params = params["prescriber"]["representative_attributes"]["address_attributes"]
-
-      address = {
-        street: address_params["street"],
-        district: address_params["district"],
-        number: address_params["number"],
-        complement: address_params["complement"],
-        city: address_params["city"],
-        uf: address_params["uf"],
-        zip_code: address_params["zip_code"],
-        phone: address_params["phone"],
-        cellphone: address_params["cellphone"],
-        fax: address_params["fax"]
-      }
-
-      @prescriber.representative.address.update(address) if address.present?
-    end
-  end
 
   def prescriber_params
     params.require(:prescriber).permit(
@@ -88,6 +66,29 @@ class PrescribersController < ApplicationController
         "data-cellphone": rep.address.cellphone,
         "data-fax": rep.address.fax
       }]
+    end
+  end
+
+  def update_address
+    return unless params["prescriber"]["representative_id"] == params["prescriber"]["representative_attributes"]["id"]
+
+    if params.dig("prescriber", "representative_attributes", "address_attributes").present?
+      address_params = params["prescriber"]["representative_attributes"]["address_attributes"]
+
+      address = {
+        street: address_params["street"],
+        district: address_params["district"],
+        number: address_params["number"],
+        complement: address_params["complement"],
+        city: address_params["city"],
+        uf: address_params["uf"],
+        zip_code: address_params["zip_code"],
+        phone: address_params["phone"],
+        cellphone: address_params["cellphone"],
+        fax: address_params["fax"]
+      }
+
+      @prescriber.representative.address.update(address) if address.present?
     end
   end
 end

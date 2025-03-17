@@ -11,12 +11,19 @@ class RepresentativesController < ApplicationController
   end
 
   def update
-    quebrar
+    update_bank
+
     if @representative.update(representative_params)
       flash[:success] = "Representante atualizado com sucesso."
       render turbo_stream: turbo_stream.action(:redirect, representatives_path)
     else
-      render turbo_stream: turbo_stream.replace("form_representative", partial: "representatives/form", locals: {representative: @representative, branches: @branches, title: "Novo fechamento", btn_save: "Salvar"})
+      render turbo_stream: turbo_stream.replace("form_representative",
+        partial: "representatives/form", locals: {
+          representative: @representative,
+          branches: @branches,
+          title: "Novo fechamento",
+          btn_save: "Salvar"
+        })
     end
   end
 
@@ -30,7 +37,8 @@ class RepresentativesController < ApplicationController
       :name,
       :partnership,
       :performs_closing,
-      :branch_id
+      :branch_id,
+      :current_account_id
     )
   end
 
@@ -40,5 +48,19 @@ class RepresentativesController < ApplicationController
 
   def get_branches
     @branches = Branch.all.map { |b| [b.name, b.id] }
+  end
+
+  def update_bank
+    if params.dig("representative", "current_account_attributes", "bank_attributes").present?
+      bank_params = params["representative"]["current_account_attributes"]["bank_attributes"]
+
+      bank = {
+        name: bank_params["name"],
+        agency_number: bank_params["agency_number"],
+        account_number: bank_params["account_number"]
+      }
+
+      @representative.current_account.bank.update(bank) if bank.present?
+    end
   end
 end
