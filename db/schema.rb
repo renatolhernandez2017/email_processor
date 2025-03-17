@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_03_14_171520) do
+ActiveRecord::Schema[7.1].define(version: 2025_03_17_130913) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
   enable_extension "unaccent"
@@ -92,6 +92,18 @@ ActiveRecord::Schema[7.1].define(version: 2025_03_14_171520) do
     t.index ["bank_id"], name: "index_current_accounts_on_bank_id"
   end
 
+  create_table "discounts", force: :cascade do |t|
+    t.boolean "visible", default: false
+    t.decimal "price", default: "0.0"
+    t.string "description"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.bigint "branch_id", null: false
+    t.bigint "prescriber_id", null: false
+    t.index ["branch_id"], name: "index_discounts_on_branch_id"
+    t.index ["prescriber_id"], name: "index_discounts_on_prescriber_id"
+  end
+
   create_table "prescribers", force: :cascade do |t|
     t.string "name"
     t.string "council"
@@ -144,6 +156,8 @@ ActiveRecord::Schema[7.1].define(version: 2025_03_14_171520) do
   add_foreign_key "addresses", "representatives"
   add_foreign_key "branches", "representatives"
   add_foreign_key "current_accounts", "banks"
+  add_foreign_key "discounts", "branches"
+  add_foreign_key "discounts", "prescribers"
   add_foreign_key "prescribers", "representatives"
   add_foreign_key "representatives", "branches"
   add_foreign_key "representatives", "current_accounts"
