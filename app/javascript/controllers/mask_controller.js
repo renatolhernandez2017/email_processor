@@ -59,36 +59,27 @@ export default class extends Controller {
       return value;
     }
 
-    // Máscara de Dinheiro
-    const moneyMaskOptions = {
-      mask: Number,  // Define o tipo de máscara como Number
-      thousandsSeparator: '.', // Separador de milhar
-      padFractionalZeros: true, // Adiciona zeros fracionários
-      radix: ',', // Separador decimal
-      scale: 2, // Número de casas decimais
-      signed: false, // Se o valor pode ser negativo
-      normalizeZeros: true, // Normaliza os zeros
-      disableNegative: true, // Desabilita valores negativos
-      min: 0 // Valor mínimo
-    }
-
-    // Iterar sobre os campos alvo e aplicar a máscara
     this.moneyMaskTargets.forEach((element) => {
-      let currentValue = element.value;
-
-      // Se houver um valor atual (ex: na edição), desformatar e corrigir antes de aplicar a máscara
-      if (currentValue) {
-        let unformattedValue = unformatMoney(currentValue);
-        
-        // Garantir que o valor seja um número válido antes de aplicar a formatação
-        if (!isNaN(unformattedValue)) {
-          // Converte o valor desformatado para um número decimal e define o valor do campo
-          element.value = parseFloat(unformattedValue).replace('.', ',');
+      // Converte o valor salvo no banco para o formato correto antes de aplicar a máscara
+      if (element.value) {
+        let normalizedValue = parseFloat(element.value.replace(',', '.')); // Garante que o separador decimal esteja correto
+        if (!isNaN(normalizedValue)) {
+          element.value = normalizedValue.toFixed(2).replace('.', ','); // Mantém 2 casas decimais e substitui '.' por ','
         }
       }
 
-      // Aplicar a máscara no campo (IMask irá gerenciar a exibição formatada)
-      IMask(element, moneyMaskOptions);
+      // Aplica a máscara de dinheiro
+      IMask(element, {
+        mask: Number,
+        thousandsSeparator: '.',
+        padFractionalZeros: true,
+        radix: ',',
+        scale: 2,
+        signed: false,
+        normalizeZeros: true,
+        disableNegative: true,
+        min: 0
+      });
     });
 
     // Máscara de Porcentagem

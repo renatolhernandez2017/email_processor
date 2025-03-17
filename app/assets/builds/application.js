@@ -11842,35 +11842,24 @@ var mask_controller_default = class extends Controller {
       }
       return value;
     }
-    const moneyMaskOptions = {
-      mask: Number,
-      // Define o tipo de máscara como Number
-      thousandsSeparator: ".",
-      // Separador de milhar
-      padFractionalZeros: true,
-      // Adiciona zeros fracionários
-      radix: ",",
-      // Separador decimal
-      scale: 2,
-      // Número de casas decimais
-      signed: false,
-      // Se o valor pode ser negativo
-      normalizeZeros: true,
-      // Normaliza os zeros
-      disableNegative: true,
-      // Desabilita valores negativos
-      min: 0
-      // Valor mínimo
-    };
     this.moneyMaskTargets.forEach((element) => {
-      let currentValue = element.value;
-      if (currentValue) {
-        let unformattedValue = unformatMoney(currentValue);
-        if (!isNaN(unformattedValue)) {
-          element.value = parseFloat(unformattedValue).replace(".", ",");
+      if (element.value) {
+        let normalizedValue = parseFloat(element.value.replace(",", "."));
+        if (!isNaN(normalizedValue)) {
+          element.value = normalizedValue.toFixed(2).replace(".", ",");
         }
       }
-      IMask(element, moneyMaskOptions);
+      IMask(element, {
+        mask: Number,
+        thousandsSeparator: ".",
+        padFractionalZeros: true,
+        radix: ",",
+        scale: 2,
+        signed: false,
+        normalizeZeros: true,
+        disableNegative: true,
+        min: 0
+      });
     });
     const percentageMaskOptions = {
       mask: Number,
