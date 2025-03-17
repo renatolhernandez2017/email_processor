@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_03_14_131639) do
+ActiveRecord::Schema[7.1].define(version: 2025_03_14_171520) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
   enable_extension "unaccent"
@@ -56,8 +56,7 @@ ActiveRecord::Schema[7.1].define(version: 2025_03_14_131639) do
 
   create_table "banks", force: :cascade do |t|
     t.string "name"
-    t.boolean "rouding"
-    t.string "bank_number"
+    t.boolean "rounding", default: true
     t.string "agency_number"
     t.string "account_number"
     t.datetime "created_at", null: false
@@ -89,6 +88,8 @@ ActiveRecord::Schema[7.1].define(version: 2025_03_14_131639) do
     t.string "favored"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.bigint "bank_id"
+    t.index ["bank_id"], name: "index_current_accounts_on_bank_id"
   end
 
   create_table "prescribers", force: :cascade do |t|
@@ -119,7 +120,9 @@ ActiveRecord::Schema[7.1].define(version: 2025_03_14_131639) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.bigint "branch_id"
+    t.bigint "current_account_id"
     t.index ["branch_id"], name: "index_representatives_on_branch_id"
+    t.index ["current_account_id"], name: "index_representatives_on_current_account_id"
   end
 
   create_table "users", force: :cascade do |t|
@@ -140,6 +143,8 @@ ActiveRecord::Schema[7.1].define(version: 2025_03_14_131639) do
 
   add_foreign_key "addresses", "representatives"
   add_foreign_key "branches", "representatives"
+  add_foreign_key "current_accounts", "banks"
   add_foreign_key "prescribers", "representatives"
   add_foreign_key "representatives", "branches"
+  add_foreign_key "representatives", "current_accounts"
 end
