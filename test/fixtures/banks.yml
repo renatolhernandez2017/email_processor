@@ -3,13 +3,11 @@
 one:
   name: MyString
   rouding: false
-  bank_number: MyString
   agency_number: MyString
   account_number: MyString
 
 two:
   name: MyString
   rouding: false
-  bank_number: MyString
   agency_number: MyString
   account_number: MyString
