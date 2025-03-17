@@ -7,6 +7,7 @@ Representative.destroy_all
 Branch.destroy_all
 CurrentAccount.destroy_all
 Bank.destroy_all
+Discount.destroy_all
 
 puts "Criando user Admin"
 User.create!(name: "renato", email: "renatolhernandez@gmail.com", password: "123123", role: "admin")
@@ -27,7 +28,7 @@ date = Date.today
   )
 end
 
-puts "Criando Representantes com Endereços, Filiais, Prescritores, Bancos e Contas Correntes"
+puts "Criando Representantes com Endereços, Filiais, Prescritores, Bancos, Contas Correntes e Descontos"
 sp_cities = [
   "São Paulo", "Vila Mariana", "Tatuape", "Lapa", "Santo Amaro",
   "Angélica", "Santana", "Bauru", "Diadema", "Piracicaba", "Jundiaí",
@@ -71,7 +72,7 @@ sp_cities = [
     representative_id: representative.id
   )
 
-  Prescriber.create!(
+  prescriber = Prescriber.create!(
     name: Faker::Name.name,
     council: "#{Faker::Name.first_name} - Conselho",
     secretary: "#{Faker::Name.first_name} - Secretaria",
@@ -80,6 +81,12 @@ sp_cities = [
     uf_council: Faker::Address.state_abbr,
     number_council: Array.new(6) { rand(1..9) }.join(" "),
     representative_id: representative.id
+  )
+
+  Discount.create!(
+    description: Faker::Commerce.product_name,
+    branch_id: branch.id,
+    prescriber_id: prescriber.id
   )
 end
 

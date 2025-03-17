@@ -4,17 +4,38 @@
 
 <div class="flex w-full flex-col my-12">
   <div class="overflow-x-auto">
-    <table class="table-auto w-full text-sm font-semibold">
+    <table class="table-auto w-full text-sm font-semibold text-left">
       <thead class="text-base">
         <tr>
-          <th>Filial Id</th>
-          <th>descrição</th>
+          <th>Visivel</th>
           <th>Valor</th>
+          <th>Criado em</th>
+          <th>Atualizado em</th>
+          <th>Descrição</th>
           <th>Ações</th>
         </tr>
       </thead>
 
       <tbody>
+        <% @discounts.each_with_index do |discount, index| %>
+          <tr class="border-t border-black <%= "bg-gray-200" if index % 2 == 0 %>">
+            <td><%= t("view.discount.visible.#{discount.visible}") %></td>
+            <td><%= number_to_currency(discount.price) %></td>
+            <td><%= discount.created_at.strftime("%d/%m/%Y") %></td>
+            <td><%= discount.updated_at.strftime("%d/%m/%Y") %></td>
+            <td><%= discount.description %></td>
+
+            <td>
+              <button onclick="document.getElementById('edit_discount<%= discount.id %>').showModal();" title="Editar" class="p-2 rounded-full">
+                <span class="material-symbols-outlined text-primary">edit</span>
+              </button>
+
+              <dialog id="edit_discount<%= discount.id %>" class="modal place-items-center">
+                <%= render ModalComponent.new(form: render("form", discount: discount, title: "Editar Desconto : #{discount.id}", btn_save: "Atualizar")) %>
+              </dialog>
+            </td>
+          </tr>
+        <% end %>
       </tbody>
     </table>
   </div>
@@ -22,10 +43,6 @@
   <div class="divider border-t"></div>
 
   <div class="grid place-items-center">
-    <%#== pagy_nav(@pagy) if @pagy.pages > 1 %>
+    <%== pagy_nav(@pagy) if @pagy.pages > 1 %>
   </div>
 </div>
-
-<dialog id="modal_discounts_create" class="modal place-items-center">
-  <%#= render ModalComponent.new(form: render("form", closing: @closing, title: "Novo fechamento"), btn_back: "Fechar sem salvar") %>
-</dialog>

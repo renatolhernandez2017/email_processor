@@ -5,7 +5,7 @@
 
     <section class="p-6 md:max-w-4xl">
       <div class="grid grid-cols-2 gap-5">
-        <%= render TextFieldComponent.new(form: f, field_name: :name, label: "Nome", error_message: prescriber.errors.messages[:prescriber]) %>
+        <%= render TextFieldComponent.new(form: f, field_name: :name, label: "Nome", error_message: prescriber.errors.messages[:name]) %>
         <%= render SelectFieldComponent.new(form: f, field_name: :representative_id, label: "Representante", options: representatives, data: { action: "change->change#updateAddress" }) %>
       </div>
 

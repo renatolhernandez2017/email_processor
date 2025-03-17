@@ -36,6 +36,11 @@ pt-BR:
       HSBC: HSBC
       ITAU: ITAU
       SANTANDER: SANTANDER
+  view:
+    discount:
+      visible:
+        true: Sim
+        false: Não
   activerecord:
     models:
       cart: Carrinho
@@ -52,6 +57,10 @@ pt-BR:
         start_date: Data inicial
         end_date: Data final
         last_envelope: Último envelope
+      discount:
+        visible:
+          true: Sim
+          false: Não
       user:
         name: Nome
         email: E-mail

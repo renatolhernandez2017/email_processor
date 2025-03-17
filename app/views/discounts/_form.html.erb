@@ -1,0 +1,17 @@
+<%= turbo_frame_tag 'form_discount' do %>
+  <%= form_with model: discount, url: discount.persisted? ? discount_path(discount) : discounts_path, data: {controller: "mask"} do |f| %>
+    <h3 class="text-lg font-bold"><%= title %></h3>
+    <hr class="left-0 absolute w-full mt-5 border-black">
+
+    <section class="p-6 md:max-w-4xl">
+      <div class="grid grid-cols-1 my-2">
+        <%= render TextFieldComponent.new(form: f, field_name: :price, label: "Valor", error_message: discount.errors.messages[:price]) %>
+        <%= render TextFieldComponent.new(form: f, field_name: :description, label: "Descrição", error_message: discount.errors.messages[:description]) %>
+      </div>
+
+      <hr class="left-0 absolute w-full mt-5 border-black">
+
+      <%= render ButtonComponent.new(form: f, label: btn_save) %>
+    </section>
+  <% end %>
+<% end %>
