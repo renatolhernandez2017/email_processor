@@ -1,7 +1,7 @@
 class ClosingsController < ApplicationController
   include Pagy::Backend
 
-  before_action :get_closing, only: %i[update destroy modify_for_this_closure]
+  before_action :get_closing, only: %i[update modify_for_this_closure]
 
   def index
     @pagy, @closings = pagy(Closing.all.order(start_date: :desc))
@@ -19,7 +19,10 @@ class ClosingsController < ApplicationController
       flash[:success] = "Fechamento criado com sucesso!"
       render turbo_stream: turbo_stream.action(:redirect, closings_path)
     else
-      render turbo_stream: turbo_stream.replace("form_closing", partial: "closings/form", locals: {closing: @closing, title: "Novo fechamento", btn_save: "Salvar"})
+      render turbo_stream: turbo_stream.replace("form_closing",
+        partial: "closings/form", locals: {
+          closing: @closing, title: "Novo fechamento", btn_save: "Salvar"
+        })
     end
   end
 
@@ -33,11 +36,6 @@ class ClosingsController < ApplicationController
           closing: @closing, title: "Novo fechamento", btn_save: "Salvar"
         })
     end
-  end
-
-  def destroy
-    @closing.destroy
-    render turbo_stream: turbo_stream.action(:redirect, closings_path)
   end
 
   def modify_for_this_closure

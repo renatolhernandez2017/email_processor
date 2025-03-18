@@ -2,7 +2,7 @@ class RepresentativesController < ApplicationController
   include Pagy::Backend
 
   before_action :get_branches
-  before_action :get_representative, only: %i[update show]
+  before_action :get_representative, only: %i[update]
 
   def index
     @pagy, @representatives = pagy(Representative.all.order(created_at: :desc))
@@ -25,9 +25,6 @@ class RepresentativesController < ApplicationController
           btn_save: "Salvar"
         })
     end
-  end
-
-  def show
   end
 
   private

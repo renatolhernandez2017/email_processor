@@ -11,11 +11,11 @@ Rails.application.routes.draw do
 
   root "closings#index"
 
-  resources :closings, only: %i[index create update destroy] do
+  resources :closings, only: %i[index create update] do
     post :modify_for_this_closure, on: :collection
   end
 
-  resources :representatives, only: %i[index create update destroy]
+  resources :representatives, only: %i[index create update]
   resources :prescribers, only: %i[index create update destroy]
   resources :branches, only: %i[index create update destroy]
   resources :discounts, only: %i[index create update destroy]
