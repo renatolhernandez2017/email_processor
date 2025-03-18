@@ -29,7 +29,7 @@ pt-BR:
       SE: SE
       TO: TO
   bank:
-    name:
+    names:
       BRADESCO: BRADESCO
       BANCO DO BRASIL: BANCO DO BRASIL
       CAIXA ECONOMICA: CAIXA ECONOMICA

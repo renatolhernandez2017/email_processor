@@ -10,7 +10,7 @@ Bank.destroy_all
 Discount.destroy_all
 
 puts "Criando user Admin"
-User.create!(name: "renato", email: "renatolhernandez@gmail.com", password: "123123", role: "admin")
+User.create!(name: "renato", email: "renatolhernandez@gmail.com", password: "120711", role: "admin")
 
 puts "Criando Fechamento e relatórios"
 date = Date.today
@@ -42,7 +42,7 @@ sp_cities = [
   )
 
   bank = Bank.create!(
-    name: Faker::Bank.name,
+    name: I18n.t("bank.names").values.sample,
     agency_number: Faker::Number.number(digits: 4),
     account_number: Faker::Bank.account_number
   )
