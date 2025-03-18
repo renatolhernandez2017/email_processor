@@ -11836,12 +11836,6 @@ var mask_controller_default = class extends Controller {
     this.cepMaskTargets.forEach((element) => {
       IMask(element, { mask: "00000-000" });
     });
-    function unformatMoney(value) {
-      if (typeof value === "string" && value) {
-        return value.replace(/\./g, "").replace(",", ".");
-      }
-      return value;
-    }
     this.moneyMaskTargets.forEach((element) => {
       if (element.value) {
         let normalizedValue = parseFloat(element.value.replace(",", "."));

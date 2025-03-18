@@ -51,14 +51,6 @@ export default class extends Controller {
       IMask(element, { mask: "00000-000" })
     })
 
-    function unformatMoney(value) {
-      if (typeof value === 'string' && value) {
-        // Remove os separadores de milhar (pontos) e substitui a vírgula decimal por ponto
-        return value.replace(/\./g, '').replace(',', '.');
-      }
-      return value;
-    }
-
     this.moneyMaskTargets.forEach((element) => {
       // Converte o valor salvo no banco para o formato correto antes de aplicar a máscara
       if (element.value) {
