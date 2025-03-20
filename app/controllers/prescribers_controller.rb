@@ -2,7 +2,7 @@ class PrescribersController < ApplicationController
   include Pagy::Backend
 
   before_action :get_representatives
-  before_action :get_prescriber, only: %i[update]
+  before_action :get_prescriber, only: %i[update destroy]
 
   def index
     @pagy, @prescribers = pagy(Prescriber.all.order(created_at: :desc))
@@ -23,6 +23,13 @@ class PrescribersController < ApplicationController
           btn_save: "Atualizar"
         })
     end
+  end
+
+  def destroy
+    @prescriber.destroy
+
+    flash[:success] = "Prescritor apagado com sucesso."
+    render turbo_stream: turbo_stream.action(:redirect, prescribers_path)
   end
 
   private
