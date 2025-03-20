@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_03_17_130913) do
+ActiveRecord::Schema[7.1].define(version: 2025_03_18_172746) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
   enable_extension "unaccent"
@@ -54,6 +54,16 @@ ActiveRecord::Schema[7.1].define(version: 2025_03_17_130913) do
     t.index ["user_id", "user_type"], name: "user_index"
   end
 
+  create_table "bank", force: :cascade do |t|
+    t.string "name"
+    t.boolean "rounding", default: false
+    t.string "bank_number"
+    t.string "agency_number"
+    t.string "account_number"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "banks", force: :cascade do |t|
     t.string "name"
     t.boolean "rounding", default: true
@@ -89,7 +99,9 @@ ActiveRecord::Schema[7.1].define(version: 2025_03_17_130913) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.bigint "bank_id"
+    t.bigint "representative_id"
     t.index ["bank_id"], name: "index_current_accounts_on_bank_id"
+    t.index ["representative_id"], name: "index_current_accounts_on_representative_id"
   end
 
   create_table "discounts", force: :cascade do |t|
@@ -132,9 +144,7 @@ ActiveRecord::Schema[7.1].define(version: 2025_03_17_130913) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.bigint "branch_id"
-    t.bigint "current_account_id"
     t.index ["branch_id"], name: "index_representatives_on_branch_id"
-    t.index ["current_account_id"], name: "index_representatives_on_current_account_id"
   end
 
   create_table "users", force: :cascade do |t|
@@ -156,9 +166,9 @@ ActiveRecord::Schema[7.1].define(version: 2025_03_17_130913) do
   add_foreign_key "addresses", "representatives"
   add_foreign_key "branches", "representatives"
   add_foreign_key "current_accounts", "banks"
+  add_foreign_key "current_accounts", "representatives"
   add_foreign_key "discounts", "branches"
   add_foreign_key "discounts", "prescribers"
   add_foreign_key "prescribers", "representatives"
   add_foreign_key "representatives", "branches"
-  add_foreign_key "representatives", "current_accounts"
 end
