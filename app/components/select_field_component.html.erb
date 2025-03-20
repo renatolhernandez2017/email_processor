@@ -2,7 +2,7 @@
   <label class="label label-text"><%= @label %></label>
 
   <div class="w-full">
-    <%= @form.select @field_name, options_for_select(@options, @selected), {}, { class: "select select-bordered w-full", data: @data } %>
+    <%= @form.select @field_name, options_for_select(@options, @selected), {}, { class: "select select-bordered w-full" } %>
 
     <p class="text-sm text-red-500">
       <%= @error_message.join(", ") if @error_message.present? %>
