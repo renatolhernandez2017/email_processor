@@ -42,7 +42,7 @@ class PrescribersController < ApplicationController
       :secretary,
       :note,
       :consider_discount_of_up_to,
-      :percentage_ciscount,
+      :percentage_discount,
       :repetitions,
       :allows_changes_values,
       :discount_value,

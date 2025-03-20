@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_03_18_172746) do
+ActiveRecord::Schema[7.1].define(version: 2025_03_20_140133) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
   enable_extension "unaccent"
@@ -52,16 +52,6 @@ ActiveRecord::Schema[7.1].define(version: 2025_03_18_172746) do
     t.index ["created_at"], name: "index_audits_on_created_at"
     t.index ["request_uuid"], name: "index_audits_on_request_uuid"
     t.index ["user_id", "user_type"], name: "user_index"
-  end
-
-  create_table "bank", force: :cascade do |t|
-    t.string "name"
-    t.boolean "rounding", default: false
-    t.string "bank_number"
-    t.string "agency_number"
-    t.string "account_number"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
   end
 
   create_table "banks", force: :cascade do |t|
@@ -123,7 +113,7 @@ ActiveRecord::Schema[7.1].define(version: 2025_03_18_172746) do
     t.string "secretary"
     t.string "note"
     t.decimal "consider_discount_of_up_to", default: "0.0"
-    t.decimal "percentage_ciscount", default: "0.0"
+    t.decimal "percentage_discount", default: "0.0"
     t.decimal "repetitions", default: "0.0"
     t.boolean "allows_changes_values", default: false
     t.decimal "discount_value", default: "0.0"
