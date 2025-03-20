@@ -18,7 +18,7 @@
 
       <tbody>
         <% @prescribers.each_with_index do |prescriber, index| %>
-          <tr class="border-t border-black <%= index % 2 == 0 ? "bg-gray-200" : "bg-gray-50" %>">
+          <tr class="border-t border-black <%= index % 2 == 0 ? "bg-gray-200" : "bg-gray-100" %>">
             <td><%= prescriber.id %></td>
             <td><%= prescriber.name %></td>
             <td><%= prescriber.representative.name %></td>
@@ -37,6 +37,28 @@
               <dialog id="edit_prescriber<%= prescriber.id %>" class="modal place-items-center">
                 <%= render ModalComponent.new(form: render("form", prescriber: prescriber, representatives: @representatives, title: "Editar Prescritor : #{prescriber.id}", btn_save: "Atualizar")) %>
               </dialog>
+
+              <%= link_to prescriber_path(prescriber),
+                  data: { turbo_confirm: "Tem certeza que deseja apagar o prescritor? #{prescriber.name}", turbo_method: :delete },
+                  title: "Apagar definitivamente" do %>
+                <span class="material-symbols-outlined text-primary">delete</span>
+              <% end %>
+
+              <%= link_to "#", data: { turbo_method: :delete }, title: "Desacumular este mês" do %>
+                <span class="material-symbols-outlined text-primary">close</span>
+              <% end %>
+
+              <%= link_to "#", data: { turbo_method: :delete }, title: "Acumular este mês" do %>
+                <span class="material-symbols-outlined text-primary">add</span>
+              <% end %>
+
+              <%= link_to "#", data: { turbo_method: :delete }, title: "Adicionar nova Conta Corrente" do %>
+                <span class="material-symbols-outlined text-primary">account_balance</span>
+              <% end %>
+
+              <%= link_to "#", data: { turbo_method: :delete }, title: "Novo Desconto" do %>
+                <span class="material-symbols-outlined text-primary">percent</span>
+              <% end %>
             </td>
 
             <td class="cursor-pointer" data-controller="toggle" data-action="click->toggle#tableTr" data-tr-id="tr_hidden_<%= index %>">

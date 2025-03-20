@@ -1,18 +1,18 @@
 class RepresentativesController < ApplicationController
   include Pagy::Backend
 
-  before_action :get_branches
+  before_action :get_branches, :get_representatives
   before_action :get_representative, only: %i[update]
 
   def index
     @pagy, @representatives = pagy(Representative.all.order(created_at: :desc))
 
     @representative = Representative.new
+    @current_account = CurrentAccount.new
+    @current_account.build_bank
   end
 
   def update
-    update_bank
-
     if @representative.update(representative_params)
       flash[:success] = "Representante atualizado com sucesso."
       render turbo_stream: turbo_stream.action(:redirect, representatives_path)
@@ -34,8 +34,7 @@ class RepresentativesController < ApplicationController
       :name,
       :partnership,
       :performs_closing,
-      :branch_id,
-      :current_account_id
+      :branch_id
     )
   end
 
@@ -47,17 +46,7 @@ class RepresentativesController < ApplicationController
     @branches = Branch.all.map { |branch| [branch.name, branch.id] }
   end
 
-  def update_bank
-    if params.dig("representative", "current_account_attributes", "bank_attributes").present?
-      bank_params = params["representative"]["current_account_attributes"]["bank_attributes"]
-
-      bank = {
-        name: bank_params["name"],
-        agency_number: bank_params["agency_number"],
-        account_number: bank_params["account_number"]
-      }
-
-      @representative.current_account.bank.update(bank) if bank.present?
-    end
+  def get_representatives
+    @representatives_map = Representative.all
   end
 end

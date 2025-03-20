@@ -17,7 +17,7 @@
 
       <tbody>
         <% @branches.each_with_index do |branch, index| %>
-          <tr class="border-t border-black <%= index % 2 == 0 ? "bg-gray-200" : "bg-gray-50" %>">
+          <tr class="border-t border-black <%= index % 2 == 0 ? "bg-gray-200" : "bg-gray-100" %>">
             <td><%= branch.id %></td>
             <td><%= branch.name %></td>
             <td><%= branch.branch_number %></td>
@@ -31,6 +31,10 @@
               <dialog id="edit_branch<%= branch.id %>" class="modal place-items-center">
                 <%= render ModalComponent.new(form: render("form", branch: branch, title: "Editar Filial : #{branch.id}", btn_save: "Atualizar")) %>
               </dialog>
+
+              <%= link_to "#", data: { turbo_method: :delete }, title: "Adicionar nova Conta Corrente" do %>
+                <span class="material-symbols-outlined text-primary">account_balance</span>
+              <% end %>
             </td>
           </tr>
         <% end %>

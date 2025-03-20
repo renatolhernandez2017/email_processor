@@ -19,7 +19,7 @@
 
       <tbody>
         <% @discounts.each_with_index do |discount, index| %>
-          <tr class="border-t border-black <%= index % 2 == 0 ? "bg-gray-200" : "bg-gray-50" %>">
+          <tr class="border-t border-black <%= index % 2 == 0 ? "bg-gray-200" : "bg-gray-100" %>">
             <td><%= t("view.discount.visible.#{discount.visible}") %></td>
             <td><%= discount.branch.name %></td>
             <td><%= number_to_currency(discount.price) %></td>
@@ -36,10 +36,9 @@
                 <%= render ModalComponent.new(form: render("form", discount: discount, title: "Editar Desconto : #{discount.id}", branches: @branches, btn_save: "Atualizar")) %>
               </dialog>
 
-              <%= link_to "#",
+              <%= link_to discount_path(discount),
                   data: { turbo_confirm: "Tem certeza que deseja apagar?", turbo_method: :delete },
-                  title: "Apagar" do
-              %>
+                  title: "Apagar" do %>
                 <span class="material-symbols-outlined text-primary">delete</span>
               <% end %>
             </td>
