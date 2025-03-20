@@ -9,46 +9,55 @@
         <%= render SelectFieldComponent.new(form: f, field_name: :representative_id, label: "Representante", options: representatives, data: { action: "change->change#updateAddress" }) %>
       </div>
 
+      <div class="grid grid-cols-4 gap-5">
+        <%= render TextFieldComponent.new(form: f, field_name: :partnership, label: "Parceria %", data: { mask_target: "percentageMask" }, error_message: prescriber.errors.messages[:partnership]) %>
+        <%= render TextFieldComponent.new(form: f, field_name: :repetitions, label: "Repeticoes %", data: { mask_target: "percentageMask" }, error_message: prescriber.errors.messages[:repetitions]) %>        
+        <%= render TextFieldComponent.new(form: f, field_name: :percentage_discount, label: "Desconto percentual %", data: { mask_target: "percentageMask" }, error_message: prescriber.errors.messages[:percentage_discount]) %>
+        <%= render TextFieldComponent.new(form: f, field_name: :discount_value, label: "Desconto valor %", data: { mask_target: "percentageMask" }, error_message: prescriber.errors.messages[:discount_value]) %>
+      </div>
+
+      <div class="grid grid-cols-2 gap-5">
+        <%= render TextFieldComponent.new(form: f, field_name: :consider_discount_of_up_to, label: "Considera desconto de ate %", data: { mask_target: "percentageMask" }, error_message: prescriber.errors.messages[:consider_discount_of_up_to]) %>
+        <%= render TextFieldComponent.new(form: f, field_name: :secretary, label: "Secretaria", error_message: prescriber.errors.messages[:secretary]) %>
+      </div>
+
+      <div class="grid grid-cols-2 gap-5">
+        <%= render TextareaFieldComponent.new(form: f, field_name: :note, label: "Observação", error_message: prescriber.errors.messages[:note]) %>
+        <%= render CheckboxFieldComponent.new(form: f, field_name: :allows_changes_values, label: "Não permite mudança no cadastro") %>
+      </div>
+
       <%= f.fields_for :representative do |representative| %>
         <%= representative.fields_for :address do |address| %>
           <div id="address-fields">
-            <div class="card bg-gray-200 p-5">
-              <h3 class="text-lg font-bold">Endereço</h3>
+            <div class="card bg-gray-200 my-5">
+              <details class="collapse collapse-arrow">
+                <summary class="collapse-title text-lg font-bold">Endereço</summary>
 
-              <div class="grid grid-cols-2 gap-5">
-                <%= render TextFieldComponent.new(form: address, field_name: :street, label: "Endereço") %>
-                <%= render TextFieldComponent.new(form: address, field_name: :district, label: "Bairro") %>
-              </div>
+                <div class="collapse-content">
+                  <div class="grid grid-cols-2 gap-5">
+                    <%= render TextFieldComponent.new(form: address, field_name: :street, label: "Endereço") %>
+                    <%= render TextFieldComponent.new(form: address, field_name: :district, label: "Bairro") %>
+                  </div>
 
-              <div class="grid grid-cols-5 gap-5">
-                <%= render TextFieldComponent.new(form: address, field_name: :zip_code, label: "CEP", data: { mask_target: "cepMask" }) %>
-                <%= render TextFieldComponent.new(form: address, field_name: :number, type: "number", label: "Número") %>
-                <%= render TextFieldComponent.new(form: address, field_name: :complement, label: "Complemento") %>
-                <%= render TextFieldComponent.new(form: address, field_name: :city, label: "Cidade") %>
-                <%= render SelectFieldComponent.new(form: address, field_name: :uf, label: "UF", options: I18n.t('address.state').invert.keys.map { |state| [state, state] }, data: { mask_target: "ufMask" }) %>
-              </div>
+                  <div class="grid grid-cols-5 gap-5">
+                    <%= render TextFieldComponent.new(form: address, field_name: :zip_code, label: "CEP", data: { mask_target: "cepMask" }) %>
+                    <%= render TextFieldComponent.new(form: address, field_name: :number, type: "number", label: "Número") %>
+                    <%= render TextFieldComponent.new(form: address, field_name: :complement, label: "Complemento") %>
+                    <%= render TextFieldComponent.new(form: address, field_name: :city, label: "Cidade") %>
+                    <%= render SelectFieldComponent.new(form: address, field_name: :uf, label: "UF", options: I18n.t('address.state').invert.keys.map { |state| [state, state] }, data: { mask_target: "ufMask" }) %>
+                  </div>
 
-              <div class="grid grid-cols-3 gap-5">
-                <%= render TextFieldComponent.new(form: address, field_name: :fax, label: "Fax", data: { mask_target: "phoneMask" }) %>
-                <%= render TextFieldComponent.new(form: address, field_name: :phone, label: "Telefone 1", data: { mask_target: "phoneMask" }) %>
-                <%= render TextFieldComponent.new(form: address, field_name: :cellphone, label: "Telefone 2", data: { mask_target: "mobileMask" }) %>
-              </div>
+                  <div class="grid grid-cols-3 gap-5">
+                    <%= render TextFieldComponent.new(form: address, field_name: :fax, label: "Fax", data: { mask_target: "phoneMask" }) %>
+                    <%= render TextFieldComponent.new(form: address, field_name: :phone, label: "Telefone 1", data: { mask_target: "phoneMask" }) %>
+                    <%= render TextFieldComponent.new(form: address, field_name: :cellphone, label: "Telefone 2", data: { mask_target: "mobileMask" }) %>
+                  </div>
+                </div>
+              </details>
             </div>
           </div>
         <% end %>
       <% end %>
-
-      <div class="grid grid-cols-4 gap-5">
-        <%= render TextFieldComponent.new(form: f, field_name: :partnership, label: "Parceria %", data: { mask_target: "percentageMask" }) %>
-        <%= render TextFieldComponent.new(form: f, field_name: :repetitions, label: "Repeticoes %", data: { mask_target: "percentageMask" }) %>        
-        <%= render TextFieldComponent.new(form: f, field_name: :percentage_ciscount, label: "Desconto percentual %", data: { mask_target: "percentageMask" }) %>
-        <%= render TextFieldComponent.new(form: f, field_name: :discount_value, label: "Desconto valor %", data: { mask_target: "percentageMask" }) %>
-      </div>
-
-      <div class="grid grid-cols-2 gap-5">
-        <%= render TextFieldComponent.new(form: f, field_name: :consider_discount_of_up_to, label: "Considera desconto de ate %", data: { mask_target: "percentageMask" }) %>
-        <%= render CheckboxFieldComponent.new(form: f, field_name: :allows_changes_values, label: "Não permite mudança no cadastro") %>
-      </div>
 
       <hr class="left-0 absolute w-full mt-5 border-black">
 
