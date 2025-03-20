@@ -2,7 +2,7 @@ class DiscountsController < ApplicationController
   include Pagy::Backend
 
   before_action :get_branches
-  before_action :get_discount, only: %i[update]
+  before_action :get_discount, only: %i[update destroy]
 
   def index
     @pagy, @discounts = pagy(Discount.all.order(created_at: :desc))
@@ -19,6 +19,13 @@ class DiscountsController < ApplicationController
           branches: @branches, btn_save: "Atualizar"
         })
     end
+  end
+
+  def destroy
+    @discount.destroy
+
+    flash[:success] = "Desconto apagado com sucesso."
+    render turbo_stream: turbo_stream.action(:redirect, discounts_path)
   end
 
   private
