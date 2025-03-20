@@ -15,10 +15,14 @@ Rails.application.routes.draw do
     post :modify_for_this_closure, on: :collection
   end
 
-  resources :representatives, only: %i[index create update]
-  resources :prescribers, only: %i[index create update destroy]
+  resources :current_accounts, only: %i[index create update destroy] do
+    post :change_standard, on: :collection
+  end
+
   resources :branches, only: %i[index create update destroy]
   resources :discounts, only: %i[index create update destroy]
+  resources :prescribers, only: %i[index create update destroy]
+  resources :representatives, only: %i[index create update]
 
   ###############
   ###   API22  ###
