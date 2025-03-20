@@ -1,23 +1,4 @@
-<div class="flex justify-between items-center">
-  <h1 class="text-2xl text-center text-primary mx-auto">Listagem de Representantes</h1>
-
-  <fieldset class="fieldset w-96 border border-primary p-2 rounded-box">
-    <legend class="fieldset-legend text-primary">Com os itens selecionados ...</legend>
-
-    <div class="join border border-primary join-item rounded-r-full">
-      <select class="select">
-        <option disabled selected>Selecione uma opção</option>
-        <option>Salva Listagem de Pacientes</option>
-        <option>Salva Listagem de Pacientes resumida</option>
-        <option>Resumido Mensal</option>
-        <option>Etiquetas</option>
-        <option>Relatório de Endereços</option>
-      </select>
-
-      <button class="btn btn-primary join-item">Ok</button>
-    </div>
-  </fieldset>
-</div>
+<%= render "actions" %>
 
 <div class="flex flex-col">
   <div class="overflow-x-auto">
@@ -37,19 +18,16 @@
 
       <tbody>
         <% @representatives.each_with_index do |representative, index| %>
-          <tr class="border-t border-black <%= index % 2 == 0 ? "bg-gray-200" : "bg-gray-50" %>">
-            <td class="p-2">
-              <input type="checkbox" class="checkbox checkbox-primary" />
-            </td>
-
+          <tr class="border-t border-black items-center <%= index % 2 == 0 ? "bg-gray-200" : "bg-gray-100" %>">
+            <td><input type="checkbox" class="checkbox checkbox-primary" /></td>
             <td><%= representative.id %></td>
             <td><%= representative.name %></td>
             <td><%= representative.branch.branch_number.to_s.rjust(3, '0') %></td>
             <td><%= representative.branch.name %></td>
             <td><%= representative.partnership %> %</td>
 
-            <td>
-              <button onclick="document.getElementById('edit_representative<%= representative.id %>').showModal();" title="Editar" class="p-2 rounded-full">
+            <td class="flex-1">
+              <button onclick="document.getElementById('edit_representative<%= representative.id %>').showModal();" title="Editar">
                 <span class="material-symbols-outlined text-primary">edit</span>
               </button>
 
@@ -57,21 +35,29 @@
                 <%= render ModalComponent.new(form: render("form", representative: representative, branches: @branches, title: "Editar Representante : #{representative.id}", btn_save: "Atualizar")) %>
               </dialog>
 
-              <button onclick="document.getElementById('description_representative<%= representative.id %>').showModal();" title="Resumo" class="p-2 rounded-full">
+              <button onclick="document.getElementById('description_representative<%= representative.id %>').showModal();" title="Resumo">
                 <span class="material-symbols-outlined text-primary">description</span>
               </button>
 
-              <button onclick="document.getElementById('list_representative<%= representative.id %>').showModal();" title="Listagem" class="p-2 rounded-full">
+              <button onclick="document.getElementById('list_representative<%= representative.id %>').showModal();" title="Listagem">
                 <span class="material-symbols-outlined text-primary">list_alt</span>
               </button>
 
-              <button onclick="document.getElementById('content_paste_representative<%= representative.id %>').showModal();" title="Lista Resumida" class="p-2 rounded-full">
+              <button onclick="document.getElementById('content_paste_representative<%= representative.id %>').showModal();" title="Lista Resumida">
                 <span class="material-symbols-outlined text-primary">content_paste</span>
               </button>
 
-              <button onclick="document.getElementById('home_representative<%= representative.id %>').showModal();" title="Endereço" class="p-2 rounded-full">
+              <button onclick="document.getElementById('home_representative<%= representative.id %>').showModal();" title="Endereço">
                 <span class="material-symbols-outlined text-primary">home</span>
               </button>
+
+              <button onclick="document.getElementById('account_balance_representative<%= representative.id %>').showModal();" title="Adicionar nova Conta Corrente">
+                <span class="material-symbols-outlined text-primary">account_balance</span>
+              </button>
+
+              <dialog id="account_balance_representative<%= representative.id %>" class="modal place-items-center">
+                <%= render ModalComponent.new(form: render("current_accounts/form", current_account: @current_account, representatives: @representatives_map, title: "Criar Nova Conta Corrente", btn_save: "Salvar", route_name: "representative")) %>
+              </dialog>
             </td>
 
             <td class="cursor-pointer" data-controller="toggle" data-action="click->toggle#tableTr" data-tr-id="representative_tr_hidden_<%= index %>">
@@ -81,46 +67,8 @@
             </td>
           </tr>
 
-          <tr class="hidden bg-white" id="representative_tr_hidden_<%= index %>">
-            <td colspan="8">
-              <section class="menu">
-                <div class="join">
-                  <div class="border border-black join-item px-4 h-[42px] w-full text-left flex items-center">
-                    <%= render BoxGroupHozirontalComponent.new(label: "Banco", field_name: representative.current_account.bank.name) %>
-                  </div>
-
-                  <div class="border border-black join-item px-4 h-[42px] w-full text-left flex items-center">
-                    <%= render BoxGroupHozirontalComponent.new(label: "Agencia", field_name: representative.current_account.bank.agency_number) %>
-                  </div>
-
-                  <div class="border border-black join-item px-4 h-[42px] w-full text-left flex items-center">
-                    <%= render BoxGroupHozirontalComponent.new(label: "Conta", field_name: representative.current_account.bank.account_number) %>
-                  </div>
-
-                  <div class="border border-black join-item px-4 h-[42px] w-full text-left flex items-center">
-                    <%= render BoxGroupHozirontalComponent.new(label: "Favorecido", field_name: representative.current_account.favored) %>
-                  </div>
-
-                  <div class="border border-black join-item px-4 h-[42px] w-full text-left flex items-center">
-                    <span class="text-base">Ações : </span>
-
-                    <span class="text-primary ml-5">
-                      <button onclick="document.getElementById('edit_representative<%= representative.id %>').showModal();" title="Editar Conta">
-                        <span class="material-symbols-outlined text-primary">edit</span>
-                      </button>
-
-                      <button onclick="document.getElementById('edit_representative<%= representative.id %>').showModal();" title="Remover">
-                        <span class="material-symbols-outlined text-primary">edit</span>
-                      </button>
-
-                      <button onclick="document.getElementById('edit_representative<%= representative.id %>').showModal();" title="Adicionar Nova Conta">
-                        <span class="material-symbols-outlined text-primary">edit</span>
-                      </button>
-                    </span>
-                  </div>
-                </div>
-              </section>
-            </td>
+          <tr class=" bg-white" id="representative_tr_hidden_<%= index %>">
+            <%= render "current_accounts", representative: representative, index: index %>
           </tr>
         <% end %>
       </tbody>
