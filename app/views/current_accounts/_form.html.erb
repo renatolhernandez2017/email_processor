@@ -1,0 +1,27 @@
+<%= turbo_frame_tag 'form_current_account' do %>
+  <%= form_with model: current_account, url: current_account.persisted? ? current_account_path(current_account) : current_accounts_path do |f| %>
+    <h3 class="text-lg font-bold"><%= title %></h3>
+    <hr class="left-0 absolute w-full mt-5 border-black">
+
+    <section class="p-6 md:max-w-4xl">
+      <%= f.fields_for :bank do |bank| %>
+        <input type="hidden" name="route_name" value="<%= route_name %>" />
+        <%= render SelectFieldComponent.new(form: f, field_name: :representative_id, label: "Representante", options: representatives.map { |r| [r.name, r.id] }, error_message: current_account.errors.messages[:representative_id]) %>
+
+        <div class="grid grid-cols-2 gap-5">
+          <%= render SelectFieldComponent.new(form: f, field_name: :favored, label: "Favorecido", options: representatives.map { |r| [r.name, r.name] }, error_message: current_account.errors.messages[:favored]) %>
+          <%= render SelectFieldComponent.new(form: bank, field_name: :name, label: "Banco", options: I18n.t('bank.names').invert.keys.map { |name| [name, name] }) %>
+        </div>
+
+        <div class="grid grid-cols-2 gap-5">
+          <%= render TextFieldComponent.new(form: bank, field_name: :agency_number, label: "Agencia") %>
+          <%= render TextFieldComponent.new(form: bank, field_name: :account_number, label: "Conta") %>
+        </div>
+      <% end %>
+
+      <hr class="left-0 absolute w-full mt-5 border-black">
+
+      <%= render ButtonComponent.new(form: f, label: btn_save) %>
+    </section>
+  <% end %>
+<% end %>
