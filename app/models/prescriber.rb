@@ -5,17 +5,16 @@ class Prescriber < ApplicationRecord
 
   belongs_to :representative, optional: true
 
+  has_one :address, dependent: :destroy
   has_many :discounts, dependent: :destroy
 
-  accepts_nested_attributes_for :representative
-
-  def address
-    representative&.address
-  end
+  accepts_nested_attributes_for :address
 
   def full_address
-    return "Sem endereço" unless representative&.address
-
-    "#{representative.address&.street} - #{representative.address&.district} - #{representative.address&.city} - #{representative.address&.uf} - #{representative.address&.zip_code}"
+    if address.present?
+      "#{address.street} - #{address.number} - #{address.district} - #{address.city} - #{address.uf} - #{address.zip_code}"
+    else
+      "Address not available"
+    end
   end
 end
