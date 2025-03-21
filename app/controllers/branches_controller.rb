@@ -1,10 +1,14 @@
 class BranchesController < ApplicationController
   include Pagy::Backend
 
+  before_action :get_branches
   before_action :get_branch, only: %i[update]
 
   def index
-    @pagy, @branches = pagy(Branch.all.order(created_at: :desc))
+    @pagy, @branches = pagy(@branches_map.order(created_at: :desc))
+
+    @current_account = CurrentAccount.new
+    @current_account.build_bank
   end
 
   def update
@@ -31,5 +35,9 @@ class BranchesController < ApplicationController
 
   def get_branch
     @branch = Branch.find(params[:id])
+  end
+
+  def get_branches
+    @branches_map = Branch.all
   end
 end

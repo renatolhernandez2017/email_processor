@@ -7,11 +7,7 @@
       <%= f.fields_for :bank do |bank| %>
         <input type="hidden" name="route_name" value="<%= route_name %>" />
 
-        <% if route_name == "representative" %>
-          <%= render SelectFieldComponent.new(form: f, field_name: :representative_id, label: "Representante", options: representatives.map { |r| [r.name, r.id] }, selected: representative.id, disabled: true, error_message: current_account.errors.messages[:representative_id]) %>
-        <% else %>
-          <%= render SelectFieldComponent.new(form: f, field_name: :prescriber_id, label: "Prescritor", options: representatives.map { |r| [r.name, r.id] }, selected: representative.id, disabled: true, error_message: current_account.errors.messages[:prescriber_id]) %>
-        <% end %>
+        <%= render SelectFieldComponent.new(form: f, field_name: "#{route_name}_id".to_sym, label: I18n.t("activerecord.models.#{route_name}").capitalize, options: representatives.map { |r| [r.name, r.id] }, selected: representative.id, disabled: true) %>
 
         <div class="grid grid-cols-2 gap-5">
           <%= render SelectFieldComponent.new(form: f, field_name: :favored, label: "Favorecido", options: representatives.map { |r| [r.name, r.name] }, selected: representative.name, disabled: true, error_message: current_account.errors.messages[:favored]) %>

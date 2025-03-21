@@ -65,14 +65,14 @@
               <% end %>
             </td>
 
-            <td class="cursor-pointer" data-controller="toggle" data-action="click->toggle#tableTr" data-tr-id="tr_hidden_<%= index %>_additional_information" data-tr-id2="tr_hidden_<%= index %>_address">
+            <td class="cursor-pointer" data-controller="toggle" data-action="click->toggle#tableTr" data-tr-id="prescriber_tr_hidden_<%= index %>_additional_information" data-tr-id2="prescriber_tr_hidden_<%= index %>_address">
               <details class="collapse collapse-arrow -top-1 h-12 flex justify-center items-center">
                 <summary class="collapse-title font-semibold"></summary>
               </details>
             </td>
           </tr>
 
-          <tr class="bg-white" id="tr_hidden_<%= index %>_additional_information">
+          <tr class="bg-white" id="prescriber_tr_hidden_<%= index %>_additional_information">
             <td colspan="8" class="p-5">
               <%= render "additional_information", prescriber: prescriber, index: index %>
 

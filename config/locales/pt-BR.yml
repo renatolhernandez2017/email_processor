@@ -43,14 +43,14 @@ pt-BR:
         false: Não
   activerecord:
     models:
-      cart: Carrinho
-      cart_item: Item do carrinho
-      client: Cliente
-      guest: Convidado
-      payment: Pagamento
-      product: Produto
-      sale: Venda
-      user: Usuário
+      address: Endereço
+      bank: Banco
+      branch: Filial
+      closing: Fechamento
+      current_account: Conta Corrente
+      discount: Desconto
+      prescriber: Prescritor
+      representative: Representante
     attributes:
       closing:
         closing: Fechamento

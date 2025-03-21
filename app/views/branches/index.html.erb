@@ -12,6 +12,7 @@
           <th>Número</th>
           <th>Repetições</th>
           <th>Ações</th>
+          <th></th>
         </tr>
       </thead>
 
@@ -32,10 +33,24 @@
                 <%= render ModalComponent.new(form: render("form", branch: branch, title: "Editar Filial : #{branch.id}", btn_save: "Atualizar")) %>
               </dialog>
 
-              <%= link_to "#", data: { turbo_method: :delete }, title: "Adicionar nova Conta Corrente" do %>
+              <button onclick="document.getElementById('account_balance_branch<%= branch.id %>').showModal();" title="Adicionar nova Conta Corrente">
                 <span class="material-symbols-outlined text-primary">account_balance</span>
-              <% end %>
+              </button>
+
+              <dialog id="account_balance_branch<%= branch.id %>" class="modal place-items-center">
+                <%= render ModalComponent.new(form: render("current_accounts/form", representative: branch, current_account: @current_account, representatives: @branches_map, title: "Criar Nova Conta Corrente", btn_save: "Salvar", route_name: "branch")) %>
+              </dialog>
             </td>
+
+            <td class="cursor-pointer" data-controller="toggle" data-action="click->toggle#tableTr" data-tr-id="branch_tr_hidden_<%= index %>">
+              <details class="collapse collapse-arrow -top-1 h-12 flex justify-center items-center">
+                <summary class="collapse-title font-semibold"></summary>
+              </details>
+            </td>
+          </tr>
+
+          <tr class="hidden bg-white" id="branch_tr_hidden_<%= index %>">
+            <%= render "current_accounts", branch: branch, branches: @branches_map, index: index %>
           </tr>
         <% end %>
       </tbody>

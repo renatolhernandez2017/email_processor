@@ -56,16 +56,6 @@ ActiveRecord::Schema[7.1].define(version: 2025_03_21_151150) do
     t.index ["user_id", "user_type"], name: "user_index"
   end
 
-  create_table "bank", force: :cascade do |t|
-    t.string "name"
-    t.boolean "rounding", default: false
-    t.string "bank_number"
-    t.string "agency_number"
-    t.string "account_number"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-  end
-
   create_table "banks", force: :cascade do |t|
     t.string "name"
     t.boolean "rounding", default: true

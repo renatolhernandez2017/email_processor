@@ -1,8 +1,8 @@
 class CurrentAccountsController < ApplicationController
   include Pagy::Backend
+  include Redirectable
 
   before_action :get_representatives
-  before_action :set_route, only: %i[update]
   before_action :get_current_account, only: %i[update destroy change_standard]
 
   def index
@@ -14,7 +14,8 @@ class CurrentAccountsController < ApplicationController
 
     if @current_account.save
       flash[:success] = "Conta Corrente criada com sucesso!"
-      render turbo_stream: turbo_stream.action(:redirect, representatives_path)
+
+      render_redirect
     else
       render turbo_stream: turbo_stream.replace("form_current_account",
         partial: "current_accounts/form", locals: {
@@ -31,11 +32,7 @@ class CurrentAccountsController < ApplicationController
     if @current_account.update(current_account_params)
       flash[:success] = "Conta Corrente atualizada com sucesso."
 
-      if @route_name.present?
-        render turbo_stream: turbo_stream.action(:redirect, representatives_path) if @route_name == "representative"
-      else
-        render turbo_stream: turbo_stream.action(:redirect, current_accounts_path)
-      end
+      render_redirect
     else
       render turbo_stream: turbo_stream.replace("form_current_account",
         partial: "current_accounts/form", locals: {
@@ -48,7 +45,8 @@ class CurrentAccountsController < ApplicationController
     @current_account.destroy
 
     flash[:success] = "Conta Corrente apagada com sucesso."
-    render turbo_stream: turbo_stream.action(:redirect, representatives_path)
+
+    render_redirect
   end
 
   def change_standard
@@ -63,7 +61,7 @@ class CurrentAccountsController < ApplicationController
       flash[:info] = "Conta Corrente desativada com sucesso."
     end
 
-    render turbo_stream: turbo_stream.action(:redirect, representatives_path)
+    render_redirect
   end
 
   private
@@ -74,6 +72,8 @@ class CurrentAccountsController < ApplicationController
       :favored,
       :bank_id,
       :representative_id,
+      :prescriber_id,
+      :branch_id,
       bank_attributes: %i[name rounding agency_number account_number]
     )
   end
@@ -84,9 +84,5 @@ class CurrentAccountsController < ApplicationController
 
   def get_representatives
     @representatives = Representative.all
-  end
-
-  def set_route
-    @route_name = params[:route_name]
   end
 end
