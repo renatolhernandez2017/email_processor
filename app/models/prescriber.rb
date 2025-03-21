@@ -6,7 +6,9 @@ class Prescriber < ApplicationRecord
   belongs_to :representative, optional: true
 
   has_one :address, dependent: :destroy
+
   has_many :discounts, dependent: :destroy
+  has_many :current_accounts, dependent: :destroy
 
   accepts_nested_attributes_for :address
 
