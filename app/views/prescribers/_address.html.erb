@@ -7,7 +7,6 @@
           <th>Telefone 1</th>
           <th>Telefone 2</th>
           <th>Fax</th>
-          <th>Ações</th>
         </tr>
       </thead>
 
@@ -17,16 +16,6 @@
           <td><%= address.phone %></td>
           <td><%= address.cellphone %></td>
           <td><%= address.fax %></td>
-
-          <td>
-            <button onclick="document.getElementById('edit_address<%= address.id %>').showModal();" title="Editar Endereço">
-              <span class="material-symbols-outlined text-primary">edit</span>
-            </button>
-
-            <dialog id="edit_address<%= address.id %>" class="modal place-items-center">
-              <%= render ModalComponent.new(form: render("form_address", prescriber: prescriber, address: address, title: "Editar Endereço : #{address.id}", btn_save: "Atualizar")) %>
-            </dialog>
-          </td>
         </tr>
       </tbody>
     </table>

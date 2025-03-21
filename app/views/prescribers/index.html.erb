@@ -72,11 +72,11 @@
             </td>
           </tr>
 
-          <tr class="bg-white" id="prescriber_tr_hidden_<%= index %>_additional_information">
+          <tr class="hidden bg-white" id="prescriber_tr_hidden_<%= index %>_additional_information">
             <td colspan="8" class="p-5">
               <%= render "additional_information", prescriber: prescriber, index: index %>
-
               <%= render "address", prescriber: prescriber, full_address: prescriber.full_address, address: prescriber.address, index: index %>
+              <%= render "current_accounts", prescriber: prescriber, prescribers: @prescribers_map, index: index %>
             </td>
           </tr>
         <% end %>

@@ -36,15 +36,21 @@ sp_cities = [
 ]
 
 15.times do |i|
+  bank = Bank.create!(
+    name: I18n.t("bank.names").values.sample,
+    agency_number: Faker::Number.number(digits: 4),
+    account_number: Faker::Bank.account_number
+  )
+
   branch = Branch.create!(
     name: sp_cities[i - 1],
     branch_number: i + 1
   )
 
-  bank = Bank.create!(
-    name: I18n.t("bank.names").values.sample,
-    agency_number: Faker::Number.number(digits: 4),
-    account_number: Faker::Bank.account_number
+  CurrentAccount.create!(
+    bank_id: bank.id,
+    branch_id: branch.id,
+    favored: branch.name
   )
 
   representative = Representative.create!(
@@ -67,6 +73,12 @@ sp_cities = [
     uf_council: Faker::Address.state_abbr,
     number_council: Array.new(6) { rand(1..9) }.join(" "),
     representative_id: representative.id
+  )
+
+  CurrentAccount.create!(
+    bank_id: bank.id,
+    prescriber_id: prescriber.id,
+    favored: prescriber.name
   )
 
   Address.create!(

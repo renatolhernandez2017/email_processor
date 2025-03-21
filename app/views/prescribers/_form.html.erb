@@ -6,7 +6,7 @@
     <section class="p-6 md:max-w-4xl">
       <div class="grid grid-cols-2 gap-5">
         <%= render TextFieldComponent.new(form: f, field_name: :name, label: "Nome", error_message: prescriber.errors.messages[:name]) %>
-        <%= render SelectFieldComponent.new(form: f, field_name: :representative_id, label: "Representante", options: representatives, data: { action: "change->change#updateAddress" }) %>
+        <%= render SelectFieldComponent.new(form: f, field_name: :representative_id, label: "Representante", options: representatives.map { |r| [r.name, r.id] }, data: { action: "change->change#updateAddress" }) %>
       </div>
 
       <div class="grid grid-cols-4 gap-5">
@@ -27,34 +27,7 @@
       </div>
 
       <%= f.fields_for :address do |address| %>
-        <div id="address-fields">
-          <div class="card bg-gray-200 my-5">
-            <details class="collapse collapse-arrow">
-              <summary class="collapse-title text-lg font-bold">Endereço</summary>
-
-              <div class="collapse-content">
-                <div class="grid grid-cols-2 gap-5">
-                  <%= render TextFieldComponent.new(form: address, field_name: :street, label: "Endereço") %>
-                  <%= render TextFieldComponent.new(form: address, field_name: :district, label: "Bairro") %>
-                </div>
-
-                <div class="grid grid-cols-5 gap-5">
-                  <%= render TextFieldComponent.new(form: address, field_name: :zip_code, label: "CEP", data: { mask_target: "cepMask" }) %>
-                  <%= render TextFieldComponent.new(form: address, field_name: :number, type: "number", label: "Número") %>
-                  <%= render TextFieldComponent.new(form: address, field_name: :complement, label: "Complemento") %>
-                  <%= render TextFieldComponent.new(form: address, field_name: :city, label: "Cidade") %>
-                  <%= render SelectFieldComponent.new(form: address, field_name: :uf, label: "UF", options: I18n.t('address.state').invert.keys.map { |state| [state, state] }, data: { mask_target: "ufMask" }) %>
-                </div>
-
-                <div class="grid grid-cols-3 gap-5">
-                  <%= render TextFieldComponent.new(form: address, field_name: :fax, label: "Fax", data: { mask_target: "phoneMask" }) %>
-                  <%= render TextFieldComponent.new(form: address, field_name: :phone, label: "Telefone 1", data: { mask_target: "phoneMask" }) %>
-                  <%= render TextFieldComponent.new(form: address, field_name: :cellphone, label: "Telefone 2", data: { mask_target: "mobileMask" }) %>
-                </div>
-              </div>
-            </details>
-          </div>
-        </div>
+        <%= render "form_address", address: address %>
       <% end %>
 
       <hr class="left-0 absolute w-full mt-5 border-black">

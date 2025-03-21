@@ -1,10 +1,9 @@
-<%= turbo_frame_tag 'form_prescriber' do %>
-  <%= form_with model: prescriber, url: prescriber_path(prescriber), data: {controller: "mask"} do |f| %>
-    <h3 class="text-lg font-bold"><%= title %></h3>
-    <hr class="left-0 absolute w-full mt-5 border-black">
+<div id="address-fields">
+  <div class="card bg-gray-200 my-5">
+    <details class="collapse collapse-arrow">
+      <summary class="collapse-title text-lg font-bold">Endereço</summary>
 
-    <section class="p-6 md:max-w-4xl">
-      <%= f.fields_for :address do |address| %>
+      <div class="collapse-content">
         <div class="grid grid-cols-2 gap-5">
           <%= render TextFieldComponent.new(form: address, field_name: :street, label: "Endereço") %>
           <%= render TextFieldComponent.new(form: address, field_name: :district, label: "Bairro") %>
@@ -23,11 +22,7 @@
           <%= render TextFieldComponent.new(form: address, field_name: :phone, label: "Telefone 1", data: { mask_target: "phoneMask" }) %>
           <%= render TextFieldComponent.new(form: address, field_name: :cellphone, label: "Telefone 2", data: { mask_target: "mobileMask" }) %>
         </div>
-      <% end %>
-
-      <hr class="left-0 absolute w-full mt-5 border-black">
-
-      <%= render ButtonComponent.new(form: f, label: btn_save) %>
-    </section>
-  <% end %>
-<% end %>
+      </div>
+    </details>
+  </div>
+</div>
