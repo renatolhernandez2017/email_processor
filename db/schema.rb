@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_03_20_140133) do
+ActiveRecord::Schema[7.1].define(version: 2025_03_20_150144) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
   enable_extension "unaccent"
@@ -29,6 +29,8 @@ ActiveRecord::Schema[7.1].define(version: 2025_03_20_140133) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.bigint "representative_id"
+    t.bigint "prescriber_id"
+    t.index ["prescriber_id"], name: "index_addresses_on_prescriber_id"
     t.index ["representative_id"], name: "index_addresses_on_representative_id"
   end
 
@@ -153,6 +155,7 @@ ActiveRecord::Schema[7.1].define(version: 2025_03_20_140133) do
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
 
+  add_foreign_key "addresses", "prescribers"
   add_foreign_key "addresses", "representatives"
   add_foreign_key "branches", "representatives"
   add_foreign_key "current_accounts", "banks"
