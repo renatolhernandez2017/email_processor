@@ -58,6 +58,17 @@ sp_cities = [
     favored: representative.name
   )
 
+  prescriber = Prescriber.create!(
+    name: Faker::Name.name,
+    council: "#{Faker::Name.first_name} - Conselho",
+    secretary: "#{Faker::Name.first_name} - Secretaria",
+    note: Faker::Lorem.sentence,
+    class_council: rand(1..9),
+    uf_council: Faker::Address.state_abbr,
+    number_council: Array.new(6) { rand(1..9) }.join(" "),
+    representative_id: representative.id
+  )
+
   Address.create!(
     street: Faker::Address.street_name,
     district: Faker::Address.community,
@@ -69,18 +80,7 @@ sp_cities = [
     phone: Faker::PhoneNumber.phone_number,
     cellphone: Faker::PhoneNumber.cell_phone,
     fax: Faker::PhoneNumber.phone_number,
-    representative_id: representative.id
-  )
-
-  prescriber = Prescriber.create!(
-    name: Faker::Name.name,
-    council: "#{Faker::Name.first_name} - Conselho",
-    secretary: "#{Faker::Name.first_name} - Secretaria",
-    note: Faker::Lorem.sentence,
-    class_council: rand(1..9),
-    uf_council: Faker::Address.state_abbr,
-    number_council: Array.new(6) { rand(1..9) }.join(" "),
-    representative_id: representative.id
+    prescriber_id: prescriber.id
   )
 
   Discount.create!(
