@@ -9,6 +9,4 @@ class Representative < ApplicationRecord
   has_one :prescriber, dependent: :destroy
 
   has_many :current_accounts, dependent: :destroy
-
-  accepts_nested_attributes_for :address
 end

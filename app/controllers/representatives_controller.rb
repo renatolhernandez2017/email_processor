@@ -5,7 +5,7 @@ class RepresentativesController < ApplicationController
   before_action :get_representative, only: %i[update]
 
   def index
-    @pagy, @representatives = pagy(Representative.all.order(created_at: :desc))
+    @pagy, @representatives = pagy(@representatives_map.order(created_at: :desc))
 
     @representative = Representative.new
     @current_account = CurrentAccount.new
