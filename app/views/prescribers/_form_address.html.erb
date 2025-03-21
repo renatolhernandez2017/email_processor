@@ -1,0 +1,33 @@
+<%= turbo_frame_tag 'form_prescriber' do %>
+  <%= form_with model: prescriber, url: prescriber_path(prescriber), data: {controller: "mask"} do |f| %>
+    <h3 class="text-lg font-bold"><%= title %></h3>
+    <hr class="left-0 absolute w-full mt-5 border-black">
+
+    <section class="p-6 md:max-w-4xl">
+      <%= f.fields_for :address do |address| %>
+        <div class="grid grid-cols-2 gap-5">
+          <%= render TextFieldComponent.new(form: address, field_name: :street, label: "Endereço") %>
+          <%= render TextFieldComponent.new(form: address, field_name: :district, label: "Bairro") %>
+        </div>
+
+        <div class="grid grid-cols-5 gap-5">
+          <%= render TextFieldComponent.new(form: address, field_name: :zip_code, label: "CEP", data: { mask_target: "cepMask" }) %>
+          <%= render TextFieldComponent.new(form: address, field_name: :number, type: "number", label: "Número") %>
+          <%= render TextFieldComponent.new(form: address, field_name: :complement, label: "Complemento") %>
+          <%= render TextFieldComponent.new(form: address, field_name: :city, label: "Cidade") %>
+          <%= render SelectFieldComponent.new(form: address, field_name: :uf, label: "UF", options: I18n.t('address.state').invert.keys.map { |state| [state, state] }, data: { mask_target: "ufMask" }) %>
+        </div>
+
+        <div class="grid grid-cols-3 gap-5">
+          <%= render TextFieldComponent.new(form: address, field_name: :fax, label: "Fax", data: { mask_target: "phoneMask" }) %>
+          <%= render TextFieldComponent.new(form: address, field_name: :phone, label: "Telefone 1", data: { mask_target: "phoneMask" }) %>
+          <%= render TextFieldComponent.new(form: address, field_name: :cellphone, label: "Telefone 2", data: { mask_target: "mobileMask" }) %>
+        </div>
+      <% end %>
+
+      <hr class="left-0 absolute w-full mt-5 border-black">
+
+      <%= render ButtonComponent.new(form: f, label: btn_save) %>
+    </section>
+  <% end %>
+<% end %>

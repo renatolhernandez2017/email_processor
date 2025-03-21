@@ -52,71 +52,31 @@
                 <span class="material-symbols-outlined text-primary">add</span>
               <% end %>
 
-              <%= link_to "#", data: { turbo_method: :delete }, title: "Adicionar nova Conta Corrente" do %>
+              <button onclick="document.getElementById('account_balance_prescriber<%= prescriber.id %>').showModal();" title="Adicionar nova Conta Corrente">
                 <span class="material-symbols-outlined text-primary">account_balance</span>
-              <% end %>
+              </button>
+
+              <dialog id="account_balance_prescriber<%= prescriber.id %>" class="modal place-items-center">
+                <%= render ModalComponent.new(form: render("current_accounts/form", representative: prescriber, current_account: @current_account, representatives: @prescribers_map, title: "Criar Nova Conta Corrente", btn_save: "Salvar", route_name: "prescriber")) %>
+              </dialog>
 
               <%= link_to "#", data: { turbo_method: :delete }, title: "Novo Desconto" do %>
                 <span class="material-symbols-outlined text-primary">percent</span>
               <% end %>
             </td>
 
-            <td class="cursor-pointer" data-controller="toggle" data-action="click->toggle#tableTr" data-tr-id="tr_hidden_<%= index %>">
+            <td class="cursor-pointer" data-controller="toggle" data-action="click->toggle#tableTr" data-tr-id="tr_hidden_<%= index %>_additional_information" data-tr-id2="tr_hidden_<%= index %>_address">
               <details class="collapse collapse-arrow -top-1 h-12 flex justify-center items-center">
                 <summary class="collapse-title font-semibold"></summary>
               </details>
             </td>
           </tr>
 
-          <tr class=" bg-white" id="tr_hidden_<%= index %>">
-            <td colspan="8">
-              <section class="menu gap-2">
-                <div class="join">
-                  <div class="border border-black join-item px-4 h-[42px] text-left flex items-center w-full">
-                    <%= render BoxGroupHozirontalComponent.new(label: "Secretaria", field_name: prescriber.secretary) %>
-                  </div>
+          <tr class="bg-white" id="tr_hidden_<%= index %>_additional_information">
+            <td colspan="8" class="p-5">
+              <%= render "additional_information", prescriber: prescriber, index: index %>
 
-                  <div class="border border-black join-item px-4 h-[42px] text-left flex items-center w-full">
-                    <%= render BoxGroupHozirontalComponent.new(label: "Parceria", field_name: prescriber.partnership) %>
-                  </div>
-
-                  <div class="border border-black join-item px-4 h-[42px] text-left flex items-center w-full">
-                    <%= render BoxGroupHozirontalComponent.new(label: "Repetições", field_name: prescriber.repetitions) %>
-                  </div>
-
-                  <div class="border border-black join-item px-4 h-[42px] text-left flex items-center w-full">
-                    <%= render BoxGroupHozirontalComponent.new(label: "Desconto", field_name: prescriber.percentage_discount) %>
-                  </div>
-                </div>
-
-                <div class="join">
-                  <div class="border border-black join-item px-4 h-[42px] text-left flex items-center w-full">
-                    <%= render BoxGroupHozirontalComponent.new(label: "Considera desconto de até", field_name: prescriber.consider_discount_of_up_to) %>
-                  </div>
-
-                  <div class="border border-black join-item px-4 h-[42px] text-left flex items-center w-full">
-                    <%= render BoxGroupHozirontalComponent.new(label: "Endereço", field_name: prescriber&.full_address) %>
-                  </div>
-
-                  <div class="border border-black join-item px-4 h-[42px] text-left flex items-center w-full">
-                    <%= render BoxGroupHozirontalComponent.new(label: "Telefone1", field_name: prescriber.address.phone || "Não disponível") %>
-                  </div>
-                </div>
-
-                <div class="join">
-                  <div class="border border-black join-item px-4 h-[42px] text-left flex items-center w-full">
-                    <%= render BoxGroupHozirontalComponent.new(label: "Telefone2", field_name: prescriber.address.cellphone || "Não disponível") %>
-                  </div>
-
-                  <div class="border border-black join-item px-4 h-[42px] text-left flex items-center w-full">
-                    <%= render BoxGroupHozirontalComponent.new(label: "Fax", field_name: prescriber.address.fax || "Não disponível") %>
-                  </div>
-
-                  <div class="border border-black join-item px-4 h-[42px] text-left flex items-center w-full">
-                    <%= render BoxGroupHozirontalComponent.new(label: "Observação", field_name: prescriber.note || "Não disponível") %>
-                  </div>
-                </div>
-              </section>
+              <%= render "address", prescriber: prescriber, full_address: prescriber.full_address, address: prescriber.address, index: index %>
             </td>
           </tr>
         <% end %>

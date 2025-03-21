@@ -1,16 +1,17 @@
 class PrescribersController < ApplicationController
   include Pagy::Backend
 
-  before_action :get_representatives
+  before_action :get_representatives, :get_prescribers
   before_action :get_prescriber, only: %i[update destroy]
 
   def index
-    @pagy, @prescribers = pagy(Prescriber.all.order(created_at: :desc))
+    @pagy, @prescribers = pagy(@prescribers_map.order(created_at: :desc))
+
+    @current_account = CurrentAccount.new
+    @current_account.build_bank
   end
 
   def update
-    update_address
-
     if @prescriber.update(prescriber_params)
       flash[:success] = "Prescritor atualizado com sucesso."
       render turbo_stream: turbo_stream.action(:redirect, prescribers_path)
@@ -50,7 +51,11 @@ class PrescribersController < ApplicationController
       :number_council,
       :uf_council,
       :birthdate,
-      :representative_id
+      :representative_id,
+      address_attributes: %i[
+        street district number complement city uf zip_code phone cellphone fax
+        representative_id prescriber_id
+      ]
     )
   end
 
@@ -59,43 +64,10 @@ class PrescribersController < ApplicationController
   end
 
   def get_representatives
-    @representatives = Representative.all.map do |representative|
-      [representative.name, representative.id, {
-        "data-id": representative.id,
-        "data-address": representative.address.street,
-        "data-district": representative.address.district,
-        "data-number": representative.address.number,
-        "data-complement": representative.address.complement,
-        "data-city": representative.address.city,
-        "data-uf": representative.address.uf,
-        "data-zip": representative.address.zip_code,
-        "data-phone": representative.address.phone,
-        "data-cellphone": representative.address.cellphone,
-        "data-fax": representative.address.fax
-      }]
-    end
+    @representatives = Representative.all
   end
 
-  def update_address
-    return unless params["prescriber"]["representative_id"] == params["prescriber"]["representative_attributes"]["id"]
-
-    if params.dig("prescriber", "representative_attributes", "address_attributes").present?
-      address_params = params["prescriber"]["representative_attributes"]["address_attributes"]
-
-      address = {
-        street: address_params["street"],
-        district: address_params["district"],
-        number: address_params["number"],
-        complement: address_params["complement"],
-        city: address_params["city"],
-        uf: address_params["uf"],
-        zip_code: address_params["zip_code"],
-        phone: address_params["phone"],
-        cellphone: address_params["cellphone"],
-        fax: address_params["fax"]
-      }
-
-      @prescriber.representative.address.update(address) if address.present?
-    end
+  def get_prescribers
+    @prescribers_map = Prescriber.all
   end
 end
