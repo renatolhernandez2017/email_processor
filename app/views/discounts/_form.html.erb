@@ -5,6 +5,9 @@
 
     <section class="p-6 md:max-w-4xl">
       <div class="grid grid-cols-1 my-2">
+        <input type="hidden" name="route" value="<%= route %>" />
+        <input type="hidden" name="discount[prescriber_id]" value="<%= prescriber.id %>">
+
         <%= render SelectFieldComponent.new(form: f, field_name: :branch_id, label: "Filial", options: branches) %>
         <%= render TextFieldComponent.new(form: f, field_name: :description, label: "Descrição", error_message: discount.errors.messages[:description]) %>
         <%= render TextFieldComponent.new(form: f, field_name: :price, label: "Valor", data: { mask_target: "moneyMask" }, error_message: discount.errors.messages[:price]) %>

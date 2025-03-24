@@ -20,7 +20,11 @@
         <% @prescribers.each_with_index do |prescriber, index| %>
           <tr class="border-t border-black <%= index % 2 == 0 ? "bg-gray-200" : "bg-gray-100" %>">
             <td><%= prescriber.id %></td>
-            <td><%= prescriber.name %></td>
+
+            <td>
+              <%= link_to prescriber.name, prescriber_path(prescriber), class: "text-primary" %>
+            </td>
+
             <td><%= prescriber.representative.name %></td>
 
             <td>
@@ -57,12 +61,16 @@
               </button>
 
               <dialog id="account_balance_prescriber<%= prescriber.id %>" class="modal place-items-center">
-                <%= render ModalComponent.new(form: render("current_accounts/form", representative: prescriber, current_account: @current_account, representatives: @prescribers_map, title: "Criar Nova Conta Corrente", btn_save: "Salvar", route_name: "prescriber")) %>
+                <%= render ModalComponent.new(form: render("current_accounts/form", representative: prescriber, current_account: @current_account, representatives: @prescribers_map, title: "Criar Nova Conta Corrente", btn_save: "Salvar", route: "prescriber")) %>
               </dialog>
 
-              <%= link_to "#", data: { turbo_method: :delete }, title: "Novo Desconto" do %>
+              <button onclick="document.getElementById('discount_prescriber<%= prescriber.id %>').showModal();" title="Novo Desconto">
                 <span class="material-symbols-outlined text-primary">percent</span>
-              <% end %>
+              </button>
+
+              <dialog id="discount_prescriber<%= prescriber.id %>" class="modal place-items-center">
+                <%= render ModalComponent.new(form: render("discounts/form", discount: @discount, branches: @branches, prescriber: prescriber, title: "Novo Desconto", btn_save: "Salvar", route: "prescriber")) %>
+              </dialog>
             </td>
 
             <td class="cursor-pointer" data-controller="toggle" data-action="click->toggle#tableTr" data-tr-id="prescriber_tr_hidden_<%= index %>_additional_information" data-tr-id2="prescriber_tr_hidden_<%= index %>_address">
@@ -77,6 +85,7 @@
               <%= render "additional_information", prescriber: prescriber, index: index %>
               <%= render "address", prescriber: prescriber, full_address: prescriber.full_address, address: prescriber.address, index: index %>
               <%= render "current_accounts", prescriber: prescriber, prescribers: @prescribers_map, index: index %>
+              <%= render "discounts", prescriber: prescriber, branches: @branches, index: index %>
             </td>
           </tr>
         <% end %>
@@ -86,7 +95,7 @@
 
   <div class="divider border-t"></div>
 
-  <div class="grid place-items-center">
+  <div class="grid place-items-center mb-24">
     <%== pagy_nav(@pagy) if @pagy.pages > 1 %>
   </div>
 </div>

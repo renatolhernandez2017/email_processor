@@ -5,9 +5,9 @@
 
     <section class="p-6 md:max-w-4xl">
       <%= f.fields_for :bank do |bank| %>
-        <input type="hidden" name="route_name" value="<%= route_name %>" />
+        <input type="hidden" name="route" value="<%= route %>" />
 
-        <%= render SelectFieldComponent.new(form: f, field_name: "#{route_name}_id".to_sym, label: I18n.t("activerecord.models.#{route_name}").capitalize, options: representatives.map { |r| [r.name, r.id] }, selected: representative.id, disabled: true) %>
+        <%= render SelectFieldComponent.new(form: f, field_name: "#{route}_id".to_sym, label: I18n.t("activerecord.models.#{route}").capitalize, options: representatives.map { |r| [r.name, r.id] }, selected: representative.id, disabled: true) %>
 
         <div class="grid grid-cols-2 gap-5">
           <%= render SelectFieldComponent.new(form: f, field_name: :favored, label: "Favorecido", options: representatives.map { |r| [r.name, r.name] }, selected: representative.name, disabled: true, error_message: current_account.errors.messages[:favored]) %>

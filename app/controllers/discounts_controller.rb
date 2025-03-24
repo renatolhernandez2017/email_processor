@@ -1,5 +1,6 @@
 class DiscountsController < ApplicationController
   include Pagy::Backend
+  include Redirectable
 
   before_action :get_branches
   before_action :get_discount, only: %i[update destroy]
@@ -8,14 +9,31 @@ class DiscountsController < ApplicationController
     @pagy, @discounts = pagy(Discount.all.order(created_at: :desc))
   end
 
+  def create
+    @discount = Discount.new(discount_params)
+
+    if @discount.save
+      flash[:success] = "Desconto criado com sucesso."
+      render_redirect
+    else
+      render turbo_stream: turbo_stream.replace("form_discount",
+        partial: "discounts/form", locals: {
+          discount: @discount, title: "Criar Desconto",
+          prescriber: @discount.prescriber,
+          branches: @branches, btn_save: "Salvar"
+        })
+    end
+  end
+
   def update
     if @discount.update(discount_params)
       flash[:success] = "Desconto atualizado com sucesso."
-      render turbo_stream: turbo_stream.action(:redirect, discounts_path)
+      render_redirect
     else
       render turbo_stream: turbo_stream.replace("form_discount",
         partial: "discounts/form", locals: {
           discount: @discount, title: "Editar Desconto : #{@discount.id}",
+          prescriber: @discount.prescriber,
           branches: @branches, btn_save: "Atualizar"
         })
     end
@@ -25,7 +43,7 @@ class DiscountsController < ApplicationController
     @discount.destroy
 
     flash[:success] = "Desconto apagado com sucesso."
-    render turbo_stream: turbo_stream.action(:redirect, discounts_path)
+    render_redirect
   end
 
   private

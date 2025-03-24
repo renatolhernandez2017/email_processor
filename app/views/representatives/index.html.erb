@@ -56,7 +56,7 @@
               </button>
 
               <dialog id="account_balance_representative<%= representative.id %>" class="modal place-items-center">
-                <%= render ModalComponent.new(form: render("current_accounts/form", representative: representative, current_account: @current_account, representatives: @representatives_map, title: "Criar Nova Conta Corrente", btn_save: "Salvar", route_name: "representative")) %>
+                <%= render ModalComponent.new(form: render("current_accounts/form", representative: representative, current_account: @current_account, representatives: @representatives_map, title: "Criar Nova Conta Corrente", btn_save: "Salvar", route: "representative")) %>
               </dialog>
             </td>
 

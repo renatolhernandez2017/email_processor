@@ -1,14 +1,15 @@
 class PrescribersController < ApplicationController
   include Pagy::Backend
 
-  before_action :get_representatives, :get_prescribers
-  before_action :get_prescriber, only: %i[update destroy]
+  before_action :get_representatives, :get_prescribers, :get_branches
+  before_action :get_prescriber, only: %i[update show destroy]
 
   def index
     @pagy, @prescribers = pagy(@prescribers_map.order(created_at: :desc))
 
     @current_account = CurrentAccount.new
     @current_account.build_bank
+    @discount = Discount.new
   end
 
   def update
@@ -24,6 +25,9 @@ class PrescribersController < ApplicationController
           btn_save: "Atualizar"
         })
     end
+  end
+
+  def show
   end
 
   def destroy
@@ -69,5 +73,9 @@ class PrescribersController < ApplicationController
 
   def get_prescribers
     @prescribers_map = Prescriber.all
+  end
+
+  def get_branches
+    @branches = Branch.all.map { |branch| [branch.name, branch.id] }
   end
 end

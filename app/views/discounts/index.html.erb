@@ -33,10 +33,10 @@
               </button>
 
               <dialog id="edit_discount<%= discount.id %>" class="modal place-items-center">
-                <%= render ModalComponent.new(form: render("form", discount: discount, title: "Editar Desconto : #{discount.id}", branches: @branches, btn_save: "Atualizar")) %>
+                <%= render ModalComponent.new(form: render("form", discount: discount, title: "Editar Desconto : #{discount.id}", branches: @branches, prescriber: discount.prescriber, btn_save: "Atualizar", route: "discount")) %>
               </dialog>
 
-              <%= link_to discount_path(discount),
+              <%= link_to discount_path(discount, route: "discount"),
                   data: { turbo_confirm: "Tem certeza que deseja apagar?", turbo_method: :delete },
                   title: "Apagar" do %>
                 <span class="material-symbols-outlined text-primary">delete</span>

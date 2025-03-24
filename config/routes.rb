@@ -21,7 +21,7 @@ Rails.application.routes.draw do
 
   resources :branches, only: %i[index create update destroy]
   resources :discounts, only: %i[index create update destroy]
-  resources :prescribers, only: %i[index create update destroy]
+  resources :prescribers, only: %i[index create update show destroy]
   resources :representatives, only: %i[index create update]
 
   ###############

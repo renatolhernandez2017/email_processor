@@ -25,21 +25,21 @@
               </button>
 
               <dialog id="edit_current_account_representative<%= current_account.id %>" class="modal place-items-center">
-                <%= render ModalComponent.new(form: render("current_accounts/form", representative: prescriber, current_account: current_account, representatives: prescribers, title: "Editar Conta Corrente : #{current_account.id}", btn_save: "Atualizar", route_name: "prescriber")) %>
+                <%= render ModalComponent.new(form: render("current_accounts/form", representative: prescriber, current_account: current_account, representatives: prescribers, title: "Editar Conta Corrente : #{current_account.id}", btn_save: "Atualizar", route: "prescriber")) %>
               </dialog>
 
-              <%= link_to current_account_path(current_account, route_name: "prescriber"),
+              <%= link_to current_account_path(current_account, route: "prescriber"),
                   data: { turbo_confirm: "Não se esqueça que existe a opção de DESATIVAR esta conta, tem certeza que deseja remover definitivamente esta conta corrente?", turbo_method: :delete },
                   title: "Apagar definitivamente" do %>
                 <span class="material-symbols-outlined text-primary">delete</span>
               <% end %>
 
               <% if current_account.standard? %>
-                <%= link_to change_standard_current_accounts_path(id: current_account, type: "desactive", route_name: "prescriber"), data: { turbo_method: :post } do %>
+                <%= link_to change_standard_current_accounts_path(id: current_account, type: "desactive", route: "prescriber"), data: { turbo_method: :post } do %>
                   <span class="material-symbols-outlined text-primary" title="Desabilitar">visibility</span>
                 <% end %>
               <% else %>
-                <%= link_to change_standard_current_accounts_path(id: current_account, type: "active", route_name: "prescriber"), data: { turbo_method: :post } do %>
+                <%= link_to change_standard_current_accounts_path(id: current_account, type: "active", route: "prescriber"), data: { turbo_method: :post } do %>
                   <span class="material-symbols-outlined text-primary" title="Habilitar">visibility_off</span>
                 <% end %>
               <% end %>

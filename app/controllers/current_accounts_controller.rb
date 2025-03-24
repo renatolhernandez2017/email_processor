@@ -14,7 +14,6 @@ class CurrentAccountsController < ApplicationController
 
     if @current_account.save
       flash[:success] = "Conta Corrente criada com sucesso!"
-
       render_redirect
     else
       render turbo_stream: turbo_stream.replace("form_current_account",
@@ -23,7 +22,7 @@ class CurrentAccountsController < ApplicationController
           representatives: @representatives,
           title: "Novo fechamento",
           btn_save: "Salvar",
-          route_name: "representative"
+          route: "representative"
         })
     end
   end
@@ -31,7 +30,6 @@ class CurrentAccountsController < ApplicationController
   def update
     if @current_account.update(current_account_params)
       flash[:success] = "Conta Corrente atualizada com sucesso."
-
       render_redirect
     else
       render turbo_stream: turbo_stream.replace("form_current_account",
@@ -45,7 +43,6 @@ class CurrentAccountsController < ApplicationController
     @current_account.destroy
 
     flash[:success] = "Conta Corrente apagada com sucesso."
-
     render_redirect
   end
 
