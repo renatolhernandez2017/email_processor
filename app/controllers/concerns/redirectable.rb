@@ -8,14 +8,10 @@ module Redirectable
   private
 
   def set_route
-    @route_name = params[:route_name]
+    @route = params[:route]
   end
 
   def render_redirect
-    if @route_name.present?
-      render turbo_stream: turbo_stream.action(:redirect, send(:"#{@route_name.pluralize}_path"))
-    else
-      render turbo_stream: turbo_stream.action(:redirect, current_accounts_path)
-    end
+    render turbo_stream: turbo_stream.action(:redirect, send(:"#{@route.pluralize}_path"))
   end
 end

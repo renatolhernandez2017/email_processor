@@ -48,19 +48,19 @@ sp_cities = [
   )
 
   CurrentAccount.create!(
-    bank_id: bank.id,
-    branch_id: branch.id,
+    bank: bank,
+    branch: branch,
     favored: branch.name
   )
 
   representative = Representative.create!(
     name: Faker::Name.name,
-    branch_id: branch.id
+    branch: branch
   )
 
   CurrentAccount.create!(
-    bank_id: bank.id,
-    representative_id: representative.id,
+    bank: bank,
+    representative: representative,
     favored: representative.name
   )
 
@@ -71,13 +71,13 @@ sp_cities = [
     note: Faker::Lorem.sentence,
     class_council: rand(1..9),
     uf_council: Faker::Address.state_abbr,
-    number_council: Array.new(6) { rand(1..9) }.join(" "),
-    representative_id: representative.id
+    number_council: Array.new(6) { rand(1..9) }.join,
+    representative: representative
   )
 
   CurrentAccount.create!(
-    bank_id: bank.id,
-    prescriber_id: prescriber.id,
+    bank: bank,
+    prescriber: prescriber,
     favored: prescriber.name
   )
 
@@ -92,13 +92,13 @@ sp_cities = [
     phone: Faker::PhoneNumber.phone_number,
     cellphone: Faker::PhoneNumber.cell_phone,
     fax: Faker::PhoneNumber.phone_number,
-    prescriber_id: prescriber.id
+    prescriber: prescriber
   )
 
   Discount.create!(
     description: Faker::Commerce.product_name,
-    branch_id: branch.id,
-    prescriber_id: prescriber.id
+    branch: branch,
+    prescriber: prescriber
   )
 end
 
