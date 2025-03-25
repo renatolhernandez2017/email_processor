@@ -1,4 +1,8 @@
 class Discount < ApplicationRecord
+  audited
+
+  include PgSearch::Model
+
   belongs_to :prescriber
   belongs_to :branch
 

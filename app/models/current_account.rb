@@ -1,4 +1,8 @@
 class CurrentAccount < ApplicationRecord
+  audited
+
+  include PgSearch::Model
+
   belongs_to :bank, optional: true
   belongs_to :branch, optional: true
   belongs_to :representative, optional: true
