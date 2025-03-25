@@ -1,23 +1,19 @@
-<div class="card border border-primary mt-2 <%= index % 2 == 0 ? "bg-gray-200" : "bg-gray-100" %>">
-  <div class="m-5">
-    <table class="table-auto w-full text-sm font-semibold text-center">
-      <thead class="text-base">
-        <tr>
-          <th>Endereço</th>
-          <th>Telefone 1</th>
-          <th>Telefone 2</th>
-          <th>Fax</th>
-        </tr>
-      </thead>
+<table class="table-auto w-full text-sm font-semibold text-center">
+  <thead class="text-base">
+    <tr>
+      <th>Endereço</th>
+      <th>Telefone 1</th>
+      <th>Telefone 2</th>
+      <th>Fax</th>
+    </tr>
+  </thead>
 
-      <tbody>
-        <tr class="bg-white border">
-          <td><%= full_address %></td>
-          <td><%= address.phone %></td>
-          <td><%= address.cellphone %></td>
-          <td><%= address.fax %></td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
-</div>
+  <tbody>
+    <tr class="bg-white border">
+      <td><%= full_address %></td>
+      <td><%= address.phone %></td>
+      <td><%= address.cellphone %></td>
+      <td><%= address.fax %></td>
+    </tr>
+  </tbody>
+</table>

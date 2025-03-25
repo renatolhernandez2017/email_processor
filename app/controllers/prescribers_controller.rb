@@ -1,7 +1,9 @@
 class PrescribersController < ApplicationController
   include Pagy::Backend
 
-  before_action :get_representatives, :get_prescribers, :get_branches
+  before_action :get_representatives
+  before_action :get_prescribers
+  before_action :get_branches
   before_action :get_prescriber, only: %i[update show destroy]
 
   def index
@@ -28,6 +30,9 @@ class PrescribersController < ApplicationController
   end
 
   def show
+    @address = @prescriber.address
+    @discounts = @prescriber.discounts
+    @current_accounts = @prescriber.current_accounts
   end
 
   def destroy

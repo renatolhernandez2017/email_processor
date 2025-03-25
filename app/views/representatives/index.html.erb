@@ -26,7 +26,7 @@
             <td><%= representative.branch.name %></td>
             <td><%= representative.partnership %> %</td>
 
-            <td class="flex-1">
+            <td class="flex justify-center items-center gap-2 h-12">
               <button onclick="document.getElementById('edit_representative<%= representative.id %>').showModal();" title="Editar">
                 <span class="material-symbols-outlined text-primary">edit</span>
               </button>
@@ -61,7 +61,7 @@
             </td>
 
             <td class="cursor-pointer" data-controller="toggle" data-action="click->toggle#tableTr" data-tr-id="representative_tr_hidden_<%= index %>">
-              <details class="collapse collapse-arrow -top-1 h-12 flex justify-center items-center">
+              <details class="collapse collapse-arrow -top-1 h-12">
                 <summary class="collapse-title font-semibold"></summary>
               </details>
             </td>

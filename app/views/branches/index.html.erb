@@ -24,7 +24,7 @@
             <td><%= branch.branch_number %></td>
             <td><%= branch.discount_request %> %</td>
 
-            <td>
+            <td class="flex justify-center items-center gap-2 h-12">
               <button onclick="document.getElementById('edit_branch<%= branch.id %>').showModal();" title="Editar" class="p-2 rounded-full">
                 <span class="material-symbols-outlined text-primary">edit</span>
               </button>
@@ -43,7 +43,7 @@
             </td>
 
             <td class="cursor-pointer" data-controller="toggle" data-action="click->toggle#tableTr" data-tr-id="branch_tr_hidden_<%= index %>">
-              <details class="collapse collapse-arrow -top-1 h-12 flex justify-center items-center">
+              <details class="collapse collapse-arrow -top-1 h-12">
                 <summary class="collapse-title font-semibold"></summary>
               </details>
             </td>

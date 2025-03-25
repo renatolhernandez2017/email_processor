@@ -9,7 +9,7 @@
         <%= link_to "Representantes", representatives_path, class: "lg:text-base md:text-sm" %>
       </li>
 
-      <li role="tab" class="tab text-center checked:[--tab-bg:darkblue] checked:text-primary-content h-12 <%= 'bg-primary checked text-white' if current_page?(prescribers_path) %>">
+      <li role="tab" class="tab text-center checked:[--tab-bg:darkblue] checked:text-primary-content h-12 <%= 'bg-primary checked text-white' if current_page?(prescribers_path) || (params[:action] == "show" && current_page?(prescriber_path)) %>">
         <%= link_to "Prescritores", prescribers_path, class: "lg:text-base md:text-sm" %>
       </li>
 

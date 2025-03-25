@@ -4,8 +4,7 @@
   <div class="flex items-center gap-2">
     <%= @form.collection_radio_buttons @field_name, [["Não", false], ["Sim", true]], :last, :first, include_hidden: false do |f| %>
       <%= f.radio_button class: "radio radio-primary" %>
-      <%= f.label %>
+      <%= f.label class: "cursor-pointer" %>
     <% end %>
   </div>
 </div>
-

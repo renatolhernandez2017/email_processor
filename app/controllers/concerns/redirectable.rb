@@ -2,7 +2,7 @@ module Redirectable
   extend ActiveSupport::Concern
 
   included do
-    before_action :set_route, only: %i[create update change_standard destroy]
+    before_action :set_route, :get_table, only: %i[create update show change_standard destroy]
   end
 
   private
@@ -11,7 +11,18 @@ module Redirectable
     @route = params[:route]
   end
 
+  def get_table
+    return unless params[:route] == "prescriber"
+
+    @id = params.dig(:prescriber_id) ||
+          params.dig(:current_accounts, :prescriber_id) ||
+          params.dig(:discount, :prescriber_id)
+
+    @table = Prescriber.find(@id) if @id.present?
+  end
+
   def render_redirect
-    render turbo_stream: turbo_stream.action(:redirect, send(:"#{@route.pluralize}_path"))
+    path = @table.present? ? send(:"#{@route}_path", @table) : send(:"#{@route.pluralize}_path")
+    render turbo_stream: turbo_stream.action(:redirect, path)
   end
 end

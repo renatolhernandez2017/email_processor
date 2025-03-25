@@ -1,27 +1,25 @@
-<div class="card border border-primary <%= index % 2 == 0 ? "bg-gray-200" : "bg-gray-100" %>">
-  <div class="m-5">
-    <table class="table-auto w-full text-sm font-semibold text-center">
-      <thead class="text-base">
-        <tr>
-          <th>Parceria %</th>
-          <th>Repetições %</th>
-          <th>Desconto %</th>
-          <th>Considera desconto de até %</th>
-          <th>Secretaria</th>
-          <th>Observação</th>
-        </tr>
-      </thead>
 
-      <tbody>
-        <tr class="bg-white border">
-          <td><%= prescriber.partnership %></td>
-          <td><%= prescriber.repetitions %></td>
-          <td><%= prescriber.percentage_discount %></td>
-          <td><%= prescriber.consider_discount_of_up_to %></td>
-          <td><%= prescriber.secretary %></td>
-          <td><%= prescriber.note %></td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
-</div>
+  <table class="table-auto w-full text-sm font-semibold text-center">
+    <thead class="text-base">
+      <tr>
+        <th>Parceria %</th>
+        <th>Repetições %</th>
+        <th>Desconto %</th>
+        <th>Considera desconto de até %</th>
+        <th>Secretaria</th>
+        <th>Observação</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      <tr class="bg-white border">
+        <td><%= prescriber.partnership %></td>
+        <td><%= prescriber.repetitions %></td>
+        <td><%= prescriber.percentage_discount %></td>
+        <td><%= prescriber.consider_discount_of_up_to %></td>
+        <td><%= prescriber.secretary %></td>
+        <td><%= prescriber.note %></td>
+      </tr>
+    </tbody>
+  </table>
+
