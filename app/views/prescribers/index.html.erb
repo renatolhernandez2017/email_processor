@@ -25,12 +25,7 @@
             </td>
 
             <td><%= prescriber.representative.name %></td>
-
-            <td>
-              <%= prescriber.class_council %> -
-              <%= prescriber.uf_council %> -
-              <%= prescriber.number_council %>
-            </td>
+            <td><%= prescriber.full_concil %></td>
 
             <td class="flex justify-center items-center gap-2 h-12">
               <button onclick="document.getElementById('edit_prescriber<%= prescriber.id %>').showModal();" title="Editar">

@@ -19,4 +19,8 @@ class Prescriber < ApplicationRecord
       "Address not available"
     end
   end
+
+  def full_concil
+    "#{class_council} - #{uf_council} - #{number_council}"
+  end
 end
