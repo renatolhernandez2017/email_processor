@@ -1,48 +1,61 @@
-<table class="table-auto w-full text-sm font-semibold text-center">
-  <thead class="text-base">
-    <tr>
-      <th>Banco</th>
-      <th>Agencia</th>
-      <th>Conta</th>
-      <th>Favorecido</th>
-      <th>Ações</th>
-    </tr>
-  </thead>
+<input type="checkbox" id="current-accounts-collapse" class="sr-only" />
+<label for="current-accounts-collapse" class="collapse-title menu-title flex place-items-center text-lg text-primary cursor-pointer">
+  Contas Correntes
+</label>
 
-  <tbody>
-    <% current_accounts.each do |current_account| %>
-      <tr class="bg-white border">
-        <td><%= current_account.bank.name %></td>
-        <td><%= current_account.bank.agency_number %></td>
-        <td><%= current_account.bank.account_number %></td>
-        <td><%= current_account.favored %></td>
+<ul class="collapse-content menu rounded-box">
+  <li>
+    <ul class="border-l-2 border-primary">   
+      <div class="overflow-x-auto">
+        <table class="table">
+          <thead class="text-base">
+            <tr>
+              <th>Banco</th>
+              <th>Agencia</th>
+              <th>Conta</th>
+              <th>Favorecido</th>
+              <th>Ações</th>
+            </tr>
+          </thead>
 
-        <td class="flex justify-center gap-2">
-          <button onclick="document.getElementById('edit_current_account_representative<%= current_account.id %>').showModal();" title="Editar Conta">
-            <span class="material-symbols-outlined text-primary">edit</span>
-          </button>
+          <tbody>
+            <% current_accounts.each_with_index do |current_account, index| %>
+              <tr class="<%= index.even? ? 'bg-gray-200' : 'bg-gray-100' %>">
+                <td><%= current_account.bank.name %></td>
+                <td><%= current_account.bank.agency_number %></td>
+                <td><%= current_account.bank.account_number %></td>
+                <td><%= current_account.favored %></td>
 
-          <dialog id="edit_current_account_representative<%= current_account.id %>" class="modal place-items-center">
-            <%= render ModalComponent.new(form: render("current_accounts/form", representative: prescriber, current_account: current_account, representatives: prescribers, title: "Editar Conta Corrente : #{current_account.id}", btn_save: "Atualizar", route: "prescriber"), prescriber_id: prescriber.id) %>
-          </dialog>
+                <td class="flex justify-center gap-2">
+                  <button onclick="document.getElementById('edit_current_account_representative<%= current_account.id %>').showModal();" title="Editar Conta">
+                    <span class="material-symbols-outlined text-primary">edit</span>
+                  </button>
 
-          <%= link_to current_account_path(current_account, route: "prescriber", prescriber_id: prescriber.id),
-              data: { turbo_confirm: "Não se esqueça que existe a opção de DESATIVAR esta conta, tem certeza que deseja remover definitivamente esta conta corrente?", turbo_method: :delete },
-              title: "Apagar definitivamente" do %>
-            <span class="material-symbols-outlined text-primary">delete</span>
-          <% end %>
+                  <dialog id="edit_current_account_representative<%= current_account.id %>" class="modal place-items-center">
+                    <%= render ModalComponent.new(form: render("current_accounts/form", representative: prescriber, current_account: current_account, representatives: prescribers, title: "Editar Conta Corrente : #{current_account.id}", btn_save: "Atualizar", route: "prescriber"), prescriber_id: prescriber.id) %>
+                  </dialog>
 
-          <% if current_account.standard? %>
-            <%= link_to change_standard_current_accounts_path(id: current_account, type: "desactive", route: "prescriber", prescriber_id: prescriber.id), data: { turbo_method: :post } do %>
-              <span class="material-symbols-outlined text-primary" title="Desabilitar">visibility</span>
+                  <%= link_to current_account_path(current_account, route: "prescriber", prescriber_id: prescriber.id),
+                      data: { turbo_confirm: "Não se esqueça que existe a opção de DESATIVAR esta conta, tem certeza que deseja remover definitivamente esta conta corrente?", turbo_method: :delete },
+                      title: "Apagar definitivamente" do %>
+                    <span class="material-symbols-outlined text-primary">delete</span>
+                  <% end %>
+
+                  <% if current_account.standard? %>
+                    <%= link_to change_standard_current_accounts_path(id: current_account, type: "desactive", route: "prescriber", prescriber_id: prescriber.id), data: { turbo_method: :post } do %>
+                      <span class="material-symbols-outlined text-primary" title="Desabilitar">visibility</span>
+                    <% end %>
+                  <% else %>
+                    <%= link_to change_standard_current_accounts_path(id: current_account, type: "active", route: "prescriber", prescriber_id: prescriber.id), data: { turbo_method: :post } do %>
+                      <span class="material-symbols-outlined text-primary" title="Habilitar">visibility_off</span>
+                    <% end %>
+                  <% end %>
+                </td>
+              </tr>
             <% end %>
-          <% else %>
-            <%= link_to change_standard_current_accounts_path(id: current_account, type: "active", route: "prescriber", prescriber_id: prescriber.id), data: { turbo_method: :post } do %>
-              <span class="material-symbols-outlined text-primary" title="Habilitar">visibility_off</span>
-            <% end %>
-          <% end %>
-        </td>
-      </tr>
-    <% end %>
-  </tbody>
-</table>
+          </tbody>
+        </table>
+      </div>
+    </ul>
+  </li>
+</ul>

@@ -1,51 +1,17 @@
-<section class="flex flex-col p-5 gap-5">
-  <div class="collapse collapse-arrow bg-primary">
-    <input type="checkbox" />
-    <div class="collapse-title font-semibold text-center text-white">Informações Adicionais</div>
-
-    <div class="collapse-content text-sm bg-gray-100">
-      <div class="m-5">
-        <%= render "additional_information", prescriber: @prescriber %>
-      </div>
-    </div>
+<section class="flex flex-col gap-5 p-5 mb-20">
+  <div class="card shadow-lg border border-primary">
+    <%= render "additional_information", prescriber: @prescriber %>
   </div>
 
-  <div class="collapse collapse-arrow bg-primary">
-    <input type="checkbox" />
-    <div class="collapse-title font-semibold text-center text-white">Endereço</div>
-
-    <div class="collapse-content text-sm bg-gray-100">
-      <div class="m-5">
-        <%= render "address", prescriber: @prescriber, full_address: @prescriber.full_address, address: @address %>
-      </div>
-    </div>
+  <div class="card shadow-lg border border-primary">
+    <%= render "address", prescriber: @prescriber, full_address: @prescriber.full_address, address: @address %>
   </div>
 
-  <div class="collapse collapse-arrow bg-primary">
-    <input type="checkbox" />
-    <div class="collapse-title font-semibold text-center text-white">Contas Correntes</div>
-
-    <div class="collapse-content text-sm bg-gray-100">
-      <div class="m-5">
-        <%= render "current_accounts", prescriber: @prescriber, current_accounts: @current_accounts, prescribers: @prescribers_map %>
-      </div>
-    </div>
+  <div class="card shadow-lg border border-primary collapse collapse-arrow">
+    <%= render "current_accounts", prescriber: @prescriber, current_accounts: @current_accounts, prescribers: @prescribers_map %>
   </div>
 
-  <div class="collapse collapse-arrow bg-primary">
-    <input type="checkbox" />
-    <div class="collapse-title font-semibold text-center text-white">Descontos</div>
-
-    <div class="collapse-content text-sm bg-gray-100">
-      <div class="m-5">
-        <%= render "discounts", prescriber: @prescriber, discounts: @discounts, branches: @branches %>
-      </div>
-    </div>
+  <div class="card shadow-lg border border-primary collapse collapse-arrow">
+    <%= render "discounts", prescriber: @prescriber, discounts: @discounts, branches: @branches %>
   </div>
 </section>
-
-<div class="flex w-full">
-  <div class="card bg-gray-500 rounded-box grid h-20 grow place-items-center">content</div>
-  <div class="divider divider-horizontal">OR</div>
-  <div class="card bg-gray-500 rounded-box grid h-20 grow place-items-center">content</div>
-</div>

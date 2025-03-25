@@ -1,19 +1,31 @@
-<table class="table-auto w-full text-sm font-semibold text-center">
-  <thead class="text-base">
-    <tr>
-      <th>Endereço</th>
-      <th>Telefone 1</th>
-      <th>Telefone 2</th>
-      <th>Fax</th>
-    </tr>
-  </thead>
+<label class="menu-title flex place-items-center text-lg text-primary">
+  Endereço
+</label>
 
-  <tbody>
-    <tr class="bg-white border">
-      <td><%= full_address %></td>
-      <td><%= address.phone %></td>
-      <td><%= address.cellphone %></td>
-      <td><%= address.fax %></td>
-    </tr>
-  </tbody>
-</table>
+<ul class="menu rounded-box">
+  <li>
+    <ul class="border-l-2 border-primary">
+      <div class="overflow-x-auto">
+        <table class="table">
+          <thead class="text-base">
+            <tr>
+              <th>Endereço Completo</th>
+              <th>Telefone 1</th>
+              <th>Telefone 2</th>
+              <th>Fax</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            <tr class="bg-gray-200">
+              <td><%= full_address %></td>
+              <td><%= address.phone %></td>
+              <td><%= address.cellphone %></td>
+              <td><%= address.fax %></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </ul>
+  </li>
+</ul>
