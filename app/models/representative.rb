@@ -9,4 +9,5 @@ class Representative < ApplicationRecord
   has_one :prescriber, dependent: :destroy
 
   has_many :current_accounts, dependent: :destroy
+  has_many :monthly_reports, dependent: :destroy
 end

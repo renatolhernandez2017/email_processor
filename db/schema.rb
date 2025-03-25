@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_03_25_184826) do
+ActiveRecord::Schema[7.1].define(version: 2025_03_25_185047) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
   enable_extension "unaccent"
@@ -125,8 +125,10 @@ ActiveRecord::Schema[7.1].define(version: 2025_03_25_184826) do
     t.datetime "updated_at", null: false
     t.bigint "closing_id"
     t.bigint "prescriber_id"
+    t.bigint "representative_id"
     t.index ["closing_id"], name: "index_monthly_reports_on_closing_id"
     t.index ["prescriber_id"], name: "index_monthly_reports_on_prescriber_id"
+    t.index ["representative_id"], name: "index_monthly_reports_on_representative_id"
   end
 
   create_table "prescribers", force: :cascade do |t|
@@ -187,6 +189,7 @@ ActiveRecord::Schema[7.1].define(version: 2025_03_25_184826) do
   add_foreign_key "discounts", "prescribers"
   add_foreign_key "monthly_reports", "closings"
   add_foreign_key "monthly_reports", "prescribers"
+  add_foreign_key "monthly_reports", "representatives"
   add_foreign_key "prescribers", "representatives"
   add_foreign_key "representatives", "branches"
 end
