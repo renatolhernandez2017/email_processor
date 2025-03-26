@@ -24,7 +24,7 @@
               <%= link_to prescriber.name, prescriber_path(prescriber), class: "text-primary" %>
             </td>
 
-            <td><%= prescriber.representative.name %></td>
+            <td><%= prescriber&.representative&.name %></td>
             <td><%= prescriber.full_concil %></td>
 
             <td class="flex justify-center items-center gap-2 h-12">

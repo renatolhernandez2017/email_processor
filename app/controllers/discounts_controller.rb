@@ -35,7 +35,8 @@ class DiscountsController < ApplicationController
         partial: "discounts/form", locals: {
           discount: @discount, title: "Editar Desconto : #{@discount.id}",
           prescriber: @discount.prescriber,
-          branches: @branches, btn_save: "Atualizar"
+          branches: @branches, btn_save: "Atualizar",
+          route: @route
         })
     end
   end

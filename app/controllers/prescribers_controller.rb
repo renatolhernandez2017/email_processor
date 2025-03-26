@@ -12,6 +12,7 @@ class PrescribersController < ApplicationController
     @current_account = CurrentAccount.new
     @current_account.build_bank
     @discount = Discount.new
+    @prescribers.each(&:ensure_address)
   end
 
   def update
@@ -30,9 +31,13 @@ class PrescribersController < ApplicationController
   end
 
   def show
+    closing_id = @current_closing.id
     @address = @prescriber.address
-    @discounts = @prescriber.discounts
     @current_accounts = @prescriber.current_accounts
+
+    @discounts = @prescriber&.discounts
+      &.joins(:monthly_report)
+      &.where(monthly_reports: {closing_id: closing_id})
   end
 
   def destroy
@@ -73,7 +78,7 @@ class PrescribersController < ApplicationController
       :representative_id,
       address_attributes: %i[
         street district number complement city uf zip_code phone cellphone fax
-        representative_id prescriber_id
+        representative_id prescriber_id _destroy
       ]
     )
   end
