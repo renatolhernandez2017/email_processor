@@ -13,15 +13,36 @@ class Prescriber < ApplicationRecord
 
   accepts_nested_attributes_for :address
 
+  PROFESSIONAL_TYPES = {"CRM" => 1,
+                        "CRO" => 2,
+                        "CRN" => 9}
+
   def full_address
-    if address.present?
-      "#{address.street} - #{address.number} - #{address.district} - #{address.city} - #{address.uf} - #{address.zip_code}"
-    else
-      "Address not available"
-    end
+    return "Endereço não cadastrado" unless address.present?
+
+    [
+      address.street,
+      address.number,
+      address.district,
+      address.city,
+      address.uf,
+      address.zip_code
+    ].compact.join(" - ")
   end
 
   def full_concil
-    "#{class_council} - #{uf_council} - #{number_council}"
+    [class_council, uf_council, number_council].compact.join(" - ")
+  end
+
+  def ensure_address
+    super || build_address unless address.present?
+  end
+
+  def discount_of_up_to
+    if consider_discount_of_up_to == 0.0 || consider_discount_of_up_to.nil?
+      15.0
+    else
+      consider_discount_of_up_to
+    end
   end
 end
