@@ -63,7 +63,7 @@
               </button>
 
               <dialog id="discount_prescriber<%= prescriber.id %>" class="modal place-items-center">
-                <%= render ModalComponent.new(form: render("discounts/form", discount: @discount, branches: @branches, prescriber: prescriber, title: "Novo Desconto", btn_save: "Salvar", route: "prescriber")) %>
+                <%= render ModalComponent.new(form: render("discounts/form", discount: @discount, branches: @branches, prescriber: prescriber, title: "Novo Desconto", btn_save: "Salvar", route: "prescribers")) %>
               </dialog>
             </td>
           </tr>

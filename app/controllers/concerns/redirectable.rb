@@ -12,7 +12,7 @@ module Redirectable
   end
 
   def set_table
-    return unless params[:route] == "prescriber"
+    return unless params[:route] == "prescriber" || params[:route] != "prescribers"
 
     @id = params.dig(:prescriber_id) ||
       params.dig(:current_accounts, :prescriber_id) ||
