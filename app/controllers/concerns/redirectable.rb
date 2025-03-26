@@ -2,7 +2,7 @@ module Redirectable
   extend ActiveSupport::Concern
 
   included do
-    before_action :set_route, :get_table, only: %i[create update show change_standard destroy]
+    before_action :set_route, :set_table, only: %i[create update show change_standard destroy]
   end
 
   private
@@ -11,14 +11,14 @@ module Redirectable
     @route = params[:route]
   end
 
-  def get_table
+  def set_table
     return unless params[:route] == "prescriber"
 
     @id = params.dig(:prescriber_id) ||
-          params.dig(:current_accounts, :prescriber_id) ||
-          params.dig(:discount, :prescriber_id)
+      params.dig(:current_accounts, :prescriber_id) ||
+      params.dig(:discount, :prescriber_id)
 
-    @table = Prescriber.find(@id) if @id.present?
+    @table = Prescriber.find_by(id: @id)
   end
 
   def render_redirect

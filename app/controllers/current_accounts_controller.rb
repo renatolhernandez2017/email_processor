@@ -2,8 +2,8 @@ class CurrentAccountsController < ApplicationController
   include Pagy::Backend
   include Redirectable
 
-  before_action :get_representatives
-  before_action :get_current_account, only: %i[update destroy change_standard]
+  before_action :set_representatives
+  before_action :set_current_account, only: %i[update destroy change_standard]
 
   def index
     @pagy, @current_accounts = pagy(CurrentAccount.all.order(created_at: :desc))
@@ -75,11 +75,11 @@ class CurrentAccountsController < ApplicationController
     )
   end
 
-  def get_current_account
-    @current_account = CurrentAccount.find(params[:id])
+  def set_current_account
+    @current_account = CurrentAccount.find_by(id: params[:id])
   end
 
-  def get_representatives
+  def set_representatives
     @representatives = Representative.all
   end
 end

@@ -2,8 +2,8 @@ class DiscountsController < ApplicationController
   include Pagy::Backend
   include Redirectable
 
-  before_action :get_branches
-  before_action :get_discount, only: %i[update destroy]
+  before_action :set_branches
+  before_action :set_discount, only: %i[update destroy]
 
   def index
     @pagy, @discounts = pagy(Discount.all.order(created_at: :desc))
@@ -61,11 +61,11 @@ class DiscountsController < ApplicationController
     params_result
   end
 
-  def get_discount
-    @discount = Discount.find(params[:id])
+  def set_discount
+    @discount = Discount.find_by(id: params[:id])
   end
 
-  def get_branches
-    @branches = Branch.all.map { |branch| [branch.name, branch.id] }
+  def set_branches
+    @branches = Branch.pluck(:name, :id)
   end
 end

@@ -1,10 +1,10 @@
 class PrescribersController < ApplicationController
   include Pagy::Backend
 
-  before_action :get_representatives
-  before_action :get_prescribers
-  before_action :get_branches
-  before_action :get_prescriber, only: %i[update show destroy]
+  before_action :set_representatives
+  before_action :set_prescribers
+  before_action :set_branches
+  before_action :set_prescriber, only: %i[update show destroy desaccumulate]
 
   def index
     @pagy, @prescribers = pagy(@prescribers_map.order(created_at: :desc))
@@ -42,6 +42,16 @@ class PrescribersController < ApplicationController
     render turbo_stream: turbo_stream.action(:redirect, prescribers_path)
   end
 
+  def desaccumulate
+    # @prescriber
+    # @current_closin
+
+    # usar nos params abaixo se precisar
+    # monthly_reports_attributes: %i[
+    #   id month year value
+    # ]
+  end
+
   private
 
   def prescriber_params
@@ -68,19 +78,19 @@ class PrescribersController < ApplicationController
     )
   end
 
-  def get_prescriber
-    @prescriber = Prescriber.find(params[:id])
+  def set_prescriber
+    @prescriber = Prescriber.find_by(id: params[:id])
   end
 
-  def get_representatives
+  def set_representatives
     @representatives = Representative.all
   end
 
-  def get_prescribers
+  def set_prescribers
     @prescribers_map = Prescriber.all
   end
 
-  def get_branches
-    @branches = Branch.all.map { |branch| [branch.name, branch.id] }
+  def set_branches
+    @branches = Branch.pluck(:name, :id)
   end
 end

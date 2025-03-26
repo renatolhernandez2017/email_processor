@@ -1,7 +1,7 @@
 class ClosingsController < ApplicationController
   include Pagy::Backend
 
-  before_action :get_closing, only: %i[update modify_for_this_closure]
+  before_action :set_closing, only: %i[update modify_for_this_closure]
 
   def index
     @pagy, @closings = pagy(Closing.all.order(start_date: :desc))
@@ -60,7 +60,7 @@ class ClosingsController < ApplicationController
     )
   end
 
-  def get_closing
-    @closing = Closing.find(params[:id])
+  def set_closing
+    @closing = Closing.find_by(id: params[:id])
   end
 end

@@ -1,8 +1,8 @@
 class BranchesController < ApplicationController
   include Pagy::Backend
 
-  before_action :get_branches
-  before_action :get_branch, only: %i[update]
+  before_action :set_branches
+  before_action :set_branch, only: %i[update]
 
   def index
     @pagy, @branches = pagy(@branches_map.order(created_at: :desc))
@@ -33,11 +33,11 @@ class BranchesController < ApplicationController
     )
   end
 
-  def get_branch
-    @branch = Branch.find(params[:id])
+  def set_branch
+    @branch = Branch.find_by(id: params[:id])
   end
 
-  def get_branches
+  def set_branches
     @branches_map = Branch.all
   end
 end

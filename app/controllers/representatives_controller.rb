@@ -1,8 +1,8 @@
 class RepresentativesController < ApplicationController
   include Pagy::Backend
 
-  before_action :get_branches, :get_representatives
-  before_action :get_representative, only: %i[update]
+  before_action :set_branches, :set_representatives
+  before_action :set_representative, only: %i[update]
 
   def index
     @pagy, @representatives = pagy(@representatives_map.order(created_at: :desc))
@@ -38,15 +38,15 @@ class RepresentativesController < ApplicationController
     )
   end
 
-  def get_representative
-    @representative = Representative.find(params[:id])
+  def set_representative
+    @representative = Representative.find_by(id: params[:id])
   end
 
-  def get_branches
-    @branches = Branch.all.map { |branch| [branch.name, branch.id] }
+  def set_branches
+    @branches = Branch.pluck(:name, :id)
   end
 
-  def get_representatives
+  def set_representatives
     @representatives_map = Representative.all
   end
 end
