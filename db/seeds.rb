@@ -8,16 +8,18 @@ Branch.destroy_all
 CurrentAccount.destroy_all
 Bank.destroy_all
 Discount.destroy_all
+MonthlyReport.destroy_all
+
+puts "Data atual"
+date = Date.today
 
 puts "Criando user Admin"
 User.create!(name: "renato", email: "renatolhernandez@gmail.com", password: "120711", role: "admin")
 
 puts "Criando Fechamento e relatórios"
-date = Date.today
-
 15.times do |i|
   start_date = (date << (i + 1)).next_day - 1
-  end_date = (date << i).next_day - 1
+  end_date = (date << i).next_day
 
   Closing.create!(
     start_date: start_date,
@@ -96,10 +98,42 @@ sp_cities = [
   )
 
   Discount.create!(
+    price: i + 1,
     description: Faker::Commerce.product_name,
     branch: branch,
     prescriber: prescriber
   )
 end
+
+puts "Criando Fechamento e relatórios"
+start_date = date.next_day
+end_date = (start_date + 1.month).next_day
+
+closing = Closing.create!(
+  start_date: start_date,
+  end_date: end_date,
+  closing: "#{end_date.strftime("%b")}/#{end_date.strftime("%y")}",
+  last_envelope: 100
+)
+
+puts "Criando Prescritor"
+prescriber = Prescriber.create!(
+  name: Faker::Name.name,
+  council: "#{Faker::Name.first_name} - Conselho",
+  secretary: "#{Faker::Name.first_name} - Secretaria",
+  note: Faker::Lorem.sentence,
+  class_council: rand(1..9),
+  uf_council: Faker::Address.state_abbr,
+  number_council: Array.new(6) { rand(1..9) }.join
+)
+
+puts "Criando Relatório Mensal"
+MonthlyReport.create!(
+  report: "Teste",
+  quantity: 1,
+  envelope_number: 1,
+  closing: closing,
+  prescriber: prescriber
+)
 
 puts "FIM!"
