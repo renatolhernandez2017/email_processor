@@ -5,6 +5,7 @@ class Discount < ApplicationRecord
 
   belongs_to :prescriber
   belongs_to :branch
+  belongs_to :monthly_report, optional: true
 
   validates :price, presence: {message: " deve ser preenchido!"}
   validates :price, numericality: {greater_than: 0, less_than_or_equal_to: 99999.9, message: " deve ser um valor maior do que zero"}
