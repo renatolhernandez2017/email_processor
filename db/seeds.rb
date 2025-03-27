@@ -129,6 +129,9 @@ prescriber = Prescriber.create!(
 
 puts "Criando Relatório Mensal"
 MonthlyReport.create!(
+  total_price: 1000.0,
+  partnership: 100.0,
+  discounts: 10.0,
   report: "Teste",
   quantity: 1,
   envelope_number: 1,

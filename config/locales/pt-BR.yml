@@ -37,10 +37,9 @@ pt-BR:
       ITAU: ITAU
       SANTANDER: SANTANDER
   view:
-    discount:
-      visible:
-        true: Sim
-        false: Não
+    toggle:
+      true: Sim
+      false: Não
     months:
       Jan: Janeiro
       Feb: Fevereiro
