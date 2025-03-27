@@ -20,7 +20,7 @@
       <tbody>
         <% @discounts.each_with_index do |discount, index| %>
           <tr class="border-t border-black <%= index % 2 == 0 ? "bg-gray-200" : "bg-gray-100" %>">
-            <td><%= t("view.discount.visible.#{discount.visible}") %></td>
+            <td><%= t("view.toggle.#{discount.visible}") %></td>
             <td><%= discount.branch.name %></td>
             <td><%= number_to_currency(discount.price) %></td>
             <td><%= discount.created_at.strftime("%d/%m/%Y") %></td>

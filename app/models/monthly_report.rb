@@ -17,7 +17,7 @@ class MonthlyReport < ApplicationRecord
 
     if prescriber.current_accounts.find_by(standard: true)
       if partnership
-        partnership - self.discounts
+        partnership - discounts
       else
         0.00
       end
