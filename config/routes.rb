@@ -16,13 +16,16 @@ Rails.application.routes.draw do
   end
 
   resources :current_accounts, only: %i[index create update destroy] do
-    post :change_standard, on: :collection
+    post :change_standard, on: :member
   end
 
   resources :branches, only: %i[index create update destroy]
   resources :discounts, only: %i[index create update destroy]
   resources :prescribers, only: %i[index create update show destroy]
-  resources :representatives, only: %i[index create update]
+
+  resources :representatives, only: %i[index create update] do
+    get :monthly_report, on: :member
+  end
 
   ###############
   ###   API22  ###

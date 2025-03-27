@@ -49,7 +49,7 @@ class PrescribersController < ApplicationController
 
   def desaccumulate
     # @prescriber
-    # @current_closin
+    # @current_closing
 
     # usar nos params abaixo se precisar
     # monthly_reports_attributes: %i[
