@@ -22,7 +22,7 @@
             <td><%= branch.id %></td>
             <td><%= branch.name %></td>
             <td><%= branch.branch_number %></td>
-            <td><%= branch.discount_request %> %</td>
+            <td><%= formatted_percentage(branch.discount_request) %></td>
 
             <td class="flex justify-center items-center gap-2 h-12">
               <button onclick="document.getElementById('edit_branch<%= branch.id %>').showModal();" title="Editar" class="p-2 rounded-full">

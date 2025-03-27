@@ -24,7 +24,7 @@
             <td><%= representative.name %></td>
             <td><%= representative.branch.branch_number.to_s.rjust(3, '0') %></td>
             <td><%= representative.branch.name %></td>
-            <td><%= representative.partnership %> %</td>
+            <td><%= formatted_percentage(representative.partnership) %></td>
 
             <td class="flex justify-center items-center gap-2 h-12">
               <button onclick="document.getElementById('edit_representative<%= representative.id %>').showModal();" title="Editar">

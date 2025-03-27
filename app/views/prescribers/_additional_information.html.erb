@@ -20,10 +20,10 @@
 
           <tbody>
             <tr class="bg-gray-200">
-              <td><%= prescriber.partnership %> %</td>
-              <td><%= prescriber.repetitions %> %</td>
-              <td><%= prescriber.percentage_discount %> %</td>
-              <td><%= prescriber.consider_discount_of_up_to %> %</td>
+              <td><%= formatted_percentage(prescriber.partnership) %></td>
+              <td><%= formatted_percentage(prescriber.repetitions) %></td>
+              <td><%= formatted_percentage(prescriber.percentage_discount) %></td>
+              <td><%= formatted_percentage(prescriber.consider_discount_of_up_to) %></td>
               <td><%= prescriber.secretary %></td>
               <td><%= prescriber.note %></td>
             </tr>
