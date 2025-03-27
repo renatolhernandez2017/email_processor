@@ -1,8 +1,9 @@
 class RepresentativesController < ApplicationController
   include Pagy::Backend
 
-  before_action :set_branches, :set_representatives
-  before_action :set_representative, only: %i[update]
+  before_action :set_branches
+  before_action :set_representatives
+  before_action :set_representative, only: %i[update monthly_report]
 
   def index
     @pagy, @representatives = pagy(@representatives_map.order(created_at: :desc))
@@ -25,6 +26,17 @@ class RepresentativesController < ApplicationController
           btn_save: "Salvar"
         })
     end
+  end
+
+  def monthly_report
+    month_abbr = @current_closing.closing.split("/")[0]
+    @closing = t("view.months.#{month_abbr}")
+
+    @monthly_reports = @representative.monthly_reports.where(closing_id: @current_closing)
+
+    # .where(monthly_reports: {closing_id: @current_closing})
+    # @totais_de_relatorio = MonthlyReport.totais_gerais_por_filial(@current_closing)
+    # @totais_por_representante = @totais_de_relatorio.group_by(&:representative_id)
   end
 
   private

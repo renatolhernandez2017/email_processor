@@ -3,6 +3,7 @@ class CurrentAccountsController < ApplicationController
   include Redirectable
 
   before_action :set_representatives
+  before_action :set_representative, only: %i[create update]
   before_action :set_current_account, only: %i[update destroy change_standard]
 
   def index
@@ -20,9 +21,10 @@ class CurrentAccountsController < ApplicationController
         partial: "current_accounts/form", locals: {
           current_account: @current_account,
           representatives: @representatives,
+          representative: @representative,
           title: "Novo fechamento",
           btn_save: "Salvar",
-          route: "representative"
+          route: @route
         })
     end
   end
@@ -34,7 +36,12 @@ class CurrentAccountsController < ApplicationController
     else
       render turbo_stream: turbo_stream.replace("form_current_account",
         partial: "current_accounts/form", locals: {
-          current_account: @current_account, title: "Novo fechamento", btn_save: "Salvar"
+          current_account: @current_account,
+          representative: @representative,
+          representatives: @representatives,
+          title: "Novo fechamento",
+          btn_save: "Salvar",
+          route: @route
         })
     end
   end
@@ -71,7 +78,7 @@ class CurrentAccountsController < ApplicationController
       :representative_id,
       :prescriber_id,
       :branch_id,
-      bank_attributes: %i[name rounding agency_number account_number]
+      bank_attributes: %i[name rounding agency_number account_number _destroy]
     )
   end
 
@@ -81,5 +88,9 @@ class CurrentAccountsController < ApplicationController
 
   def set_representatives
     @representatives = Representative.all
+  end
+
+  def set_representative
+    @representative = Representative.find_by(id: params[:current_account][:representative_id])
   end
 end

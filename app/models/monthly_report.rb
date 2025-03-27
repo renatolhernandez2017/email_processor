@@ -8,15 +8,16 @@ class MonthlyReport < ApplicationRecord
   belongs_to :representative, optional: true
   belongs_to :prescriber
 
-  has_many :discounts, dependent: :destroy
+  # has_many :discounts, dependent: :destroy
 
   validates :closing_id, :prescriber_id, presence: {message: " devem ser preenchidos!"}
 
   def available_value
     # Pronto mais precisa ainda verificar melhor
-    if current_account
+
+    if prescriber.current_accounts.find_by(standard: true)
       if partnership
-        partnership - discounts
+        partnership - self.discounts
       else
         0.00
       end

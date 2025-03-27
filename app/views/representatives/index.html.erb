@@ -35,9 +35,9 @@
                 <%= render ModalComponent.new(form: render("form", representative: representative, branches: @branches, title: "Editar Representante : #{representative.id}", btn_save: "Atualizar")) %>
               </dialog>
 
-              <button onclick="document.getElementById('description_representative<%= representative.id %>').showModal();" title="Resumo">
+              <%= link_to monthly_report_representative_path(representative), title: "Resumo" do %>
                 <span class="material-symbols-outlined text-primary">description</span>
-              </button>
+              <% end %>
 
               <button onclick="document.getElementById('list_representative<%= representative.id %>').showModal();" title="Listagem">
                 <span class="material-symbols-outlined text-primary">list_alt</span>
