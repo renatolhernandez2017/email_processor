@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_03_28_151845) do
+ActiveRecord::Schema[7.1].define(version: 2025_03_28_170116) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
   enable_extension "unaccent"
@@ -179,6 +179,14 @@ ActiveRecord::Schema[7.1].define(version: 2025_03_28_151845) do
     t.string "patient_name"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.bigint "branch_id"
+    t.bigint "prescriber_id"
+    t.bigint "representative_id"
+    t.bigint "monthly_report_id"
+    t.index ["branch_id"], name: "index_requests_on_branch_id"
+    t.index ["monthly_report_id"], name: "index_requests_on_monthly_report_id"
+    t.index ["prescriber_id"], name: "index_requests_on_prescriber_id"
+    t.index ["representative_id"], name: "index_requests_on_representative_id"
   end
 
   create_table "users", force: :cascade do |t|
@@ -212,4 +220,8 @@ ActiveRecord::Schema[7.1].define(version: 2025_03_28_151845) do
   add_foreign_key "monthly_reports", "representatives"
   add_foreign_key "prescribers", "representatives"
   add_foreign_key "representatives", "branches"
+  add_foreign_key "requests", "branches"
+  add_foreign_key "requests", "monthly_reports"
+  add_foreign_key "requests", "prescribers"
+  add_foreign_key "requests", "representatives"
 end

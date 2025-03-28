@@ -1,2 +1,10 @@
 class Request < ApplicationRecord
+  audited
+
+  include PgSearch::Model
+
+  belongs_to :branch, optional: true
+  belongs_to :prescriber, optional: true
+  belongs_to :representative, optional: true
+  belongs_to :request, optional: true
 end

@@ -10,6 +10,7 @@ class Prescriber < ApplicationRecord
   has_many :discounts, dependent: :destroy
   has_many :current_accounts, dependent: :destroy
   has_many :monthly_reports, dependent: :destroy
+  has_many :requests, dependent: :destroy
 
   accepts_nested_attributes_for :address
 

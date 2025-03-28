@@ -8,7 +8,7 @@ class MonthlyReport < ApplicationRecord
   belongs_to :representative, optional: true
   belongs_to :prescriber
 
-  # has_many :discounts, dependent: :destroy
+  has_many :requests, dependent: :destroy
 
   validates :closing_id, :prescriber_id, presence: {message: " devem ser preenchidos!"}
 

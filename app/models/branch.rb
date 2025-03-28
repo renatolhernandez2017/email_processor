@@ -5,4 +5,5 @@ class Branch < ApplicationRecord
 
   has_many :current_accounts, dependent: :destroy
   has_many :representatives, dependent: :destroy
+  has_many :requests, dependent: :destroy
 end
