@@ -116,6 +116,11 @@ closing = Closing.create!(
   last_envelope: 100
 )
 
+representative = Representative.create!(
+  name: Faker::Name.name,
+  branch: branch
+)
+
 puts "Criando Prescritor"
 prescriber = Prescriber.create!(
   name: Faker::Name.name,
@@ -124,19 +129,21 @@ prescriber = Prescriber.create!(
   note: Faker::Lorem.sentence,
   class_council: rand(1..9),
   uf_council: Faker::Address.state_abbr,
-  number_council: Array.new(6) { rand(1..9) }.join
+  number_council: Array.new(6) { rand(1..9) }.join,
+  representative: representative
 )
 
 puts "Criando Relatório Mensal"
 MonthlyReport.create!(
-  total_price: 1000.0,
-  partnership: 100.0,
-  discounts: 10.0,
+  total_price: 5000.0,
+  partnership: 1000.0,
+  discounts: 100.0,
   report: "Teste",
-  quantity: 1,
-  envelope_number: 1,
+  quantity: 2,
+  envelope_number: 2,
   closing: closing,
-  prescriber: prescriber
+  prescriber: prescriber,
+  representative_id: representative
 )
 
 puts "FIM!"
