@@ -1,6 +1,6 @@
 <%= render "actions" %>
 
-<div class="flex flex-col">
+<div class="flex flex-col px-5">
   <div class="overflow-x-auto">
     <table class="table-auto w-full text-sm font-semibold text-center">
       <thead class="text-base">
@@ -26,7 +26,7 @@
             <td><%= representative.branch.name %></td>
             <td><%= formatted_percentage(representative.partnership) %></td>
 
-            <td class="flex justify-center items-center gap-2 h-12">
+            <td class="flex justify-center items-center gap-2 h-10">
               <button onclick="document.getElementById('edit_representative<%= representative.id %>').showModal();" title="Editar">
                 <span class="material-symbols-outlined text-primary">edit</span>
               </button>
@@ -61,7 +61,7 @@
             </td>
 
             <td class="cursor-pointer" data-controller="toggle" data-action="click->toggle#tableTr" data-tr-id="representative_tr_hidden_<%= index %>">
-              <details class="collapse collapse-arrow -top-1 h-12">
+              <details class="collapse collapse-arrow -top-3 h-10">
                 <summary class="collapse-title font-semibold"></summary>
               </details>
             </td>

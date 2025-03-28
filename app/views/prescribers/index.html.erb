@@ -2,7 +2,7 @@
   <h1 class="text-2xl text-center text-primary mx-auto">Listagem de Prescritores</h1>
 </div>
 
-<div class="flex flex-col">
+<div class="flex flex-col px-5">
   <div class="overflow-x-auto">
     <table class="table-auto w-full text-sm font-semibold text-center">
       <thead class="text-base">
@@ -17,7 +17,7 @@
 
       <tbody>
         <% @prescribers.each_with_index do |prescriber, index| %>
-          <tr class="border-t border-black <%= index % 2 == 0 ? "bg-gray-200" : "bg-gray-100" %>">
+          <tr class="border-t border-black <%= index % 2 == 0 ? "bg-gray-200" : "bg-gray-100" %> h-10">
             <td><%= prescriber.id %></td>
 
             <td>
@@ -27,7 +27,7 @@
             <td><%= prescriber&.representative&.name %></td>
             <td><%= prescriber.full_concil %></td>
 
-            <td class="flex justify-center items-center gap-2 h-12">
+            <td class="flex justify-center items-center gap-2">
               <button onclick="document.getElementById('edit_prescriber<%= prescriber.id %>').showModal();" title="Editar">
                 <span class="material-symbols-outlined text-primary">edit</span>
               </button>
@@ -74,7 +74,7 @@
 
   <div class="divider border-t"></div>
 
-  <div class="grid place-items-center mb-24">
+  <div class="grid place-items-center mb-10">
     <%== pagy_nav(@pagy) if @pagy.pages > 1 %>
   </div>
 </div>

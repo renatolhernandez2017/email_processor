@@ -2,9 +2,9 @@
   <h1 class="text-2xl text-center text-primary mx-auto">Listagem de descontos</h1>
 </div>
 
-<div class="flex w-full flex-col my-12">
+<div class="flex w-full flex-col my-12 px-5">
   <div class="overflow-x-auto">
-    <table class="table-auto w-full text-sm font-semibold text-left">
+    <table class="table-auto w-full text-sm font-semibold text-center">
       <thead class="text-base">
         <tr>
           <th>Visivel</th>
@@ -19,7 +19,7 @@
 
       <tbody>
         <% @discounts.each_with_index do |discount, index| %>
-          <tr class="border-t border-black <%= index % 2 == 0 ? "bg-gray-200" : "bg-gray-100" %>">
+          <tr class="border-t border-black <%= index % 2 == 0 ? "bg-gray-200" : "bg-gray-100" %> h-10">
             <td><%= t("view.toggle.#{discount.visible}") %></td>
             <td><%= discount.branch.name %></td>
             <td><%= number_to_currency(discount.price) %></td>
@@ -28,7 +28,7 @@
             <td><%= discount.description %></td>
 
             <td>
-              <button onclick="document.getElementById('edit_discount<%= discount.id %>').showModal();" title="Editar" class="p-2 rounded-full">
+              <button onclick="document.getElementById('edit_discount<%= discount.id %>').showModal();" title="Editar">
                 <span class="material-symbols-outlined text-primary">edit</span>
               </button>
 
@@ -50,7 +50,7 @@
 
   <div class="divider border-t"></div>
 
-  <div class="grid place-items-center">
+  <div class="grid place-items-center mb-10">
     <%== pagy_nav(@pagy) if @pagy.pages > 1 %>
   </div>
 </div>
