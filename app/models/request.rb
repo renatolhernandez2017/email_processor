@@ -4,7 +4,7 @@ class Request < ApplicationRecord
   include PgSearch::Model
 
   belongs_to :branch, optional: true
+  belongs_to :monthly_report, optional: true
   belongs_to :prescriber, optional: true
   belongs_to :representative, optional: true
-  belongs_to :request, optional: true
 end
