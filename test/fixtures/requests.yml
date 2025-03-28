@@ -1,0 +1,29 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  cdfil_id: MyString
+  nrreq_id: MyString
+  entry_date: 2025-03-28
+  total_price: 9.99
+  amount_received: 9.99
+  total_fees: 9.99
+  total_discounts: 9.99
+  repeat: false
+  payment_date: 2025-03-28
+  value_for_report: 9.99
+  rg: MyString
+  patient_name: MyString
+
+two:
+  cdfil_id: MyString
+  nrreq_id: MyString
+  entry_date: 2025-03-28
+  total_price: 9.99
+  amount_received: 9.99
+  total_fees: 9.99
+  total_discounts: 9.99
+  repeat: false
+  payment_date: 2025-03-28
+  value_for_report: 9.99
+  rg: MyString
+  patient_name: MyString

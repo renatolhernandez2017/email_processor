@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_03_26_132311) do
+ActiveRecord::Schema[7.1].define(version: 2025_03_28_151845) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
   enable_extension "unaccent"
@@ -162,6 +162,23 @@ ActiveRecord::Schema[7.1].define(version: 2025_03_26_132311) do
     t.datetime "updated_at", null: false
     t.bigint "branch_id"
     t.index ["branch_id"], name: "index_representatives_on_branch_id"
+  end
+
+  create_table "requests", force: :cascade do |t|
+    t.string "cdfil_id"
+    t.string "nrreq_id"
+    t.date "entry_date"
+    t.decimal "total_price", default: "0.0"
+    t.decimal "amount_received", default: "0.0"
+    t.decimal "total_fees", default: "0.0"
+    t.decimal "total_discounts", default: "0.0"
+    t.boolean "repeat", default: false
+    t.date "payment_date"
+    t.decimal "value_for_report", default: "0.0"
+    t.string "rg"
+    t.string "patient_name"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "users", force: :cascade do |t|
