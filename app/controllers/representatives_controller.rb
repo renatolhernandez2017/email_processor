@@ -29,14 +29,39 @@ class RepresentativesController < ApplicationController
   end
 
   def monthly_report
-    month_abbr = @current_closing.closing.split("/")[0]
-    @closing = t("view.months.#{month_abbr}")
+    month_abbr = @current_closing.closing.split("/")
+    @closing = "#{t("view.months.#{month_abbr[0]}")}/#{month_abbr[1]}"
 
-    @monthly_reports = @representative.monthly_reports.where(closing_id: @current_closing)
+    @monthly_reports = @representative.monthly_reports
+      .where(closing_id: @current_closing.id)
+      .joins(:prescriber).order("prescribers.name ASC")
 
-    # .where(monthly_reports: {closing_id: @current_closing})
-    # @totais_de_relatorio = MonthlyReport.totais_gerais_por_filial(@current_closing)
-    # @totais_por_representante = @totais_de_relatorio.group_by(&:representative_id)
+    @accumulated = @monthly_reports.where(accumulated: true)
+    @not_accumulated = @monthly_reports.where(accumulated: false)
+
+    @totals_by_bank = @not_accumulated
+      .group_by { |m| m.prescriber.current_accounts.find_by(standard: true)&.bank&.name }
+      .map { |bank, monthly_report|
+        {
+          count: monthly_report.count,
+          name: bank,
+          total: monthly_report.sum(&:total_price)
+        }
+      }
+
+    @total_count = @totals_by_bank.sum { |bank| bank[:count] }
+    @total_value = @totals_by_bank.sum { |bank| bank[:total] }
+
+    @totals_by_store = @not_accumulated
+      .group_by { |m| m.representative&.branch&.name }
+      .map { |branch, monthly_report|
+        {
+          count: monthly_report.count,
+          name: branch,
+          total: monthly_report.sum(&:total_price)
+        }
+      }
+    # quebrar6
   end
 
   private

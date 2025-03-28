@@ -1,0 +1,45 @@
+<ul class="menu rounded-box my-5">
+  <label class="font-semibold text-xl text-primary">Totais por Banco</label>
+
+  <li>
+    <ul class="border-l-2 border-primary">
+      <div class="overflow-hidden">
+        <table class="table">
+          <thead class="text-base">
+            <tr>
+              <th>Quantidade</th>
+              <th>Banco</th>
+              <th>Valor</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            <% totals_by_bank.each do |bank| %>
+              <tr>
+                <td><%= bank[:count] %></td>
+                <td><%= bank[:name] %></td>
+                <td><%= number_to_currency(bank[:total]) %></td>
+              </tr>
+            <% end %>
+          </tbody>
+
+          <tfoot>
+            <thead>
+              <tr>
+                <th colspan="2" class="font-semibold text-base pt-10">Total de Bancos</th>
+                <th class="font-semibold text-base pt-10">Total</th>
+              </tr>
+            </thead>
+
+            <tbody>
+              <tr>
+                <th colspan="2"><%= total_count %></th>
+                <th><%= number_to_currency(total_value) %></th>
+              </tr>
+            </tbody>
+          </tfoot>
+        </table>
+      </div>
+    </ul>
+  </li>
+</ul>

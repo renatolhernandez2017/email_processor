@@ -1,0 +1,45 @@
+<ul class="menu rounded-box my-5">
+  <label class="font-semibold text-xl text-primary">Totais por Loja</label>
+
+  <li>
+    <ul class="border-l-2 border-primary">
+      <div class="overflow-hidden">
+        <table class="table">
+          <thead class="text-base">
+            <tr>
+              <th>Quantidade</th>
+              <th>Loja</th>
+              <th>Valor</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            <% totals_by_store.each do |store| %>
+              <tr>
+                <td><%= store[:count] %></td>
+                <td><%= store[:name] %></td>
+                <td><%= number_to_currency(store[:total]) %></td>
+              </tr>
+            <% end %>
+          </tbody>
+
+          <tfoot>
+            <thead>
+              <tr>
+                <th colspan="2" class="font-semibold text-base pt-10">Total de Lojas</th>
+                <th class="font-semibold text-base pt-10">Total</th>
+              </tr>
+            </thead>
+
+            <tbody>
+              <tr>
+                <th colspan="2">3</th>
+                <th>R$ 200,00</th>
+              </tr>
+            </tbody>
+          </tfoot>
+        </table>
+      </div>
+    </ul>
+  </li>
+</ul>

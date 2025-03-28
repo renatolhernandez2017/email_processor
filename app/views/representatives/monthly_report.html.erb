@@ -1,0 +1,16 @@
+<section class="flex flex-col gap-5 p-5 mb-20">
+  <div class="card shadow-lg border border-primary p-5">
+    <label class="text-lg">Resumo de
+      <span class="text-primary">
+        <%= @representative.name.upcase %>
+      </span>em
+
+      <span class="text-primary"><%= @closing %></span>
+    </label>
+
+    <%= render "summary", monthly_reports: @monthly_reports, accumulated: @accumulated %>
+    <%= render "totals_by_bank", totals_by_bank: @totals_by_bank, total_count: @total_count, total_value: @total_value %>
+    <%= render "totals_by_store", totals_by_store: @totals_by_store %>
+    <%= render "grade_division" %>
+  </div>
+</section>
