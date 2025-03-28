@@ -13,18 +13,12 @@ class MonthlyReport < ApplicationRecord
   validates :closing_id, :prescriber_id, presence: {message: " devem ser preenchidos!"}
 
   def available_value
-    # Pronto mais precisa ainda verificar melhor
+    return 0.00 unless partnership
 
     if prescriber.current_accounts.find_by(standard: true)
-      if partnership
-        partnership - discounts
-      else
-        0.00
-      end
-    elsif partnership
-      (partnership - discounts).to_f.round_to_ten
+      partnership - discounts
     else
-      0.00
+      round_to_ten((partnership - discounts).to_f)
     end
   end
 
@@ -32,7 +26,7 @@ class MonthlyReport < ApplicationRecord
     # Pronto mais precisa ainda verificar melhor
     if accumulated
       "A"
-    elsif !accumulated && !current_account.nil?
+    elsif !accumulated && current_account
       "D"
     else
       "E"

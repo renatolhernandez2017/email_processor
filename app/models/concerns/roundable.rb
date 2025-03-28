@@ -10,9 +10,9 @@ module Roundable
     to_i.to_f + 1
   end
 
-  def round_to_ten
-    resto = self % 10.0
-    self - resto + ((resto > 5.0) ? 10 : 0)
+  def round_to_ten(value)
+    rest = value % 10.0
+    value - rest + ((rest > 5.0) ? 10 : 0)
   end
 
   def divide_into_notes
