@@ -7,6 +7,7 @@ ruby "3.3.1"
 gem "audited", "~> 5.0"
 gem "bootsnap", require: false
 gem "cssbundling-rails"
+gem "csv"
 gem "devise_invitable"
 gem "devise"
 gem "dotenv"

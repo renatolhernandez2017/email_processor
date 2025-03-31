@@ -450,6 +450,7 @@ DEPENDENCIES
   bootsnap
   capybara
   cssbundling-rails
+  csv
   debug
   devise
   devise_invitable
