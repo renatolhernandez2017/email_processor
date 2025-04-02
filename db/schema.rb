@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_03_28_170116) do
+ActiveRecord::Schema[7.1].define(version: 2025_04_02_205214) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
   enable_extension "unaccent"
@@ -109,9 +109,11 @@ ActiveRecord::Schema[7.1].define(version: 2025_03_28_170116) do
     t.bigint "branch_id", null: false
     t.bigint "prescriber_id", null: false
     t.bigint "monthly_report_id"
+    t.bigint "request_id"
     t.index ["branch_id"], name: "index_discounts_on_branch_id"
     t.index ["monthly_report_id"], name: "index_discounts_on_monthly_report_id"
     t.index ["prescriber_id"], name: "index_discounts_on_prescriber_id"
+    t.index ["request_id"], name: "index_discounts_on_request_id"
   end
 
   create_table "monthly_reports", force: :cascade do |t|
@@ -215,6 +217,7 @@ ActiveRecord::Schema[7.1].define(version: 2025_03_28_170116) do
   add_foreign_key "discounts", "branches"
   add_foreign_key "discounts", "monthly_reports"
   add_foreign_key "discounts", "prescribers"
+  add_foreign_key "discounts", "requests"
   add_foreign_key "monthly_reports", "closings"
   add_foreign_key "monthly_reports", "prescribers"
   add_foreign_key "monthly_reports", "representatives"

@@ -7,4 +7,6 @@ class Request < ApplicationRecord
   belongs_to :monthly_report, optional: true
   belongs_to :prescriber, optional: true
   belongs_to :representative, optional: true
+
+  has_one :discount, dependent: :destroy
 end
