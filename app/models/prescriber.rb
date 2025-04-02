@@ -36,7 +36,7 @@ class Prescriber < ApplicationRecord
   end
 
   def ensure_address
-    super || build_address unless address.present?
+    build_address unless address.present?
   end
 
   def discount_of_up_to

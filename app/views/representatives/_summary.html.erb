@@ -76,13 +76,13 @@
               </tr>
 
               <tr>
-                <td><%= monthly_reports.count %></td>
+                <td><%= monthly_reports.count - accumulated.count %></td>
                 <td class="font-semibold text-base">Venda Real</td>
-                <td class="text-center"><%= monthly_reports.sum(&:quantity) %></td>
-                <td><%= number_to_currency(monthly_reports.sum(&:total_price)) %></td>
-                <td><%= number_to_currency(monthly_reports.sum(&:partnership)) %></td>
-                <td><%= number_to_currency(monthly_reports.sum(&:discounts)) %></td>
-                <td><%= number_to_currency(monthly_reports.sum(&:available_value)) %></td>
+                <td class="text-center"><%= monthly_reports.sum(&:quantity) - accumulated.sum(&:quantity) %></td>
+                <td><%= number_to_currency(monthly_reports.sum(&:total_price) - accumulated.sum(&:total_price)) %></td>
+                <td><%= number_to_currency(monthly_reports.sum(&:partnership) - accumulated.sum(&:partnership)) %></td>
+                <td><%= number_to_currency(monthly_reports.sum(&:discounts) - accumulated.sum(&:discounts)) %></td>
+                <td><%= number_to_currency(monthly_reports.sum(&:available_value) - accumulated.sum(&:available_value)) %></td>
               </tr>
             </tbody>
           </tfoot>

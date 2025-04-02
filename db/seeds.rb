@@ -9,6 +9,7 @@ CurrentAccount.destroy_all
 Bank.destroy_all
 Discount.destroy_all
 MonthlyReport.destroy_all
+Request.destroy_all
 
 puts "Data atual"
 date = Date.today
@@ -16,21 +17,7 @@ date = Date.today
 puts "Criando user Admin"
 User.create!(name: "renato", email: "renatolhernandez@gmail.com", password: "120711", role: "admin")
 
-puts "Criando Fechamento e relatórios"
-15.times do |i|
-  start_date = (date << (i + 1)).next_day - 1
-  end_date = (date << i).next_day
-
-  Closing.create!(
-    start_date: start_date,
-    end_date: end_date,
-    closing: "#{end_date.strftime("%b")}/#{end_date.strftime("%y")}",
-    last_envelope: i + 1,
-    active: i == 0
-  )
-end
-
-puts "Criando Representantes com Endereços, Filiais, Prescritores, Bancos, Contas Correntes e Descontos"
+puts "Criando Fechamento e relatórios, Representantes com Endereços, Filiais, Prescritores, Bancos, Contas Correntes e Descontos"
 sp_cities = [
   "São Paulo", "Vila Mariana", "Tatuape", "Lapa", "Santo Amaro",
   "Angélica", "Santana", "Bauru", "Diadema", "Piracicaba", "Jundiaí",
@@ -38,6 +25,17 @@ sp_cities = [
 ]
 
 15.times do |i|
+  start_date = (date << (i + 1)).next_day - 1
+  end_date = (date << i).next_day
+
+  closing = Closing.create!(
+    start_date: start_date,
+    end_date: end_date,
+    closing: "#{end_date.strftime("%b")}/#{end_date.strftime("%y")}",
+    last_envelope: i + 1,
+    active: i == 0
+  )
+
   bank = Bank.create!(
     name: I18n.t("bank.names").values.sample,
     agency_number: Faker::Number.number(digits: 4),
@@ -51,6 +49,7 @@ sp_cities = [
 
   CurrentAccount.create!(
     bank: bank,
+    standard: true,
     branch: branch,
     favored: branch.name
   )
@@ -62,6 +61,7 @@ sp_cities = [
 
   CurrentAccount.create!(
     bank: bank,
+    standard: true,
     representative: representative,
     favored: representative.name
   )
@@ -79,6 +79,7 @@ sp_cities = [
 
   CurrentAccount.create!(
     bank: bank,
+    standard: true,
     prescriber: prescriber,
     favored: prescriber.name
   )
@@ -103,11 +104,47 @@ sp_cities = [
     branch: branch,
     prescriber: prescriber
   )
+
+  monthly_report = MonthlyReport.create!(
+    total_price: Faker::Commerce.price(range: 1000.0..10000.0),
+    partnership: Faker::Commerce.price(range: 100.0..1000.0),
+    discounts: Faker::Commerce.price(range: 10.0..100.0),
+    report: Faker::Lorem.sentence,
+    quantity: i + 1,
+    envelope_number: i + 1,
+    closing: closing,
+    prescriber: prescriber,
+    representative: representative
+  )
+
+  Request.create!(
+    cdfil_id: Faker::Number.number(digits: 5),
+    nrreq_id: Faker::Number.number(digits: 5),
+    entry_date: Faker::Date.backward(days: 30),
+    total_price: Faker::Commerce.price(range: 100.0..1000.0),
+    amount_received: Faker::Commerce.price(range: 50.0..5000.0),
+    total_fees: Faker::Commerce.price(range: 1.0..50.0),
+    total_discounts: Faker::Commerce.price(range: 5.0..500.0),
+    repeat: [true, false].sample,
+    payment_date: Faker::Date.forward(days: 30),
+    value_for_report: Faker::Commerce.price(range: 50.0..500.0),
+    rg: Faker::IdNumber.valid,
+    patient_name: Faker::Name.name,
+    branch: branch,
+    prescriber: prescriber,
+    representative: representative,
+    monthly_report: monthly_report
+  )
 end
 
 puts "Criando Fechamento e relatórios"
 start_date = date.next_day
 end_date = (start_date + 1.month).next_day
+
+branch = Branch.create!(
+  name: Faker::Address.state,
+  branch_number: 16
+)
 
 closing = Closing.create!(
   start_date: start_date,
@@ -134,16 +171,35 @@ prescriber = Prescriber.create!(
 )
 
 puts "Criando Relatório Mensal"
-MonthlyReport.create!(
-  total_price: 5000.0,
-  partnership: 1000.0,
-  discounts: 100.0,
-  report: "Teste",
-  quantity: 2,
-  envelope_number: 2,
+monthly_report = MonthlyReport.create!(
+  total_price: Faker::Commerce.price(range: 5000.0..100000.0),
+  partnership: Faker::Commerce.price(range: 1000.0..10000.0),
+  discounts: Faker::Commerce.price(range: 10.0..1000.0),
+  report: Faker::Lorem.sentence,
+  quantity: Faker::Number.number(digits: 1),
+  envelope_number: Faker::Number.number(digits: 1),
   closing: closing,
   prescriber: prescriber,
-  representative_id: representative
+  representative: representative
+)
+
+puts "Criando Requisição"
+Request.create!(
+  cdfil_id: Faker::Number.number(digits: 5),
+  nrreq_id: Faker::Number.number(digits: 5),
+  entry_date: Faker::Date.backward(days: 30),
+  total_price: Faker::Commerce.price(range: 100.0..1000.0),
+  amount_received: Faker::Commerce.price(range: 50.0..5000.0),
+  total_fees: Faker::Commerce.price(range: 1.0..50.0),
+  total_discounts: Faker::Commerce.price(range: 5.0..500.0),
+  payment_date: Faker::Date.forward(days: 30),
+  value_for_report: Faker::Commerce.price(range: 50.0..500.0),
+  rg: Faker::IdNumber.valid,
+  patient_name: Faker::Name.name,
+  branch: branch,
+  prescriber: prescriber,
+  representative: representative,
+  monthly_report: monthly_report
 )
 
 puts "FIM!"

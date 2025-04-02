@@ -5,7 +5,7 @@
 
   <div class="navbar-center gap-5">
     <span class="lg:text-base md:text-xs">
-      Fechamento - <%= @current_closing.closing if @current_closing.present? %>
+      <%= link_to "Fechamento - #{ @current_closing.closing if @current_closing.present? }", closings_path %>
     </span>
 
     <div class="form-control text-black">

@@ -15,13 +15,13 @@ module Roundable
     value - rest + ((rest > 5.0) ? 10 : 0)
   end
 
-  def divide_into_notes
-    valor = to_i
-    notas = [50, 20, 10]
+  def divide_into_notes(value)
+    price = value.to_i
+    money_notes = [50, 20, 10]
 
-    notas.each_with_object({}) do |nota, resultado|
-      resultado[nota] = valor / nota
-      valor %= nota
+    money_notes.each_with_object({}) do |money_note, result|
+      result[money_note] = price / money_note
+      price %= money_note
     end
   end
 end

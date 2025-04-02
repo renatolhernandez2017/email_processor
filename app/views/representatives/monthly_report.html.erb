@@ -10,7 +10,7 @@
 
     <%= render "summary", monthly_reports: @monthly_reports, accumulated: @accumulated %>
     <%= render "totals_by_bank", totals_by_bank: @totals_by_bank, total_count: @total_count, total_value: @total_value %>
-    <%= render "totals_by_store", totals_by_store: @totals_by_store %>
-    <%= render "grade_division" %>
+    <%= render "totals_by_store", totals_by_store: @totals_by_store, total_store: @total_store, total_count_store: @total_count_store %>
+    <%= render "grade_division", total_in_cash: @total_in_cash, total_marks: @total_marks, total_cash: @total_cash %>
   </div>
 </section>

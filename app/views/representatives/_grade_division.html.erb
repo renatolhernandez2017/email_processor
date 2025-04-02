@@ -13,20 +13,12 @@
           </thead>
 
           <tbody>
-            <tr>
-              <td>553 x 50</td>
-              <td>R$ 27.650,00</td>
-            </tr>
-
-            <tr>
-              <td>14 x 20</td>
-              <td>R$ 280,00</td>
-            </tr>
-
-            <tr>
-              <td>5 x 10</td>
-              <td>R$ 50,00</td>
-            </tr>
+            <% total_in_cash.each do |item, cash| %>
+              <tr>
+                <td><%= cash %> x <%= item %></td>
+                <td><%= number_to_currency(cash * item) %></td>
+              </tr>
+            <% end %>
           </tbody>
 
           <tfoot>
@@ -39,8 +31,8 @@
 
             <tbody>
               <tr>
-                <th>13</th>
-                <th>R$ 27.980,00</th>
+                <th><%= total_marks %></th>
+                <th><%= number_to_currency(total_cash) %></th>
               </tr>
             </tbody>
           </tfoot>

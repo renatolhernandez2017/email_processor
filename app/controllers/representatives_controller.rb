@@ -1,5 +1,6 @@
 class RepresentativesController < ApplicationController
   include Pagy::Backend
+  include Roundable
 
   before_action :set_branches
   before_action :set_representatives
@@ -29,39 +30,32 @@ class RepresentativesController < ApplicationController
   end
 
   def monthly_report
-    month_abbr = @current_closing.closing.split("/")
-    @closing = "#{t("view.months.#{month_abbr[0]}")}/#{month_abbr[1]}"
+    set_closing_date
 
-    @monthly_reports = @representative.monthly_reports
-      .where(closing_id: @current_closing.id)
-      .joins(:prescriber).order("prescribers.name ASC")
-
+    @monthly_reports = @representative.load_monthly_reports(@current_closing.id)
     @accumulated = @monthly_reports.where(accumulated: true)
-    @not_accumulated = @monthly_reports.where(accumulated: false)
 
-    @totals_by_bank = @not_accumulated
-      .group_by { |m| m.prescriber.current_accounts.find_by(standard: true)&.bank&.name }
-      .map { |bank, monthly_report|
-        {
-          count: monthly_report.count,
-          name: bank,
-          total: monthly_report.sum(&:total_price)
-        }
-      }
+    calculate_totals_by_bank
+    calculate_totals_by_store
+    calculate_cash_totals
+  end
 
+  def calculate_totals_by_bank
+    @totals_by_bank = @representative.totals_by_bank(@current_closing.id)
     @total_count = @totals_by_bank.sum { |bank| bank[:count] }
     @total_value = @totals_by_bank.sum { |bank| bank[:total] }
+  end
 
-    @totals_by_store = @not_accumulated
-      .group_by { |m| m.representative&.branch&.name }
-      .map { |branch, monthly_report|
-        {
-          count: monthly_report.count,
-          name: branch,
-          total: monthly_report.sum(&:total_price)
-        }
-      }
-    # quebrar6
+  def calculate_totals_by_store
+    @totals_by_store = @representative.totals_by_store(@current_closing.id)
+    @total_count_store = @totals_by_store.sum { |store| store[:count] }
+    @total_store = @totals_by_store.sum { |store| store[:total] }
+  end
+
+  def calculate_cash_totals
+    @total_in_cash = @representative.total_cash(@current_closing.id)
+    @total_marks = @total_in_cash.values.sum
+    @total_cash = @total_in_cash.map { |key, value| key * value }.sum
   end
 
   private
@@ -85,5 +79,10 @@ class RepresentativesController < ApplicationController
 
   def set_representatives
     @representatives_map = Representative.all
+  end
+
+  def set_closing_date
+    month_abbr = @current_closing.closing.split("/")
+    @closing = "#{t("view.months.#{month_abbr[0]}")}/#{month_abbr[1]}"
   end
 end
