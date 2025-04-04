@@ -9,6 +9,7 @@ class MonthlyReport < ApplicationRecord
   belongs_to :prescriber
 
   has_many :requests, dependent: :destroy
+  has_many :requisition_discounts, class_name: "Discount", dependent: :destroy
 
   validates :closing_id, :prescriber_id, presence: {message: " devem ser preenchidos!"}
 
@@ -26,7 +27,7 @@ class MonthlyReport < ApplicationRecord
     # Pronto mais precisa ainda verificar melhor
     if accumulated
       "A"
-    elsif !accumulated && current_account
+    elsif !accumulated && prescriber&.current_accounts&.find_by(standard: true)
       "D"
     else
       "E"

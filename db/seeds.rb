@@ -150,7 +150,7 @@ closing = Closing.create!(
   start_date: start_date,
   end_date: end_date,
   closing: "#{end_date.strftime("%b")}/#{end_date.strftime("%y")}",
-  last_envelope: 100
+  last_envelope: Closing.last.last_envelope + 1
 )
 
 representative = Representative.create!(

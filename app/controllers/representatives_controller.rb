@@ -3,8 +3,9 @@ class RepresentativesController < ApplicationController
   include Roundable
 
   before_action :set_branches
+  before_action :set_closing_date, only: %i[monthly_report patient_listing]
   before_action :set_representatives
-  before_action :set_representative, only: %i[update monthly_report]
+  before_action :set_representative, only: %i[update monthly_report patient_listing]
 
   def index
     @pagy, @representatives = pagy(@representatives_map.order(created_at: :desc))
@@ -30,8 +31,6 @@ class RepresentativesController < ApplicationController
   end
 
   def monthly_report
-    set_closing_date
-
     @monthly_reports = @representative.load_monthly_reports(@current_closing.id)
     @accumulated = @monthly_reports.where(accumulated: true)
 
@@ -56,6 +55,10 @@ class RepresentativesController < ApplicationController
     @total_in_cash = @representative.total_cash(@current_closing.id)
     @total_marks = @total_in_cash.values.sum
     @total_cash = @total_in_cash.map { |key, value| key * value }.sum
+  end
+
+  def patient_listing
+    @monthly_reports = @representative.monthly_reports_false(@current_closing.id)
   end
 
   private

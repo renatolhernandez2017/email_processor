@@ -13,11 +13,21 @@ class Discount < ApplicationRecord
 
   validate :price_within_available_value
 
+  after_save :update_monthly_report
+  after_destroy :update_monthly_report
+
   private
 
   def price_within_available_value
     if monthly_report.present? && price > monthly_report&.available_value
       errors.add(:price, "valor máximo de #{monthly_report.available_value} foi excedido")
+    end
+  end
+
+  def update_monthly_report
+    if monthly_report
+      discounts = Discount.where(monthly_report_id: monthly_report.id).sum(&:price)
+      monthly_report.update(discounts: discounts || 0.0)
     end
   end
 end

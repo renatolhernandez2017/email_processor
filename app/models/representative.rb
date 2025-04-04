@@ -54,9 +54,9 @@ class Representative < ApplicationRecord
     }
   end
 
-  private
-
   def monthly_reports_false(closing_id)
     monthly_reports.where(closing_id: closing_id, accumulated: false)
+      .includes(:prescriber)
+      .order("prescribers.name ASC")
   end
 end
