@@ -26,6 +26,7 @@ Rails.application.routes.draw do
   resources :representatives, only: %i[index create update] do
     get :monthly_report, on: :member
     get :patient_listing, on: :member
+    get :summary_patient_listing, on: :member
   end
 
   ###############

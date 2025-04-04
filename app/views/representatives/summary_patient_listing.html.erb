@@ -1,0 +1,21 @@
+<section class="flex flex-col gap-5 p-5 mb-20">
+  <% @monthly_reports.each do |monthly_report| %>
+    <div class="card border border-primary p-5">
+      <%= render "shared/patient_header", closing: @closing, monthly_report: monthly_report, representative: @representative %>
+
+      <ul class="menu rounded-box mb-4">
+        <li>
+          <ul class="border-l-2 border-primary">
+            <% monthly_report.requests.each do |request| %>
+              <div class="overflow-hidden my-2">
+                <table class="table-auto w-full">
+                  <%= render "shared/patient_foot", monthly_report: monthly_report %>
+                </table>
+              </div>
+            <% end %>
+          </ul>
+        </li>
+      </ul>
+    </div>
+  <% end %>
+</section>

@@ -6,7 +6,8 @@ module ApplicationHelper
       {action: "index", path: representatives_path},
       {action: "show", path: -> { representative_path(id: params[:id]) if params[:id].present? }},
       {action: "monthly_report", path: -> { monthly_report_representative_path(id: params[:id]) if params[:id].present? }},
-      {action: "patient_listing", path: -> { patient_listing_representative_path(id: params[:id]) if params[:id].present? }}
+      {action: "patient_listing", path: -> { patient_listing_representative_path(id: params[:id]) if params[:id].present? }},
+      {action: "summary_patient_listing", path: -> { summary_patient_listing_representative_path(id: params[:id]) if params[:id].present? }}
     ]
 
     if active_paths.any? do |path|

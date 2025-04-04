@@ -3,9 +3,9 @@ class RepresentativesController < ApplicationController
   include Roundable
 
   before_action :set_branches
-  before_action :set_closing_date, only: %i[monthly_report patient_listing]
+  before_action :set_closing_date, only: %i[monthly_report patient_listing summary_patient_listing]
   before_action :set_representatives
-  before_action :set_representative, only: %i[update monthly_report patient_listing]
+  before_action :set_representative, only: %i[update monthly_report patient_listing summary_patient_listing]
 
   def index
     @pagy, @representatives = pagy(@representatives_map.order(created_at: :desc))
@@ -58,10 +58,18 @@ class RepresentativesController < ApplicationController
   end
 
   def patient_listing
-    @monthly_reports = @representative.monthly_reports_false(@current_closing.id)
+    load_monthly_reports_false
+  end
+
+  def summary_patient_listing
+    load_monthly_reports_false
   end
 
   private
+
+  def load_monthly_reports_false
+    @monthly_reports = @representative.monthly_reports_false(@current_closing.id)
+  end
 
   def representative_params
     params.require(:representative).permit(

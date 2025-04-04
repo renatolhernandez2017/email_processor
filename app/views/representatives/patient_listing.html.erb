@@ -1,33 +1,7 @@
 <section class="flex flex-col gap-5 p-5 mb-20">
   <% @monthly_reports.each do |monthly_report| %>
     <div class="card border border-primary p-5">
-      <div class="overflow-hidden">
-        <table class="table-auto w-full">
-          <thead class="text-base text-left">
-            <tr>
-              <th class="text-primary"><%= @representative.name.upcase %></th>
-
-              <th class="flex gap-16">
-                <span>
-                  Fechamento: <span class="text-primary"><%= @closing %></span>
-                </span>
-  
-                <span>
-                  Situação:
-                  <span class="text-primary"><%= monthly_report.situation %></span>
-                </span>
-
-                <span>
-                  Número do Envelope:
-                  <span class="text-primary">
-                    <%= monthly_report.envelope_number.to_s.rjust(5, '0') %>
-                  </span>
-                </span>
-              </th>
-            </tr>
-          </thead>
-        </table>
-      </div>
+      <%= render "shared/patient_header", closing: @closing, monthly_report: monthly_report, representative: @representative %>
 
       <ul class="menu rounded-box mb-4">
         <li>
@@ -57,21 +31,7 @@
                     </tr>
                   </tbody>
 
-                  <tfoot>
-                    <thead>
-                      <tr>
-                        <th colspan="5" class="font-semibold text-base pt-7">Quantidade</th>
-                        <th class="font-semibold text-base pt-7">Valor Disponível</th>
-                      </tr>
-                    </thead>
-
-                    <tbody>
-                      <tr class="bg-gray-200 border-t border-b border-black h-10">
-                        <td colspan="5" ><%= monthly_report.quantity %></td>
-                        <td><%= number_to_currency(monthly_report.available_value) %></td>
-                      </tr>
-                    </tbody>
-                  </tfoot>
+                  <%= render "shared/patient_foot", monthly_report: monthly_report %>
                 </table>
               </div>
             <% end %>

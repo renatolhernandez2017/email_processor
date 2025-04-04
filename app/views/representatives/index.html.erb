@@ -43,9 +43,9 @@
                 <span class="material-symbols-outlined text-primary">list_alt</span>
               <% end %>
 
-              <button onclick="document.getElementById('content_paste_representative<%= representative.id %>').showModal();" title="Lista Resumida">
+              <%= link_to summary_patient_listing_representative_path(representative), title: "Listagem Resumida" do %>
                 <span class="material-symbols-outlined text-primary">content_paste</span>
-              </button>
+              <% end %>
 
               <button onclick="document.getElementById('home_representative<%= representative.id %>').showModal();" title="Endereço">
                 <span class="material-symbols-outlined text-primary">home</span>
