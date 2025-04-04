@@ -34,27 +34,41 @@
           <ul class="border-l-2 border-primary">
             <% monthly_report.requests.each do |request| %>
               <div class="overflow-hidden my-2">
-                <table class="table w-full">
+                <table class="table-auto w-full">
+                  <thead>
+                    <tr>
+                      <th class="font-semibold text-base">Paciente</th>
+                      <th class="font-semibold text-base">Repetida</th>
+                      <th class="font-semibold text-base">Data de Entrada</th>
+                      <th class="font-semibold text-base">Data de Pagamento</th>
+                      <th class="font-semibold text-base">Valor Recebido</th>
+                      <th class="font-semibold text-base">Filial</th>
+                    </tr>
+                  </thead>
+
+                  <tbody>
+                    <tr class="bg-gray-200 border-t border-b border-black h-10">
+                      <td><%= request.patient_name.present? ? request.patient_name : "Sem Nome" %></td>
+                      <td><%= request.repeat ? "-R" : "" %></td>
+                      <td><%= request.entry_date.strftime("%d/%m/%y") %></td>
+                      <td><%= request.set_payment_date(request) %></td>
+                      <td><%= request.set_price(request) %></td>
+                      <td><%= request.branch.name %></td>
+                    </tr>
+                  </tbody>
+
                   <tfoot>
                     <thead>
                       <tr>
-                        <th class="font-semibold text-base">Paciente</th>
-                        <th class="font-semibold text-base">Repetida</th>
-                        <th class="font-semibold text-base">Data de Entrada</th>
-                        <th class="font-semibold text-base">Data de Pagamento</th>
-                        <th class="font-semibold text-base">Valor Recebido</th>
-                        <th class="font-semibold text-base">Filial</th>
+                        <th colspan="5" class="font-semibold text-base pt-7">Quantidade</th>
+                        <th class="font-semibold text-base pt-7">Valor Disponível</th>
                       </tr>
                     </thead>
 
                     <tbody>
-                      <tr class="bg-gray-200 border-t border-b border-black">
-                        <td><%= request.patient_name.present? ? request.patient_name : "Sem Nome" %></td>
-                        <td><%= request.repeat ? "-R" : "" %></td>
-                        <td><%= request.entry_date.strftime("%d/%m/%y") %></td>
-                        <td><%= request.set_payment_date(request) %></td>
-                        <td><%= request.set_price(request) %></td>
-                        <td><%= request.branch.name %></td>
+                      <tr class="bg-gray-200 border-t border-b border-black h-10">
+                        <td colspan="5" ><%= monthly_report.quantity %></td>
+                        <td><%= number_to_currency(monthly_report.available_value) %></td>
                       </tr>
                     </tbody>
                   </tfoot>
