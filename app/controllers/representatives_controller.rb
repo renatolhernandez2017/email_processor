@@ -1,14 +1,13 @@
 class RepresentativesController < ApplicationController
   include Pagy::Backend
   include Roundable
+  include SharedData
 
-  before_action :set_branches
   before_action :set_closing_date, only: %i[monthly_report patient_listing summary_patient_listing unaccumulated_addresses]
-  before_action :set_representatives
   before_action :set_representative, only: %i[update monthly_report patient_listing summary_patient_listing unaccumulated_addresses]
 
   def index
-    @pagy, @representatives = pagy(@representatives_map.order(created_at: :desc))
+    @pagy, @representatives = pagy(Representative.all.order(created_at: :desc))
 
     @representative = Representative.new
     @current_account = CurrentAccount.new
@@ -86,14 +85,6 @@ class RepresentativesController < ApplicationController
 
   def set_representative
     @representative = Representative.find_by(id: params[:id])
-  end
-
-  def set_branches
-    @branches = Branch.pluck(:name, :id)
-  end
-
-  def set_representatives
-    @representatives_map = Representative.all
   end
 
   def set_closing_date

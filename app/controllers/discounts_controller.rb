@@ -1,8 +1,8 @@
 class DiscountsController < ApplicationController
   include Pagy::Backend
   include Redirectable
+  include SharedData
 
-  before_action :set_branches
   before_action :set_discount, only: %i[update destroy]
 
   def index
@@ -65,9 +65,5 @@ class DiscountsController < ApplicationController
 
   def set_discount
     @discount = Discount.find_by(id: params[:id])
-  end
-
-  def set_branches
-    @branches = Branch.pluck(:name, :id)
   end
 end

@@ -1,9 +1,9 @@
 class PrescribersController < ApplicationController
   include Pagy::Backend
+  include SharedData
 
   before_action :set_representatives
   before_action :set_prescribers
-  before_action :set_branches
   before_action :set_prescriber, only: %i[update show destroy desaccumulate]
 
   def index
@@ -93,9 +93,5 @@ class PrescribersController < ApplicationController
 
   def set_prescribers
     @prescribers_map = Prescriber.all
-  end
-
-  def set_branches
-    @branches = Branch.pluck(:name, :id)
   end
 end
