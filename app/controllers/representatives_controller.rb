@@ -65,7 +65,7 @@ class RepresentativesController < ApplicationController
   end
 
   def unaccumulated_addresses
-    @monthly_reports = @representative.load_monthly_reports(@current_closing.id, [{representative: :address}, {representative: :prescriber}])
+    @representative.load_monthly_reports(@current_closing.id, [{representative: [:address, :prescriber]}])
   end
 
   private

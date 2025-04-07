@@ -31,13 +31,12 @@ class PrescribersController < ApplicationController
   end
 
   def show
-    closing_id = @current_closing.id
     @address = @prescriber.address
     @current_accounts = @prescriber.current_accounts
 
-    @discounts = @prescriber&.discounts
-      &.joins(:monthly_report)
-      &.where(monthly_reports: {closing_id: closing_id})
+    @discounts = @prescriber.discounts
+      .includes(prescriber: :monthly_reports)
+      .where(monthly_reports: {closing_id: @current_closing.id}, visible: true)
   end
 
   def destroy

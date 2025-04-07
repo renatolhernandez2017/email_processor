@@ -35,7 +35,7 @@ class Representative < ApplicationRecord
   end
 
   def totals_by_store(closing_id)
-    monthly_reports_false(closing_id, [:requests, {representative: :branch}, {representative: :prescriber}])
+    monthly_reports_false(closing_id, [:requests, {representative: [:branch, :prescriber]}])
       .group_by { |m| m.prescriber&.representative&.branch&.name }
       .map do |branch, reports|
         {
