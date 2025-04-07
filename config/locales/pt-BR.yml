@@ -69,10 +69,6 @@ pt-BR:
         start_date: Data inicial
         end_date: Data final
         last_envelope: Último envelope
-      discount:
-        visible:
-          true: Sim
-          false: Não
       user:
         name: Nome
         email: E-mail
