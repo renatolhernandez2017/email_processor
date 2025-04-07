@@ -33,13 +33,7 @@
                 <td><%= number_to_currency(monthly_report.available_value) %></td>
 
                 <td>
-                  <% if monthly_report.accumulated? %>
-                    Acumulado
-                  <% elsif !monthly_report.accumulated? && monthly_report.prescriber.current_accounts.last.present? %>
-                    <%= monthly_report.prescriber.current_accounts.last.bank.name %>
-                  <% else %>
-                    Dinheiro
-                  <% end %>
+                  <%= payment_method_display(monthly_report) %>
                 </td>
 
                 <td><%= monthly_report.envelope_number.to_s.rjust(6, '0') %></td>
@@ -56,33 +50,33 @@
 
             <tbody>
               <tr>
-                <td><%= monthly_reports.count %></td>
+                <td><%= total_or_accumulated(monthly_reports)[:count] %></td>
                 <td class="font-semibold text-base">Total Geral</td>
-                <td class="text-center"><%= monthly_reports.sum(&:quantity) %></td>
-                <td><%= number_to_currency(monthly_reports.sum(&:total_price)) %></td>
-                <td><%= number_to_currency(monthly_reports.sum(&:partnership)) %></td>
-                <td><%= number_to_currency(monthly_reports.sum(&:discounts)) %></td>
-                <td><%= number_to_currency(monthly_reports.sum(&:available_value)) %></td>
+                <td class="text-center"><%= total_or_accumulated(monthly_reports)[:quantity] %></td>
+                <td><%= total_or_accumulated(monthly_reports)[:total_price] %></td>
+                <td><%= total_or_accumulated(monthly_reports)[:partnership] %></td>
+                <td><%= total_or_accumulated(monthly_reports)[:discounts] %></td>
+                <td><%= total_or_accumulated(monthly_reports)[:available_value] %></td>
               </tr>
 
               <tr>
-                <td><%= accumulated.count %></td>
+                <td><%= total_or_accumulated(accumulated)[:count] %></td>
                 <td class="font-semibold text-base">Acumulados</td>
-                <td class="text-center"><%= accumulated.sum(&:quantity) %></td>
-                <td><%= number_to_currency(accumulated.sum(&:total_price)) %></td>
-                <td><%= number_to_currency(accumulated.sum(&:partnership)) %></td>
-                <td><%= number_to_currency(accumulated.sum(&:discounts)) %></td>
-                <td><%= number_to_currency(accumulated.sum(&:available_value)) %></td>
+                <td class="text-center"><%= total_or_accumulated(accumulated)[:quantity] %></td>
+                <td><%= total_or_accumulated(accumulated)[:total_price] %></td>
+                <td><%= total_or_accumulated(accumulated)[:partnership] %></td>
+                <td><%= total_or_accumulated(accumulated)[:discounts] %></td>
+                <td><%= total_or_accumulated(accumulated)[:available_value] %></td>
               </tr>
 
               <tr>
-                <td><%= monthly_reports.count - accumulated.count %></td>
+                <td><%= real_sale(monthly_reports, accumulated)[:count] %></td>
                 <td class="font-semibold text-base">Venda Real</td>
-                <td class="text-center"><%= monthly_reports.sum(&:quantity) - accumulated.sum(&:quantity) %></td>
-                <td><%= number_to_currency(monthly_reports.sum(&:total_price) - accumulated.sum(&:total_price)) %></td>
-                <td><%= number_to_currency(monthly_reports.sum(&:partnership) - accumulated.sum(&:partnership)) %></td>
-                <td><%= number_to_currency(monthly_reports.sum(&:discounts) - accumulated.sum(&:discounts)) %></td>
-                <td><%= number_to_currency(monthly_reports.sum(&:available_value) - accumulated.sum(&:available_value)) %></td>
+                <td class="text-center"><%= real_sale(monthly_reports, accumulated)[:quantity] %></td>
+                <td><%= real_sale(monthly_reports, accumulated)[:total_price] %></td>
+                <td><%= real_sale(monthly_reports, accumulated)[:partnership] %></td>
+                <td><%= real_sale(monthly_reports, accumulated)[:discounts] %></td>
+                <td><%= real_sale(monthly_reports, accumulated)[:available_value] %></td>
               </tr>
             </tbody>
           </tfoot>

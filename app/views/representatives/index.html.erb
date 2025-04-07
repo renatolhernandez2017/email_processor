@@ -47,9 +47,9 @@
                 <span class="material-symbols-outlined text-primary">content_paste</span>
               <% end %>
 
-              <button onclick="document.getElementById('home_representative<%= representative.id %>').showModal();" title="Endereço">
+              <%= link_to unaccumulated_addresses_representative_path(representative), title: "Endereço" do %>
                 <span class="material-symbols-outlined text-primary">home</span>
-              </button>
+              <% end %>
 
               <button onclick="document.getElementById('account_balance_representative<%= representative.id %>').showModal();" title="Adicionar nova Conta Corrente">
                 <span class="material-symbols-outlined text-primary">account_balance</span>

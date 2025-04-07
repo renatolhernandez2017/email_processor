@@ -3,9 +3,9 @@ class RepresentativesController < ApplicationController
   include Roundable
 
   before_action :set_branches
-  before_action :set_closing_date, only: %i[monthly_report patient_listing summary_patient_listing]
+  before_action :set_closing_date, only: %i[monthly_report patient_listing summary_patient_listing unaccumulated_addresses]
   before_action :set_representatives
-  before_action :set_representative, only: %i[update monthly_report patient_listing summary_patient_listing]
+  before_action :set_representative, only: %i[update monthly_report patient_listing summary_patient_listing unaccumulated_addresses]
 
   def index
     @pagy, @representatives = pagy(@representatives_map.order(created_at: :desc))
@@ -31,7 +31,7 @@ class RepresentativesController < ApplicationController
   end
 
   def monthly_report
-    @monthly_reports = @representative.load_monthly_reports(@current_closing.id)
+    @monthly_reports = @representative.load_monthly_reports(@current_closing.id, [{prescriber: {current_accounts: :bank}}])
     @accumulated = @monthly_reports.where(accumulated: true)
 
     calculate_totals_by_bank
@@ -65,10 +65,14 @@ class RepresentativesController < ApplicationController
     load_monthly_reports_false
   end
 
+  def unaccumulated_addresses
+    @monthly_reports = @representative.load_monthly_reports(@current_closing.id, [{representative: :address}, {representative: :prescriber}])
+  end
+
   private
 
   def load_monthly_reports_false
-    @monthly_reports = @representative.monthly_reports_false(@current_closing.id)
+    @monthly_reports = @representative.monthly_reports_false(@current_closing.id, [:requests, {representative: :prescriber}])
   end
 
   def representative_params

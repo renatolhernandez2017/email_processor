@@ -35,15 +35,7 @@
                   <span class="material-symbols-outlined text-primary">delete</span>
                 <% end %>
 
-                <% if current_account.standard? %>
-                  <%= link_to change_standard_current_account_path(current_account, type: "desactive", route: "representative"), data: { turbo_method: :post } do %>
-                    <span class="material-symbols-outlined text-primary" title="Desabilitar">visibility</span>
-                  <% end %>
-                <% else %>
-                  <%= link_to change_standard_current_account_path(current_account, type: "active", route: "representative"), data: { turbo_method: :post } do %>
-                    <span class="material-symbols-outlined text-primary" title="Habilitar">visibility_off</span>
-                  <% end %>
-                <% end %>
+                <%= render ActiveInactiveLinkComponent.new(current_account: current_account, route: "representative") %>
               </td>
             </tr>
           <% end %>

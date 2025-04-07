@@ -31,6 +31,16 @@ class Prescriber < ApplicationRecord
     ].compact.join(" - ")
   end
 
+  def full_contact
+    return "Contato não cadastrado" unless address.present?
+
+    [
+      address.phone,
+      address.fax,
+      address.cellphone
+    ].compact.join(" - ")
+  end
+
   def full_concil
     [class_council, uf_council, number_council].compact.join(" - ")
   end

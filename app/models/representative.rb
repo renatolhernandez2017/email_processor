@@ -13,15 +13,16 @@ class Representative < ApplicationRecord
   has_many :monthly_reports, dependent: :destroy
   has_many :requests, dependent: :destroy
 
-  def load_monthly_reports(closing_id)
-    monthly_reports.where(closing_id: closing_id)
-      .where(closing_id: closing_id)
-      .includes(prescriber: {current_accounts: :bank})
-      .order("prescribers.name ASC")
+  def load_monthly_reports(closing_id, eager_load = [])
+    scoped_monthly_reports(closing_id, eager_load)
+  end
+
+  def monthly_reports_false(closing_id, eager_load = [])
+    scoped_monthly_reports(closing_id, eager_load).where(accumulated: false)
   end
 
   def totals_by_bank(closing_id)
-    monthly_reports_false(closing_id)
+    monthly_reports_with_accounts(closing_id)
       .group_by { |m| m.prescriber&.current_accounts&.find_by(standard: true)&.bank&.name }
       .reject { |bank, _| bank.nil? }
       .map do |bank, reports|
@@ -34,7 +35,7 @@ class Representative < ApplicationRecord
   end
 
   def totals_by_store(closing_id)
-    monthly_reports_false(closing_id)
+    monthly_reports_false(closing_id, [:requests, {representative: :branch}, {representative: :prescriber}])
       .group_by { |m| m.prescriber&.representative&.branch&.name }
       .map do |branch, reports|
         {
@@ -46,7 +47,7 @@ class Representative < ApplicationRecord
   end
 
   def total_cash(closing_id)
-    monthly_reports_false(closing_id)
+    monthly_reports_with_accounts(closing_id)
       .reject { |m| m.prescriber&.current_accounts&.find_by(standard: true) }
       .map { |mr| divide_into_notes(mr.available_value.to_f) }
       .each_with_object(Hash.new(0)) { |hash, sums|
@@ -54,9 +55,15 @@ class Representative < ApplicationRecord
     }
   end
 
-  def monthly_reports_false(closing_id)
-    monthly_reports.where(closing_id: closing_id, accumulated: false)
-      .includes(:prescriber)
+  private
+
+  def scoped_monthly_reports(closing_id, eager_load)
+    monthly_reports.where(closing_id: closing_id)
+      .includes(*eager_load)
       .order("prescribers.name ASC")
+  end
+
+  def monthly_reports_with_accounts(closing_id)
+    monthly_reports_false(closing_id, [{prescriber: {current_accounts: :bank}}])
   end
 end
