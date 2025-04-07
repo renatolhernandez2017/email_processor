@@ -2,7 +2,6 @@ class PrescribersController < ApplicationController
   include Pagy::Backend
   include SharedData
 
-  before_action :set_representatives
   before_action :set_prescribers
   before_action :set_prescriber, only: %i[update show destroy desaccumulate]
 
@@ -84,10 +83,6 @@ class PrescribersController < ApplicationController
 
   def set_prescriber
     @prescriber = Prescriber.find_by(id: params[:id])
-  end
-
-  def set_representatives
-    @representatives = Representative.all
   end
 
   def set_prescribers

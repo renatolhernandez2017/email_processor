@@ -1,8 +1,8 @@
 class CurrentAccountsController < ApplicationController
   include Pagy::Backend
   include Redirectable
+  include SharedData
 
-  before_action :set_representatives
   before_action :set_representative, only: %i[create update]
   before_action :set_current_account, only: %i[update destroy change_standard]
 
@@ -84,10 +84,6 @@ class CurrentAccountsController < ApplicationController
 
   def set_current_account
     @current_account = CurrentAccount.find_by(id: params[:id])
-  end
-
-  def set_representatives
-    @representatives = Representative.all
   end
 
   def set_representative
