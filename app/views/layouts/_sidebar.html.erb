@@ -2,60 +2,14 @@
   <ul class="menu w-80 p-5 my-16">
     <li class="menu-title text-center lg:text-xl md:text-base bg-gray-200 mb-5 font-bold">Menu</li>
 
-    <li class="border-b border-gray-300 my-2">
-      <%= link_to "Divisão de notas", "#", class: "text-primary lg:text-lg md:text-base font-semibold" %>
-
-      <span class="lg:text-sm md:text-xs pointer-events-none">
-        Imprime quantas notas serão necessárias por cada representante.
-      </span>
-    </li>
-
-    <li class="border-b border-gray-300 my-2">
-      <%= link_to "Executa fechamento agora", "#", class: "text-primary lg:text-lg md:text-base font-semibold" %>
-
-      <span class="lg:text-sm md:text-xs pointer-events-none">
-        Executa o fechamento nesse exato momento, fique atento para receber o email com o LOG.
-      </span>
-    </li>
-
-    <li class="border-b border-gray-300 my-2">
-      <%= link_to "Depósito em bancos", "#", class: "text-primary lg:text-lg md:text-base font-semibold" %>
-
-      <span class="lg:text-sm md:text-xs pointer-events-none">
-        Imprime relatórios que seguem para os bancos.
-      </span>
-    </li>
-
-    <li class="border-b border-gray-300 my-2">
-      <%= link_to "Auditoria de fechamento", "#", class: "text-primary lg:text-lg md:text-base font-semibold" %>
-
-      <span class="lg:text-sm md:text-xs pointer-events-none">
-        Relatório de auditoria de fechamento
-      </span>
-    </li>
-
-    <li class="border-b border-gray-300 my-2">
-      <%= link_to "Imprime todas as lojas", "#", class: "text-primary lg:text-lg md:text-base font-semibold" %>
-
-      <span class="lg:text-sm md:text-xs pointer-events-none">
-        Imprime o todos os relatórios de fechamento de lojas.
-      </span>
-    </li>
-
-    <li class="border-b border-gray-300 my-2">
-      <%= link_to "Todos os resumidos", "#", class: "text-primary lg:text-lg md:text-base font-semibold" %>
-
-      <span class="lg:text-sm md:text-xs pointer-events-none">
-        Imprime todos os resumidos de representante.
-      </span>
-    </li>
-
-    <li class="border-b border-gray-300 my-2">
-      <%= link_to "Todas listagens de pacientes", "#", class: "text-primary lg:text-lg md:text-base font-semibold" %>
-
-      <span class="lg:text-sm md:text-xs pointer-events-none">
-        Gera todas as listagens de pacientes separadas em ordem de representante.
-      </span>
-    </li>
+    <%= render SidebarComponent.new(label: "Auditoria de fechamento", url: "#", subtitle: "Relatório de auditoria de fechamento") %>
+    <%= render SidebarComponent.new(label: "Divisão de notas", url: "#", subtitle: "Imprime quantas notas serão necessárias por cada representante.") %>
+    <%= render SidebarComponent.new(label: "Depósito em bancos", url: "#", subtitle: "Imprime relatórios que seguem para os bancos.") %>
+    <%= render SidebarComponent.new(label: "Executa fechamento agora", url: "#", subtitle: "Executa o fechamento nesse exato momento, fique atento para receber o email com o LOG.") %>
+    <%= render SidebarComponent.new(label: "Imprime todas as lojas", url: "#", subtitle: "Imprime o todos os relatórios de fechamento de lojas.") %>
+    <%= render SidebarComponent.new(label: "Listagem de pacientes", url: "#", subtitle: "Listagem de pacientes referente ao fechamento de #{set_closing_date}") %>
+    <%= render SidebarComponent.new(label: "Requisições", url: "#", subtitle: "Conferência de requisições referente ao fechamento de #{set_closing_date}") %>
+    <%= render SidebarComponent.new(label: "Todas listagens de pacientes", url: "#", subtitle: "Gera todas as listagens de pacientes separadas em ordem de representante.") %>
+    <%= render SidebarComponent.new(label: "Todos os resumidos", url: "#", subtitle: "Imprime todos os resumidos de representante.") %>
   </ul>
 </div>
