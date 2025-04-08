@@ -42,11 +42,11 @@
                 <span class="material-symbols-outlined text-primary">delete</span>
               <% end %>
 
-              <%= link_to desaccumulate_prescriber_path(prescriber), data: { turbo_method: :post }, title: "Desacumular este mês" do %>
+              <%= link_to change_accumulated_prescriber_path(prescriber, accumulated: true), data: { turbo_method: :post }, title: "Desacumular este mês" do %>
                 <span class="material-symbols-outlined text-primary">close</span>
               <% end %>
 
-              <%= link_to "#", data: { turbo_method: :delete }, title: "Acumular este mês" do %>
+              <%= link_to change_accumulated_prescriber_path(prescriber, accumulated: false), data: { turbo_method: :post }, title: "Acumular este mês" do %>
                 <span class="material-symbols-outlined text-primary">add</span>
               <% end %>
 

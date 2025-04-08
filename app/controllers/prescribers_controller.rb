@@ -3,7 +3,7 @@ class PrescribersController < ApplicationController
   include SharedData
 
   before_action :set_prescribers
-  before_action :set_prescriber, only: %i[update show destroy desaccumulate]
+  before_action :set_prescriber, only: %i[update show destroy accumulate desaccumulate change_accumulated]
 
   def index
     @pagy, @prescribers = pagy(@prescribers_map.order(created_at: :desc))
@@ -45,11 +45,21 @@ class PrescribersController < ApplicationController
     render turbo_stream: turbo_stream.action(:redirect, prescribers_path)
   end
 
-  def desaccumulate
-    @monthly_report = @current_closing.monthly_reports.where(prescriber_id: @prescriber.id).first
-    @monthly_report.update(accumulated: false)
+  def change_accumulated
+    accumulated = @prescriber.to_boolean(params[:accumulated])
+    @monthly_report = @current_closing.monthly_reports.where(
+      prescriber_id: @prescriber.id, accumulated: accumulated
+    ).first
 
-    flash[:notice] = "Prescritor desacumulado com sucesso!"
+    if @monthly_report.present?
+      @monthly_report.update(accumulated: !accumulated)
+
+      flash[:success] = "Prescritor desacumulado com sucesso!" if accumulated == true
+      flash[:success] = "Prescritor acumulado com sucesso!" if accumulated == false
+    else
+      flash[:notice] = "Prescritor já desacumulado este mês." if accumulated == true
+      flash[:notice] = "Prescritor já acumulado este mês." if accumulated == false
+    end
 
     redirect_to prescribers_path
   end

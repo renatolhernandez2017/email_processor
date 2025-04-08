@@ -56,4 +56,8 @@ class Prescriber < ApplicationRecord
       consider_discount_of_up_to
     end
   end
+
+  def to_boolean(accumulated)
+    ActiveModel::Type::Boolean.new.cast(accumulated)
+  end
 end

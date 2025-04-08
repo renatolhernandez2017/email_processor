@@ -23,7 +23,7 @@ Rails.application.routes.draw do
   resources :discounts, only: %i[index create update destroy]
 
   resources :prescribers, only: %i[index create update show destroy] do
-    post :desaccumulate, on: :member
+    post :change_accumulated, on: :member
   end
 
   resources :representatives, only: %i[index create update] do
