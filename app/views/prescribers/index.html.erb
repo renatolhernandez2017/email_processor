@@ -42,7 +42,7 @@
                 <span class="material-symbols-outlined text-primary">delete</span>
               <% end %>
 
-              <%= link_to "#", data: { turbo_method: :delete }, title: "Desacumular este mês" do %>
+              <%= link_to desaccumulate_prescriber_path(prescriber), data: { turbo_method: :post }, title: "Desacumular este mês" do %>
                 <span class="material-symbols-outlined text-primary">close</span>
               <% end %>
 

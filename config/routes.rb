@@ -21,7 +21,10 @@ Rails.application.routes.draw do
 
   resources :branches, only: %i[index create update destroy]
   resources :discounts, only: %i[index create update destroy]
-  resources :prescribers, only: %i[index create update show destroy]
+
+  resources :prescribers, only: %i[index create update show destroy] do
+    post :desaccumulate, on: :member
+  end
 
   resources :representatives, only: %i[index create update] do
     get :monthly_report, on: :member

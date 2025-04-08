@@ -46,13 +46,12 @@ class PrescribersController < ApplicationController
   end
 
   def desaccumulate
-    # @prescriber
-    # @current_closing
+    @monthly_report = @current_closing.monthly_reports.where(prescriber_id: @prescriber.id).first
+    @monthly_report.update(accumulated: false)
 
-    # usar nos params abaixo se precisar
-    # monthly_reports_attributes: %i[
-    #   id month year value
-    # ]
+    flash[:notice] = "Prescritor desacumulado com sucesso!"
+
+    redirect_to prescribers_path
   end
 
   private
