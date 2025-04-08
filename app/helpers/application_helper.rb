@@ -24,4 +24,9 @@ module ApplicationHelper
   def formatted_percentage(value)
     number_to_percentage(value, precision: 2)
   end
+
+  def set_closing_date
+    month_abbr = @current_closing.closing.split("/")
+    "#{t("view.months.#{month_abbr[0]}")}/#{month_abbr[1]}"
+  end
 end
