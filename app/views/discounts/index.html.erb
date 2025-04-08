@@ -48,9 +48,5 @@
     </table>
   </div>
 
-  <div class="divider border-t"></div>
-
-  <div class="grid place-items-center mb-10">
-    <%== pagy_nav(@pagy) if @pagy.pages > 1 %>
-  </div>
+  <%= render PaginationComponent.new(pagy: pagy_nav(@pagy), pages: @pagy.pages) %>
 </div>
