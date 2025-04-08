@@ -13,6 +13,7 @@ Rails.application.routes.draw do
 
   resources :closings, only: %i[index create update] do
     post :modify_for_this_closure, on: :collection
+    get :note_division, on: :collection
   end
 
   resources :current_accounts, only: %i[index create update destroy] do

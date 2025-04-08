@@ -49,6 +49,14 @@ class ClosingsController < ApplicationController
     render turbo_stream: turbo_stream.action(:redirect, root_path)
   end
 
+  def note_division
+    calculator = NoteDivisionCalculator.new(@current_closing.id).call
+
+    @note_divisions = calculator.note_divisions
+    @total_marks = calculator.total_marks
+    @total_cash = calculator.total_cash
+  end
+
   private
 
   def closing_params
