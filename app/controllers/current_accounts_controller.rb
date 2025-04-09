@@ -54,7 +54,10 @@ class CurrentAccountsController < ApplicationController
   end
 
   def change_standard
-    case params[:type]
+    @type = params[:type]
+    update_standard
+
+    case @type
     when "active"
       @current_account.update(standard: true)
 
@@ -66,6 +69,13 @@ class CurrentAccountsController < ApplicationController
     end
 
     render_redirect
+  end
+
+  def update_standard
+    return unless @route == "prescriber"
+
+    current_accounts = CurrentAccount.where(prescriber_id: @current_account.prescriber_id)
+    current_accounts.update_all(standard: false) if @type == "active"
   end
 
   private

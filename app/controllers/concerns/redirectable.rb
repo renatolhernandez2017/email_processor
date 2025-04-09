@@ -15,10 +15,7 @@ module Redirectable
     return unless params[:route] == "prescriber"
     return if params[:route] == "prescribers"
 
-    @id = params.dig(:prescriber_id) ||
-      params.dig(:current_accounts, :prescriber_id) ||
-      params.dig(:discount, :prescriber_id)
-
+    @id = params.dig(:prescriber_id)
     @table = Prescriber.find_by(id: @id)
   end
 
