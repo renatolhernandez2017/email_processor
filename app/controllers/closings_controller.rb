@@ -49,12 +49,16 @@ class ClosingsController < ApplicationController
     render turbo_stream: turbo_stream.action(:redirect, root_path)
   end
 
-  def note_division
+  def note_divisions
     calculator = NoteDivisionCalculator.new(@current_closing.id).call
 
     @note_divisions = calculator.note_divisions
     @total_marks = calculator.total_marks
     @total_cash = calculator.total_cash
+  end
+
+  def deposits_in_banks
+    @banks = @current_closing.set_current_accounts(@current_closing.id)
   end
 
   private

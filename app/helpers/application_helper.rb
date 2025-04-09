@@ -11,7 +11,8 @@ module ApplicationHelper
     [
       {action: "index", path: -> { root_path }},
       {action: "index", path: -> { closings_path }},
-      {action: "note_division", path: -> { note_division_closings_path }}
+      {action: "note_divisions", path: -> { note_divisions_closings_path }},
+      {action: "deposits_in_banks", path: -> { deposits_in_banks_closings_path }},
     ]
   end
 

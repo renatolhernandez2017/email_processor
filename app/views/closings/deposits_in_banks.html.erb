@@ -1,0 +1,60 @@
+<section class="flex flex-col p-5 mb-20">
+  <% @banks.each do |bank| %>
+    <div class="card shadow-lg border border-primary p-5 mb-5">
+      <label class="text-lg">
+        <span class="text-primary">
+          <%= bank[:name] %>
+        </span>
+      </label>
+
+      <ul class="menu rounded-box">
+        <li>
+          <ul class="border-l-2 border-primary">
+            <div class="overflow-hidden">
+              <table class="table-auto w-full">
+                <thead class="text-base">
+                  <tr>
+                    <th>Representante ID</th>
+                    <th>Agência</th>
+                    <th>Conta</th>
+                    <th>Favorecido</th>
+                    <th>Valor Disponivel</th>
+                    <th>Representante</th>
+                  </tr>
+                </thead>
+
+                <tbody>
+                  <% bank[:accounts].each do |current_account| %>
+                    <tr class="bg-gray-200 border-t border-b border-black h-8">
+                      <td><%= current_account.prescriber_id %></td>
+                      <td><%= current_account.bank.agency_number %></td>
+                      <td><%= current_account.bank.account_number %></td>
+                      <td><%= current_account.favored %></td>
+                      <td><%= set_total_value(current_account) %></td>
+                      <td><%= current_account.prescriber&.representative&.name || "Unipharmus" %></td>
+                    </tr>
+                  <% end %>
+                </tbody>
+
+                <tfoot>
+                  <thead>
+                    <tr>
+                      <th class="pt-10"></th>
+                    </tr>
+                  </thead>
+
+                  <tbody>
+                    <tr class="bg-gray-200 border-t border-b border-black h-8">
+                      <td colspan="4" class="text-base font-semibold">Total</td>
+                      <td colspan="2"><%= set_grand_total_value(bank[:accounts]) %></td>
+                    </tr>
+                  </tbody>
+                </tfoot>
+              </table>
+            </div>
+          </ul>
+        </li>
+      </ul>
+    </div>
+  <% end %>
+</section>

@@ -9,16 +9,29 @@ class Closing < ApplicationRecord
   validates :start_date, presence: {message: " deve estar preenchido!"}
   validates :closing, presence: {message: " deve estar preenchido!"}, uniqueness: {message: " já está cadastrado!"}
 
-  def self.perform_closing
+  def set_current_accounts(closing_id)
+    CurrentAccount.includes(:bank, prescriber: [:representative, :monthly_reports])
+      .where(monthly_reports: {closing_id: closing_id, accumulated: false}, standard: true)
+      .order("banks.name ASC")
+      .group_by { |current_account| current_account.bank.name }
+      .map do |bank_name, accounts|
+        {
+          name: bank_name,
+          accounts: accounts
+        }
+      end
+  end
+
+  def perform_closing
     `#{Rails.root.join("script", "converter.sh")} &`
   end
 
-  def self.this_month
+  def this_month
     today = Date.today - 1
     find_by("end_date >= ? AND start_date <= ?", today, today)
   end
 
-  def self.update_monthly_report
+  def update_monthly_report
     @monthly_reports = MonthlyReport.includes(:prescriber, :requisition_discounts)
       .where(accumulated: false, closing_id: Closing.find_by(active: true))
       .where.not(representative_id: nil)
