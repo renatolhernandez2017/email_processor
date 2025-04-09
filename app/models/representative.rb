@@ -48,7 +48,7 @@ class Representative < ApplicationRecord
 
   def total_cash(closing_id)
     monthly_reports_with_accounts(closing_id)
-      .reject { |m| m.prescriber&.current_accounts&.find_by(standard: true) }
+      .where.not(monthly_reports: {prescribers: {current_accounts: {id: nil}}})
       .map { |mr| divide_into_notes(mr.available_value.to_f) }
       .each_with_object(Hash.new(0)) { |hash, sums|
       hash.each { |key, value| sums[key] += value }
@@ -58,8 +58,8 @@ class Representative < ApplicationRecord
   private
 
   def scoped_monthly_reports(closing_id, eager_load)
-    monthly_reports.where(closing_id: closing_id)
-      .includes(*eager_load)
+    monthly_reports.includes(*eager_load)
+      .where(closing_id: closing_id)
       .order("prescribers.name ASC")
   end
 

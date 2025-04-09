@@ -6,25 +6,14 @@ class NoteDivisionCalculator
   def initialize(closing_id)
     @closing_id = closing_id
     @note_divisions = {}
-    @total_notes = Hash.new(0)
   end
 
   def call
     representatives.each do |representative|
-      rep_notes = Hash.new(0)
-
-      representative.monthly_reports.each do |report|
-        divide_into_notes(report.available_value.to_f).each do |note, count|
-          rep_notes[note] += count
-          @total_notes[note] += count
-        end
-      end
-
-      @note_divisions[representative.name] = rep_notes
+      @note_divisions[representative.name] = representative.total_cash(@closing_id)
+      @total_marks = @note_divisions[representative.name].values.sum
+      @total_cash = @note_divisions[representative.name].sum { |note, count| note * count }  
     end
-
-    @total_marks = @total_notes.values.sum
-    @total_cash = @total_notes.sum { |note, count| note * count }
 
     self
   end
@@ -34,6 +23,7 @@ class NoteDivisionCalculator
   def representatives
     @representatives ||= Representative.includes(:monthly_reports, :current_accounts)
       .where(monthly_reports: {closing_id: @closing_id, accumulated: false})
+      .where.not(monthly_reports: {prescribers: {current_accounts: {id: nil}}})
       .order(:name)
   end
 end

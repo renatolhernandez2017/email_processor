@@ -1,0 +1,43 @@
+<ul class="menu rounded-box">
+  <li>
+    <ul class="border-l-2 border-primary">
+      <div class="overflow-hidden">
+        <table class="table-auto w-full">
+          <thead class="text-base">
+            <tr>
+              <th>Quantidade</th>
+              <th>Notas</th>
+              <th>Valor</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            <% note_divisions.each do |item, cash| %>
+              <tr class="bg-gray-200 border-t border-b border-black h-8">
+                <td><%= cash %></td>
+                <td><%= item %></td>
+                <td><%= number_to_currency(cash * item) %></td>
+              </tr>
+            <% end %>
+          </tbody>
+
+          <tfoot>
+            <thead>
+              <tr>
+                <th colspan="2" class="font-semibold text-base pt-10">Total de Notas</th>
+                <th class="font-semibold text-base pt-10">Total</th>
+              </tr>
+            </thead>
+
+            <tbody>
+              <tr class="bg-gray-200 border-t border-b border-black h-8">
+                <td colspan="2"><%= total_marks %></td>
+                <td><%= number_to_currency(total_cash) %></td>
+              </tr>
+            </tbody>
+          </tfoot>
+        </table>
+      </div>
+    </ul>
+  </li>
+</ul>

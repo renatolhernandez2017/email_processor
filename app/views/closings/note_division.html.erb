@@ -8,49 +8,7 @@
         </span>
       </label>
 
-      <ul class="menu rounded-box">
-        <li>
-          <ul class="border-l-2 border-primary">
-            <div class="overflow-hidden">
-              <table class="table-auto w-full">
-                <thead class="text-base">
-                  <tr>
-                    <th>Quantidade</th>
-                    <th>Notas</th>
-                    <th>Valor</th>
-                  </tr>
-                </thead>
-
-                <tbody>
-                  <% note_divisions.each do |note| %>
-                    <tr class="bg-gray-200 border-t border-b border-black h-8">
-                      <td><%= note[1] %></td>
-                      <td><%= note[0] %></td>
-                      <td><%= number_to_currency(note[1] * note[0]) %></td>
-                    </tr>
-                  <% end %>
-                </tbody>
-
-                <tfoot>
-                  <thead>
-                    <tr>
-                      <th colspan="2" class="font-semibold text-base pt-10">Total de Notas</th>
-                      <th class="font-semibold text-base pt-10">Total</th>
-                    </tr>
-                  </thead>
-
-                  <tbody>
-                    <tr>
-                      <td colspan="2"><%= @total_marks %></td>
-                      <td><%= number_to_currency(@total_cash) %></td>
-                    </tr>
-                  </tbody>
-                </tfoot>
-              </table>
-            </div>
-          </ul>
-        </li>
-      </ul>
+      <%= render "shared/notes", note_divisions: note_divisions, total_marks: @total_marks, total_cash: @total_cash %>
     </div>
   </section>
 <% end %>

@@ -35,7 +35,7 @@ class RepresentativesController < ApplicationController
 
     calculate_totals_by_bank
     calculate_totals_by_store
-    calculate_cash_totals
+    calculate_totals_note_division
   end
 
   def calculate_totals_by_bank
@@ -50,7 +50,7 @@ class RepresentativesController < ApplicationController
     @total_store = @totals_by_store.sum { |store| store[:total] }
   end
 
-  def calculate_cash_totals
+  def calculate_totals_note_division
     @total_in_cash = @representative.total_cash(@current_closing.id)
     @total_marks = @total_in_cash.values.sum
     @total_cash = @total_in_cash.map { |key, value| key * value }.sum
