@@ -1,0 +1,44 @@
+<h2>(=) ... da seguinte forma</h2>
+<ul class="menu rounded-box my-5">
+  <li>
+    <ul class="border-l-2 border-primary">
+      <div class="overflow-hidden">
+        <table class="table-auto w-full">
+          <thead class="text-base">
+            <tr>
+              <th>Destino</th>
+              <th>Qt. relatorios</th>
+              <th>Valor</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            <% as_follows.each do |as_follow| %>
+              <tr class="bg-gray-200 border-t border-b border-black h-8">
+                <td><%= as_follow[:name].present? ? as_follow[:name] : "DINHEIRO" %></td>
+                <td><%= as_follow[:count] %></td>
+                <td><%= number_to_currency(as_follow[:value]) %></td>
+              </tr>
+            <% end %>
+          </tbody>
+
+          <tfoot>
+            <thead>
+              <tr>
+                <th class="pt-10"></th>
+              </tr>
+            </thead>
+
+            <tbody>
+              <tr class="bg-gray-200 border-t border-b border-black h-8">
+                <td class="text-base font-semibold">Totais</td>
+                <td><%= as_follow_total_count %></td>
+                <td><%= number_to_currency(as_follow_value) %></td>
+              </tr>
+            </tbody>
+          </tfoot>
+        </table>
+      </div>
+    </ul>
+  </li>
+</ul>

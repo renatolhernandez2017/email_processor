@@ -63,8 +63,8 @@ class ClosingsController < ApplicationController
   end
 
   def closing_audit
-    payment_for_representative
     store_collection
+    payment_for_representative
     as_follow
   end
 

@@ -1,0 +1,44 @@
+<h2>(-) Pagamento para representantes</h2>
+<ul class="menu rounded-box my-5">
+  <li>
+    <ul class="border-l-2 border-primary">
+      <div class="overflow-hidden">
+        <table class="table-auto w-full">
+          <thead class="text-base">
+            <tr>
+              <th>Representante</th>
+              <th>Qt. receitas</th>
+              <th>Valor parceria</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            <% payment_for_representatives.each do |monthly_report| %>
+              <tr class="bg-gray-200 border-t border-b border-black h-8">
+                <td><%= monthly_report[:name] %></td>
+                <td><%= monthly_report[:quantity] %></td>
+                <td><%= number_to_currency(monthly_report[:value]) %></td>
+              </tr>
+            <% end %>
+          </tbody>
+
+          <tfoot>
+            <thead>
+              <tr>
+                <th class="pt-10"></th>
+              </tr>
+            </thead>
+
+            <tbody>
+              <tr class="bg-gray-200 border-t border-b border-black h-8">
+                <td class="text-base font-semibold">Totais</td>
+                <td><%= representative_total_quantity %></td>
+                <td><%= number_to_currency(representative_total_value) %></td>
+              </tr>
+            </tbody>
+          </tfoot>
+        </table>
+      </div>
+    </ul>
+  </li>
+</ul>
