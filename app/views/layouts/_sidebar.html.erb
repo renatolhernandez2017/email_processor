@@ -2,7 +2,7 @@
   <ul class="menu w-80 p-5 my-16">
     <li class="menu-title text-center lg:text-xl md:text-base bg-gray-200 mb-5 font-bold">Menu</li>
 
-    <%= render SidebarComponent.new(label: "Auditoria de fechamento", url: "#", subtitle: "Relatório de auditoria de fechamento") %>
+    <%= render SidebarComponent.new(label: "Auditoria de fechamento", url: closing_audit_closings_path, subtitle: "Relatório de auditoria de fechamento") %>
     <%= render SidebarComponent.new(label: "Divisão de notas", url: note_divisions_closings_path, subtitle: "Imprime quantas notas serão necessárias por cada representante.") %>
     <%= render SidebarComponent.new(label: "Depósito em bancos", url: deposits_in_banks_closings_path, subtitle: "Imprime relatórios que seguem para os bancos.") %>
     <%= render SidebarComponent.new(label: "Executa fechamento agora", url: "#", subtitle: "Executa o fechamento nesse exato momento, fique atento para receber o email com o LOG.") %>

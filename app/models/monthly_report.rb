@@ -24,7 +24,6 @@ class MonthlyReport < ApplicationRecord
   end
 
   def situation
-    # Pronto mais precisa ainda verificar melhor
     if accumulated
       "A"
     elsif !accumulated && prescriber&.current_accounts&.find_by(standard: true)

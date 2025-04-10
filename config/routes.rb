@@ -12,9 +12,10 @@ Rails.application.routes.draw do
   root "closings#index"
 
   resources :closings, only: %i[index create update] do
+    get :closing_audit, on: :collection
+    get :deposits_in_banks, on: :collection
     post :modify_for_this_closure, on: :collection
     get :note_divisions, on: :collection
-    get :deposits_in_banks, on: :collection
   end
 
   resources :current_accounts, only: %i[index create update destroy] do

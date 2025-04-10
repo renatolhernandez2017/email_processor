@@ -1,5 +1,6 @@
 class ClosingsController < ApplicationController
   include Pagy::Backend
+  include SharedData
 
   before_action :set_closing, only: %i[update modify_for_this_closure]
 
@@ -59,6 +60,30 @@ class ClosingsController < ApplicationController
 
   def deposits_in_banks
     @banks = @current_closing.set_current_accounts(@current_closing.id)
+  end
+
+  def closing_audit
+    payment_for_representative
+    store_collection
+    as_follow
+  end
+
+  def payment_for_representative
+    @payment_for_representatives = @current_closing.payment_for_representatives(@current_closing.id)
+    @representative_total_quantity = @payment_for_representatives.sum { |store| store[:quantity] }
+    @representative_total_value = @payment_for_representatives.sum { |store| store[:value] }
+  end
+
+  def store_collection
+    @store_collections = @current_closing.store_collections(@current_closing.id)
+    @store_total_count = @store_collections.sum { |store| store[:count] }
+    @store_total_value = @store_collections.sum { |store| store[:total] }
+  end
+
+  def as_follow
+    @as_follows = @current_closing.as_follows(@current_closing.id)
+    @as_follow_total_count = @as_follows.sum { |store| store[:count] }
+    @as_follow_value = @as_follows.sum { |store| store[:value] }
   end
 
   private
