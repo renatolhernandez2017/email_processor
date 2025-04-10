@@ -54,11 +54,9 @@ class CurrentAccountsController < ApplicationController
   end
 
   def change_standard
-    @type = params[:type]
-    update_standard
-
-    case @type
+    case params[:type]
     when "active"
+      @current_account.update_others_standard(@route, @current_account)
       @current_account.update(standard: true)
 
       flash[:info] = "Conta Corrente ativada com sucesso."
@@ -69,13 +67,6 @@ class CurrentAccountsController < ApplicationController
     end
 
     render_redirect
-  end
-
-  def update_standard
-    return unless @route == "prescriber"
-
-    current_accounts = CurrentAccount.where(prescriber_id: @current_account.prescriber_id)
-    current_accounts.update_all(standard: false) if @type == "active"
   end
 
   private

@@ -15,6 +15,22 @@ class CurrentAccount < ApplicationRecord
   before_create :unset_previous_standard
   after_create :set_as_standard
 
+  def update_others_standard(route, current_account)
+    return unless route == "prescriber" || route == "representative" || route == "branch"
+
+    object = case route
+    when "prescriber"
+      {prescriber_id: current_account.prescriber_id}
+    when "representative"
+      {representative_id: current_account.representative_id}
+    when "branch"
+      {branch_id: current_account.branch_id}
+    end
+
+    current_accounts = CurrentAccount.where(object)
+    current_accounts.update_all(standard: false)
+  end
+
   private
 
   def unset_previous_standard
