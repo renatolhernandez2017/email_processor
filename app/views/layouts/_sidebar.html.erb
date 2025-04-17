@@ -6,7 +6,7 @@
     <%= render SidebarComponent.new(label: "Divisão de notas", url: note_divisions_closings_path, subtitle: "Imprime quantas notas serão necessárias por cada representante.") %>
     <%= render SidebarComponent.new(label: "Depósito em bancos", url: deposits_in_banks_closings_path, subtitle: "Imprime relatórios que seguem para os bancos.") %>
     <%= render SidebarComponent.new(label: "Executa fechamento agora", url: "#", subtitle: "Executa o fechamento nesse exato momento, fique atento para receber o email com o LOG.") %>
-    <%= render SidebarComponent.new(label: "Imprime todas as lojas", url: "#", subtitle: "Imprime o todos os relatórios de fechamento de lojas.") %>
+    <%= render SidebarComponent.new(label: "Imprime todas as lojas", url: print_all_stores_branches_path, subtitle: "Imprime o todos os relatórios de fechamento de lojas.") %>
     <%= render SidebarComponent.new(label: "Listagem de pacientes", url: "#", subtitle: "Listagem de pacientes referente ao fechamento de #{set_closing_date}") %>
     <%= render SidebarComponent.new(label: "Requisições", url: "#", subtitle: "Conferência de requisições referente ao fechamento de #{set_closing_date}") %>
     <%= render SidebarComponent.new(label: "Todas listagens de pacientes", url: "#", subtitle: "Gera todas as listagens de pacientes separadas em ordem de representante.") %>

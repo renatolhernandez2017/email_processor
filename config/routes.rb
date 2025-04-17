@@ -22,7 +22,10 @@ Rails.application.routes.draw do
     post :change_standard, on: :member
   end
 
-  resources :branches, only: %i[index create update destroy]
+  resources :branches, only: %i[index create update destroy] do
+    get :print_all_stores, on: :collection
+  end
+
   resources :discounts, only: %i[index create update destroy]
 
   resources :prescribers, only: %i[index create update show destroy] do

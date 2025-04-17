@@ -37,7 +37,8 @@ module ApplicationHelper
 
   def tab_branch
     [
-      {action: "index", path: -> { branches_path }}
+      {action: "index", path: -> { branches_path }},
+      {action: "print_all_stores", path: -> { print_all_stores_branches_path }}
     ]
   end
 

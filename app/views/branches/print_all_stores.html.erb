@@ -1,0 +1,24 @@
+<div class="mb-20">
+  <% @branches.each do |name, id| %>  
+    <section class="flex flex-col p-5">
+      <div class="card shadow-lg border border-primary p-5">
+        <label class="text-lg">
+          <span class="text-primary">
+            <%= name.upcase %> -
+          </span>
+
+          <span class="text-primary"><%= @closing %></span>
+        </label>
+
+        <% calculate_branch_metrics(@discounts[id], @billings[id], @total_billings[id]) %>
+
+        <%= render "total_orders", total_orders: @total_orders[id]&.first %>
+        <%= render "billings" %>
+        <%= render "full_partnership" %>
+        <%= render "other_informations" %>
+        <%= render "commission_payments" %>
+        <%= render "commission_transfers", branch_name: name %>
+      </div>
+    </section>
+  <% end %>
+</div>

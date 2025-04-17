@@ -13,13 +13,30 @@ class MonthlyReport < ApplicationRecord
 
   validates :closing_id, :prescriber_id, presence: {message: " devem ser preenchidos!"}
 
+  scope :with_adjusted_billings, ->(closing_id:) {
+    joins(:requests, :representative)
+      .select(<<~SQL.squish)
+        monthly_reports.representative_id,
+        representatives.name AS representative_name,
+        requests.branch_id AS branch_id,
+        SUM(representatives.partnership) AS commission,
+        SUM(requests.amount_received) AS total_requests,
+        GREATEST((SUM(requests.amount_received) / monthly_reports.total_price) * (monthly_reports.partnership - monthly_reports.discounts), 0) AS branch_partnership,
+        GREATEST((SUM(requests.amount_received) * SUM(representatives.partnership) / 100.0), 0) AS commission_payments_transfers,
+        COUNT(requests.id) AS number_of_requests
+      SQL
+      .where(closing_id: closing_id, accumulated: false)
+      .group("monthly_reports.representative_id, representatives.name, requests.branch_id, monthly_reports.partnership, monthly_reports.discounts, monthly_reports.total_price")
+      .group_by { |m| m.branch_id }
+  }
+
   def available_value
     return 0.00 unless partnership
 
     if prescriber.current_accounts.find_by(standard: true)
-      partnership - discounts
+      [partnership - discounts, 0].max
     else
-      round_to_ten((partnership - discounts).to_f)
+      [round_to_ten((partnership - discounts).to_f), 0].max
     end
   end
 

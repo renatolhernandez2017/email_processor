@@ -12,7 +12,7 @@ class NoteDivisionCalculator
     representatives.each do |representative|
       @note_divisions[representative.name] = representative.total_cash(@closing_id)
       @total_marks = @note_divisions[representative.name].values.sum
-      @total_cash = @note_divisions[representative.name].sum { |note, count| note * count }  
+      @total_cash = @note_divisions[representative.name].sum { |note, count| note * count }
     end
 
     self

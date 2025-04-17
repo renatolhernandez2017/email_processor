@@ -1,0 +1,40 @@
+<ul class="menu rounded-box mb-5">
+  <li>
+    <ul class="border-l-2 border-primary">
+      <div class="overflow-auto">
+        <table class="table w-full">
+          <thead class="text-base">
+            <tr>
+              <th>Em dinheiro</th>
+              <th>Em bancos</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            <tr class="bg-gray-200 border-t border-b border-black">
+              <td><%= number_to_currency(@cash_partnership) %></td>
+              <td><%= number_to_currency(@full_partnership - @cash_partnership) %></td>
+            </tr>
+          </tbody>
+
+          <tfoot>
+            <thead>
+              <tr>
+                <th class="pt-7"></th>
+                <th></th>
+              </tr>
+            </thead>
+
+            <tbody>
+              <tr class="bg-gray-200 border-t border-b border-black h-10">
+                <td class="font-semibold text-base">Parceria total</td>
+
+                <td><%= number_to_currency(@full_partnership) %> (-)</td>
+              </tr>
+            </tbody>
+          </tfoot>
+        </table>
+      </div>
+    </ul>
+  </li>
+</ul>
