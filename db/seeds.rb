@@ -51,7 +51,8 @@ sp_cities = [
   CurrentAccount.create!(
     bank: bank,
     branch: branch,
-    favored: branch.name
+    favored: branch.name,
+    standard: true
   )
 
   representative = Representative.create!(
@@ -63,7 +64,8 @@ sp_cities = [
   CurrentAccount.create!(
     bank: bank,
     representative: representative,
-    favored: representative.name
+    favored: representative.name,
+    standard: true
   )
 
   prescriber = Prescriber.create!(
@@ -74,23 +76,16 @@ sp_cities = [
     class_council: rand(1..9),
     uf_council: Faker::Address.state_abbr,
     number_council: Array.new(6) { rand(1..9) }.join,
-    partnership: Faker::Commerce.price(range: 1..10.0),
-    discount_value: Faker::Commerce.price(range: 10..150.0),
+    partnership: Faker::Commerce.price(range: 1.0..10.0),
+    discount_value: Faker::Commerce.price(range: 1.0..10.0),
     representative: representative
   )
 
   CurrentAccount.create!(
     bank: bank,
     prescriber: prescriber,
-    favored: prescriber.name
-  )
-
-  CurrentAccount.create!(
-    bank: bank,
-    representative: representative,
-    prescriber: prescriber,
-    standard: true,
-    favored: representative.name
+    favored: prescriber.name,
+    standard: true
   )
 
   Address.create!(
@@ -109,9 +104,9 @@ sp_cities = [
   )
 
   monthly_report = MonthlyReport.create!(
-    total_price: Faker::Commerce.price(range: 50.0..500.0),
+    total_price: Faker::Commerce.price(range: 100.0..1000.0),
     partnership: Faker::Commerce.price(range: 10.0..100.0),
-    discounts: Faker::Commerce.price(range: 10.0..500.0),
+    discounts: Faker::Commerce.price(range: 1.0..10.0),
     report: Faker::Lorem.sentence,
     quantity: 1,
     accumulated: i.even?,
@@ -128,7 +123,7 @@ sp_cities = [
     total_price: Faker::Commerce.price(range: 1000.0..10000.0),
     amount_received: Faker::Commerce.price(range: 150.0..5000.0),
     total_fees: Faker::Commerce.price(range: 1.0..10.0),
-    total_discounts: Faker::Commerce.price(range: 250.0..2500.0),
+    total_discounts: Faker::Commerce.price(range: 50.0..200.0),
     repeat: i.even?,
     payment_date: Faker::Date.forward(days: 30),
     value_for_report: Faker::Commerce.price(range: 5.0..500.0),
@@ -141,7 +136,7 @@ sp_cities = [
   )
 
   Discount.create!(
-    price: Faker::Commerce.price(range: 10.0..1000.0),
+    price: Faker::Commerce.price(range: 1.0..10.0),
     description: Faker::Commerce.product_name,
     visible: true,
     branch: branch,
