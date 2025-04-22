@@ -71,8 +71,6 @@ ActiveRecord::Schema[7.1].define(version: 2025_04_02_205214) do
     t.decimal "discount_request", default: "0.0"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.bigint "representative_id"
-    t.index ["representative_id"], name: "index_branches_on_representative_id"
   end
 
   create_table "closings", force: :cascade do |t|
@@ -117,10 +115,10 @@ ActiveRecord::Schema[7.1].define(version: 2025_04_02_205214) do
   end
 
   create_table "monthly_reports", force: :cascade do |t|
-    t.decimal "total_price", default: "0.0"
-    t.decimal "partnership", default: "0.0"
-    t.decimal "discounts", default: "0.0"
-    t.decimal "balance", default: "0.0"
+    t.decimal "total_price", precision: 14, scale: 2, default: "0.0"
+    t.decimal "partnership", precision: 14, scale: 2, default: "0.0"
+    t.decimal "discounts", precision: 14, scale: 2, default: "0.0"
+    t.decimal "balance", precision: 14, scale: 2, default: "0.0"
     t.boolean "accumulated", default: true
     t.text "report"
     t.integer "quantity"
@@ -209,7 +207,6 @@ ActiveRecord::Schema[7.1].define(version: 2025_04_02_205214) do
 
   add_foreign_key "addresses", "prescribers"
   add_foreign_key "addresses", "representatives"
-  add_foreign_key "branches", "representatives"
   add_foreign_key "current_accounts", "banks"
   add_foreign_key "current_accounts", "branches"
   add_foreign_key "current_accounts", "prescribers"

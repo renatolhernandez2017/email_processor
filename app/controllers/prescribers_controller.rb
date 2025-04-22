@@ -2,8 +2,9 @@ class PrescribersController < ApplicationController
   include Pagy::Backend
   include SharedData
 
+  before_action :set_closing_date, only: %i[patient_listing]
   before_action :set_prescribers
-  before_action :set_prescriber, only: %i[update show destroy accumulate desaccumulate change_accumulated]
+  before_action :set_prescriber, only: %i[update show destroy accumulate desaccumulate change_accumulated patient_listing]
 
   def index
     @pagy, @prescribers = pagy(@prescribers_map.order(created_at: :desc))
@@ -64,6 +65,11 @@ class PrescribersController < ApplicationController
     redirect_to prescribers_path
   end
 
+  def patient_listing
+    @representative = @prescriber.representative
+    @monthly_reports = @current_closing.monthly_reports.where(prescriber_id: @prescriber.id)
+  end
+
   private
 
   def prescriber_params
@@ -96,5 +102,10 @@ class PrescribersController < ApplicationController
 
   def set_prescribers
     @prescribers_map = Prescriber.all
+  end
+
+  def set_closing_date
+    month_abbr = @current_closing.closing.split("/")
+    @closing = "#{t("view.months.#{month_abbr[0]}")}/#{month_abbr[1]}"
   end
 end
