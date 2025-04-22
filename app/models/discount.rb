@@ -12,7 +12,7 @@ class Discount < ApplicationRecord
   validates :price, numericality: {greater_than: 0, less_than_or_equal_to: 99999.9, message: " deve ser um valor maior do que zero"}
   validates :prescriber_id, :branch_id, presence: {message: " deve ser selecionado"}
 
-  validate :price_within_available_value
+  # validate :price_within_available_value
 
   after_save :update_monthly_report
   after_destroy :update_monthly_report
