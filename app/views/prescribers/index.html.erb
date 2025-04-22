@@ -33,6 +33,11 @@
                 <span class="material-symbols-outlined text-primary">personal_injury</span>
               <% end %>
 
+              <%= link_to requests_prescriber_path(prescriber),
+                  title: "Requisições" do %>
+                <span class="material-symbols-outlined text-primary">repeat</span>
+              <% end %>
+
               <button onclick="document.getElementById('edit_prescriber<%= prescriber.id %>').showModal();" title="Editar">
                 <span class="material-symbols-outlined text-primary">edit</span>
               </button>
