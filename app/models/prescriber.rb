@@ -13,6 +13,7 @@ class Prescriber < ApplicationRecord
   has_many :requests, dependent: :destroy
 
   accepts_nested_attributes_for :address
+  accepts_nested_attributes_for :requests
 
   PROFESSIONAL_TYPES = {"CRM" => 1,
                         "CRO" => 2,

@@ -4,7 +4,7 @@ class PrescribersController < ApplicationController
 
   before_action :set_closing_date, only: %i[patient_listing]
   before_action :set_prescribers
-  before_action :set_prescriber, only: %i[update show destroy accumulate desaccumulate change_accumulated patient_listing]
+  before_action :set_prescriber, except: %i[index]
 
   def index
     @pagy, @prescribers = pagy(@prescribers_map.order(created_at: :desc))
@@ -13,6 +13,7 @@ class PrescribersController < ApplicationController
     @current_account.build_bank
     @discount = Discount.new
     @prescribers.each(&:ensure_address)
+    @requests = Request.set_requests(@prescribers, @current_closing.id)
   end
 
   def update
@@ -62,12 +63,23 @@ class PrescribersController < ApplicationController
       flash[:notice] = "Prescritor já acumulado este mês." if accumulated == false
     end
 
-    redirect_to prescribers_path
+    render turbo_stream: turbo_stream.action(:redirect, prescribers_path)
   end
 
   def patient_listing
     @representative = @prescriber.representative
     @monthly_reports = @current_closing.monthly_reports.where(prescriber_id: @prescriber.id)
+  end
+
+  def requests
+    @requests = Request.set_requests_params(params.dig(:prescriber, :requests_attributes))
+
+    @requests.each do |request|
+      Request.find(request[:id]).update(request)
+    end
+
+    flash[:success] = "Valores alterados com sucesso!"
+    render turbo_stream: turbo_stream.action(:redirect, prescribers_path)
   end
 
   private

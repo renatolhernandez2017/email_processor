@@ -32,7 +32,8 @@ module ApplicationHelper
     [
       {action: "index", path: -> { prescribers_path }},
       {action: "show", path: -> { prescriber_path(id: params[:id]) if params[:id].present? }},
-      {action: "patient_listing", path: -> { patient_listing_prescriber_path(id: params[:id]) if params[:id].present? }}
+      {action: "patient_listing", path: -> { patient_listing_prescriber_path(id: params[:id]) if params[:id].present? }},
+      {action: "requests", path: -> { requests_prescriber_path(id: params[:id]) if params[:id].present? }}
     ]
   end
 

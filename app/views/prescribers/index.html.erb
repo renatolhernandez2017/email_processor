@@ -33,9 +33,16 @@
                 <span class="material-symbols-outlined text-primary">personal_injury</span>
               <% end %>
 
-              <%= link_to requests_prescriber_path(prescriber),
-                  title: "Requisições" do %>
-                <span class="material-symbols-outlined text-primary">repeat</span>
+              <% if @requests[prescriber.id].present? %>
+                <button onclick="document.getElementById('requests_prescriber<%= prescriber.id %>').showModal();" title="Requisições">
+                  <span class="material-symbols-outlined text-primary">repeat</span>
+                </button>
+
+                <dialog id="requests_prescriber<%= prescriber.id %>" class="modal place-items-center">
+                  <%= render ModalComponent.new(form: render("form_requests", prescriber: prescriber, requests: @requests[prescriber.id], title: "Requisições", btn_save: "Salvar")) %>
+                </dialog>
+              <% else %>
+                <span class="material-symbols-outlined text-black">repeat</span>
               <% end %>
 
               <button onclick="document.getElementById('edit_prescriber<%= prescriber.id %>').showModal();" title="Editar">

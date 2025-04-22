@@ -3,8 +3,8 @@ class RepresentativesController < ApplicationController
   include Roundable
   include SharedData
 
-  before_action :set_closing_date, only: %i[monthly_report patient_listing summary_patient_listing unaccumulated_addresses]
-  before_action :set_representative, only: %i[update monthly_report patient_listing summary_patient_listing unaccumulated_addresses]
+  before_action :set_closing_date, except: %i[index update]
+  before_action :set_representative, except: %i[index]
 
   def index
     @pagy, @representatives = pagy(Representative.all.order(created_at: :desc))

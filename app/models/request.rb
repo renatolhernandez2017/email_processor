@@ -84,4 +84,25 @@ class Request < ApplicationRecord
       number_to_currency(request.total_price)
     end
   end
+
+  def self.set_requests(prescribers, closing_id)
+    Request.includes(:monthly_report, :prescriber)
+      .where(monthly_reports: {prescriber_id: prescribers.pluck(:id), closing_id: closing_id})
+      .where.not(payment_date: nil).order(:payment_date)
+      .group_by(&:prescriber_id)
+  end
+
+  def self.set_requests_params(requests_attributes)
+    requests_attributes&.values&.map do |request_attributes|
+      next unless request_attributes[:id].present?
+
+      {
+        id: request_attributes[:id],
+        amount_received: request_attributes[:amount_received].to_s.delete(".").tr(",", ".").to_f,
+        cdfil_id: request_attributes[:cdfil_id],
+        payment_date: request_attributes[:payment_date],
+        patient_name: request_attributes[:patient_name]
+      }
+    end&.compact || []
+  end
 end
