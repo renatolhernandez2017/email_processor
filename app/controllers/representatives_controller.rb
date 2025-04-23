@@ -64,6 +64,9 @@ class RepresentativesController < ApplicationController
     load_monthly_reports_false
   end
 
+  def unaccumulated_tags
+  end
+
   def unaccumulated_addresses
     @monthly_reports = @representative.load_monthly_reports(@current_closing.id, [{representative: [:address, :prescriber]}])
   end

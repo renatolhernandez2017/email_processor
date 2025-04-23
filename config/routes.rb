@@ -38,6 +38,7 @@ Rails.application.routes.draw do
     get :monthly_report, on: :member
     get :patient_listing, on: :member
     get :summary_patient_listing, on: :member
+    get :unaccumulated_tags, on: :member
     get :unaccumulated_addresses, on: :member
   end
 
