@@ -5,7 +5,6 @@
     <table class="table-auto w-full text-sm font-semibold text-center">
       <thead class="text-base">
         <tr>
-          <th><input type="checkbox" class="checkbox checkbox-primary" /></th>
           <th>ID</th>
           <th>Representante</th>
           <th>Número</th>
@@ -19,7 +18,6 @@
       <tbody>
         <% @representatives.each_with_index do |representative, index| %>
           <tr class="border-t border-black items-center <%= index % 2 == 0 ? "bg-gray-200" : "bg-gray-100" %>">
-            <td><input type="checkbox" class="checkbox checkbox-primary" /></td>
             <td><%= representative.id %></td>
             <td><%= representative.name %></td>
             <td><%= representative.branch.branch_number.to_s.rjust(3, '0') %></td>
@@ -27,7 +25,7 @@
             <td><%= formatted_percentage(representative.partnership) %></td>
 
             <td class="flex justify-center items-center gap-2 h-10">
-              <button onclick="document.getElementById('edit_representative<%= representative.id %>').showModal();" title="Editar">
+              <button type="button" onclick="document.getElementById('edit_representative<%= representative.id %>').showModal();" title="Editar">
                 <span class="material-symbols-outlined text-primary">edit</span>
               </button>
 
@@ -35,29 +33,35 @@
                 <%= render ModalComponent.new(form: render("form", representative: representative, branches: @branches, title: "Editar Representante : #{representative.id}", btn_save: "Atualizar")) %>
               </dialog>
 
-              <%= link_to monthly_report_representative_path(representative), title: "Resumo" do %>
-                <span class="material-symbols-outlined text-primary">description</span>
-              <% end %>
+              <%= link_to_if representative.performs_closing?,
+                  "<span class='material-symbols-outlined text-primary'>description</span>".html_safe,
+                  monthly_report_representative_path(representative), title: "Resumo"
+              %>
 
-              <%= link_to patient_listing_representative_path(representative), title: "Listagem" do %>
-                <span class="material-symbols-outlined text-primary">list_alt</span>
-              <% end %>
+              <%= link_to_if representative.performs_closing?,
+                  "<span class='material-symbols-outlined text-primary'>list_alt</span>".html_safe,
+                  patient_listing_representative_path(representative), title: "Listagem"
+              %>
 
-              <%= link_to summary_patient_listing_representative_path(representative), title: "Listagem Resumida" do %>
-                <span class="material-symbols-outlined text-primary">content_paste</span>
-              <% end %>
+              <%= link_to_if representative.performs_closing?,
+                  "<span class='material-symbols-outlined text-primary'>content_paste</span>".html_safe,
+                  summary_patient_listing_representative_path(representative), title: "Listagem Resumida"
+              %>
 
-              <%= link_to unaccumulated_addresses_representative_path(representative), title: "Endereço" do %>
-                <span class="material-symbols-outlined text-primary">home</span>
-              <% end %>
+              <%= link_to_if representative.performs_closing?,
+                  "<span class='material-symbols-outlined text-primary'>home</span>".html_safe,
+                  unaccumulated_addresses_representative_path(representative), title: "Endereço"
+              %>
 
-              <button onclick="document.getElementById('account_balance_representative<%= representative.id %>').showModal();" title="Adicionar nova Conta Corrente">
+              <button type="button" onclick="document.getElementById('account_balance_representative<%= representative.id %>').showModal();" title="Adicionar nova Conta Corrente">
                 <span class="material-symbols-outlined text-primary">account_balance</span>
               </button>
 
               <dialog id="account_balance_representative<%= representative.id %>" class="modal place-items-center">
                 <%= render ModalComponent.new(form: render("current_accounts/form", representative: representative, current_account: @current_account, representatives: @representatives, title: "Criar Nova Conta Corrente", btn_save: "Salvar", route: "representative")) %>
               </dialog>
+
+              <%= render ActiveInactiveLinkComponent.new(representative: representative, route: "representative", url: change_active_representative_path(representative)) %>
             </td>
 
             <td class="cursor-pointer" data-controller="toggle" data-action="click->toggle#tableTr" data-tr-id="representative_tr_hidden_<%= index %>">

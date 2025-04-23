@@ -3,7 +3,7 @@ class RepresentativesController < ApplicationController
   include Roundable
   include SharedData
 
-  before_action :set_closing_date, except: %i[index update]
+  before_action :set_closing_date, except: %i[index update change_active]
   before_action :set_representative, except: %i[index]
 
   def index
@@ -31,27 +31,42 @@ class RepresentativesController < ApplicationController
 
   def monthly_report
     @monthly_reports = @representative.load_monthly_reports(@current_closing.id, [{prescriber: {current_accounts: :bank}}])
-    @accumulated = @monthly_reports.where(accumulated: true)
+    @accumulated = @monthly_reports.where(accumulated: false)
 
-    calculate_totals_by_bank
-    calculate_totals_by_store
-    calculate_totals_note_division
+    calculate_totals_by_bank("report")
+    calculate_totals_by_store("report")
+    calculate_totals_note_division("report")
   end
 
-  def calculate_totals_by_bank
-    @totals_by_bank = @representative.totals_by_bank(@current_closing.id)
-    @total_count = @totals_by_bank.sum { |bank| bank[:count] }
-    @total_value = @totals_by_bank.sum { |bank| bank[:total] }
+  def calculate_totals_by_bank(type)
+    if type == "report"
+      @totals_by_bank = @representative.totals_by_bank(@current_closing.id)
+    elsif type == "select"
+      @totals_by_bank = Representative.totals_by_bank_select(@current_closing.id, @representatives)
+    end
+
+    @total_count = @totals_by_bank.sum { |bank| bank[:count] if bank.present? }
+    @total_value = @totals_by_bank.sum { |bank| bank[:total] if bank.present? }
   end
 
-  def calculate_totals_by_store
-    @totals_by_store = @representative.totals_by_store(@current_closing.id)
+  def calculate_totals_by_store(type)
+    if type == "report"
+      @totals_by_store = @representative.totals_by_store(@current_closing.id)
+    elsif type == "select"
+      @totals_by_store = Representative.totals_by_store_select(@current_closing.id, @representatives)
+    end
+
     @total_count_store = @totals_by_store.sum { |store| store[:count] }
     @total_store = @totals_by_store.sum { |store| store[:total] }
   end
 
-  def calculate_totals_note_division
-    @total_in_cash = @representative.total_cash(@current_closing.id)
+  def calculate_totals_note_division(type)
+    if type == "report"
+      @total_in_cash = @representative.total_cash(@current_closing.id)
+    elsif type == "select"
+      @total_in_cash = Representative.total_cash_select(@current_closing.id, @representatives)
+    end
+
     @total_marks = @total_in_cash.values.sum
     @total_cash = @total_in_cash.map { |key, value| key * value }.sum
   end
@@ -67,8 +82,38 @@ class RepresentativesController < ApplicationController
   def unaccumulated_tags
   end
 
+  def select
+    select_action = params[:select_action]
+    @representatives = Representative.where(active: true).order(:name)
+
+    monthly_summary if select_action == "monthly_summary"
+  end
+
+  def monthly_summary
+    @monthly_reports = Representative.monthly_reports_select(@current_closing.id, @representatives)
+
+    calculate_totals_by_bank("select")
+    calculate_totals_by_store("select")
+    calculate_totals_note_division("select")
+  end
+
   def unaccumulated_addresses
     @monthly_reports = @representative.load_monthly_reports(@current_closing.id, [{representative: [:address, :prescriber]}])
+  end
+
+  def change_active
+    case params[:type]
+    when "active"
+      @representative.update(active: true)
+
+      flash[:info] = "Representante ativado com sucesso."
+    when "desactive"
+      @representative.update(active: false)
+
+      flash[:info] = "Representante desativado com sucesso."
+    end
+
+    render turbo_stream: turbo_stream.action(:redirect, representatives_path)
   end
 
   private
@@ -82,6 +127,7 @@ class RepresentativesController < ApplicationController
       :name,
       :partnership,
       :performs_closing,
+      :active,
       :branch_id
     )
   end

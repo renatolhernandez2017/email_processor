@@ -24,7 +24,8 @@ module ApplicationHelper
       {action: "monthly_report", path: -> { monthly_report_representative_path(id: params[:id]) if params[:id].present? }},
       {action: "patient_listing", path: -> { patient_listing_representative_path(id: params[:id]) if params[:id].present? }},
       {action: "summary_patient_listing", path: -> { summary_patient_listing_representative_path(id: params[:id]) if params[:id].present? }},
-      {action: "unaccumulated_addresses", path: -> { unaccumulated_addresses_representative_path(id: params[:id]) if params[:id].present? }}
+      {action: "unaccumulated_addresses", path: -> { unaccumulated_addresses_representative_path(id: params[:id]) if params[:id].present? }},
+      {action: "select", path: -> { select_representatives_path }}
     ]
   end
 

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_04_02_205214) do
+ActiveRecord::Schema[7.1].define(version: 2025_04_23_163015) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
   enable_extension "unaccent"
@@ -56,6 +56,16 @@ ActiveRecord::Schema[7.1].define(version: 2025_04_02_205214) do
     t.index ["user_id", "user_type"], name: "user_index"
   end
 
+  create_table "bank", force: :cascade do |t|
+    t.string "name"
+    t.boolean "rounding", default: false
+    t.string "bank_number"
+    t.string "agency_number"
+    t.string "account_number"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "banks", force: :cascade do |t|
     t.string "name"
     t.boolean "rounding", default: true
@@ -71,6 +81,8 @@ ActiveRecord::Schema[7.1].define(version: 2025_04_02_205214) do
     t.decimal "discount_request", default: "0.0"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.bigint "representative_id"
+    t.index ["representative_id"], name: "index_branches_on_representative_id"
   end
 
   create_table "closings", force: :cascade do |t|
@@ -115,10 +127,10 @@ ActiveRecord::Schema[7.1].define(version: 2025_04_02_205214) do
   end
 
   create_table "monthly_reports", force: :cascade do |t|
-    t.decimal "total_price", precision: 14, scale: 2, default: "0.0"
-    t.decimal "partnership", precision: 14, scale: 2, default: "0.0"
-    t.decimal "discounts", precision: 14, scale: 2, default: "0.0"
-    t.decimal "balance", precision: 14, scale: 2, default: "0.0"
+    t.decimal "total_price", default: "0.0"
+    t.decimal "partnership", default: "0.0"
+    t.decimal "discounts", default: "0.0"
+    t.decimal "balance", default: "0.0"
     t.boolean "accumulated", default: true
     t.text "report"
     t.integer "quantity"
@@ -161,6 +173,7 @@ ActiveRecord::Schema[7.1].define(version: 2025_04_02_205214) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.bigint "branch_id"
+    t.boolean "active", default: false
     t.index ["branch_id"], name: "index_representatives_on_branch_id"
   end
 
@@ -207,6 +220,7 @@ ActiveRecord::Schema[7.1].define(version: 2025_04_02_205214) do
 
   add_foreign_key "addresses", "prescribers"
   add_foreign_key "addresses", "representatives"
+  add_foreign_key "branches", "representatives"
   add_foreign_key "current_accounts", "banks"
   add_foreign_key "current_accounts", "branches"
   add_foreign_key "current_accounts", "prescribers"

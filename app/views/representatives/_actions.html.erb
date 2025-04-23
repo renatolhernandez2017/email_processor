@@ -1,20 +1,22 @@
-<div class="flex justify-between items-center my-2 lg px-5">
+<div class="flex justify-between items-center my-2 px-5">
   <h1 class="text-2xl text-center text-primary mx-auto">Listagem de Representantes</h1>
 
-  <fieldset class="fieldset w-96 border border-primary p-2 rounded-box">
-    <legend class="fieldset-legend text-primary">Com os itens selecionados ...</legend>
+  <fieldset class="fieldset border border-primary p-2 rounded-box">
+    <legend class="fieldset-legend text-primary">Com os itens ativos ...</legend>
 
     <div class="join border border-primary join-item rounded-r-full">
-      <select class="select">
-        <option disabled selected>Selecione uma opção</option>
-        <option>Salva Listagem de Pacientes</option>
-        <option>Salva Listagem de Pacientes resumida</option>
-        <option>Resumido Mensal</option>
-        <option>Etiquetas</option>
-        <option>Relatório de Endereços</option>
-      </select>
+      <%= form_with url: select_representatives_path, method: :get, local: true do |form| %>
+        <%= form.select :select_action, options_for_select([
+          ['Selecione uma opção', '', { disabled: true, selected: true }],
+          ['Salva Listagem de Pacientes', 'save_patient_listing'],
+          ['Salva Listagem de Pacientes resumida', 'saves_summary_patient_listing'],
+          ['Resumido Mensal', 'monthly_summary'],
+          ['Etiquetas', 'tags'],
+          ['Relatório de Endereços', 'address_report']
+        ]), {}, class: 'select' %>
 
-      <button class="btn btn-primary join-item">Ok</button>
+        <%= form.submit 'Ok', class: 'btn btn-primary join-item' %>
+      <% end %>
     </div>
   </fieldset>
 </div>

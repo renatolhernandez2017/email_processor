@@ -35,10 +35,12 @@ Rails.application.routes.draw do
   end
 
   resources :representatives, only: %i[index create update] do
+    post :change_active, on: :member
     get :monthly_report, on: :member
     get :patient_listing, on: :member
+    get :select, on: :collection
     get :summary_patient_listing, on: :member
-    get :unaccumulated_tags, on: :member
+    get :unaccumulated_tags, on: :collection
     get :unaccumulated_addresses, on: :member
   end
 
