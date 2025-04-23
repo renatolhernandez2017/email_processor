@@ -33,40 +33,25 @@ class RepresentativesController < ApplicationController
     @monthly_reports = @representative.load_monthly_reports(@current_closing.id, [{prescriber: {current_accounts: :bank}}])
     @accumulated = @monthly_reports.where(accumulated: false)
 
-    calculate_totals_by_bank("report")
-    calculate_totals_by_store("report")
-    calculate_totals_note_division("report")
+    calculate_totals_by_bank
+    calculate_totals_by_store
+    calculate_totals_note_division
   end
 
-  def calculate_totals_by_bank(type)
-    if type == "report"
-      @totals_by_bank = @representative.totals_by_bank(@current_closing.id)
-    elsif type == "select"
-      @totals_by_bank = Representative.totals_by_bank_select(@current_closing.id, @representatives)
-    end
-
+  def calculate_totals_by_bank
+    @totals_by_bank = @representative.totals_by_bank(@current_closing.id)
     @total_count = @totals_by_bank.sum { |bank| bank[:count] if bank.present? }
     @total_value = @totals_by_bank.sum { |bank| bank[:total] if bank.present? }
   end
 
-  def calculate_totals_by_store(type)
-    if type == "report"
-      @totals_by_store = @representative.totals_by_store(@current_closing.id)
-    elsif type == "select"
-      @totals_by_store = Representative.totals_by_store_select(@current_closing.id, @representatives)
-    end
-
+  def calculate_totals_by_store
+    @totals_by_store = @representative.totals_by_store(@current_closing.id)
     @total_count_store = @totals_by_store.sum { |store| store[:count] }
     @total_store = @totals_by_store.sum { |store| store[:total] }
   end
 
-  def calculate_totals_note_division(type)
-    if type == "report"
-      @total_in_cash = @representative.total_cash(@current_closing.id)
-    elsif type == "select"
-      @total_in_cash = Representative.total_cash_select(@current_closing.id, @representatives)
-    end
-
+  def calculate_totals_note_division
+    @total_in_cash = @representative.total_cash(@current_closing.id)
     @total_marks = @total_in_cash.values.sum
     @total_cash = @total_in_cash.map { |key, value| key * value }.sum
   end
@@ -83,18 +68,12 @@ class RepresentativesController < ApplicationController
   end
 
   def select
-    select_action = params[:select_action]
-    @representatives = Representative.where(active: true).order(:name)
+    # select_action = params[:select_action]
+    @representatives = Representative.includes(:monthly_reports, prescriber: {current_accounts: :bank})
+      .where(active: true, monthly_reports: {closing_id: @current_closing.id, accumulated: false})
+      .order(:name)
 
-    monthly_summary if select_action == "monthly_summary"
-  end
-
-  def monthly_summary
-    @monthly_reports = Representative.monthly_reports_select(@current_closing.id, @representatives)
-
-    calculate_totals_by_bank("select")
-    calculate_totals_by_store("select")
-    calculate_totals_note_division("select")
+    # monthly_summary if select_action == "monthly_summary"
   end
 
   def unaccumulated_addresses
