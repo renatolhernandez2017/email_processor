@@ -1,22 +1,23 @@
 <section class="flex flex-col p-5 mb-20">
   <% @representatives.each do |representative| %>
     <div class="mx-2 my-3">
-      <div class="card shadow-lg border border-primary p-5">
-        <label class="text-lg">Resumo de
-          <span class="text-primary">
-            <%= representative.name.upcase %>
-          </span>em
-
-          <span class="text-primary"><%= @closing %></span>
-        </label>
-
-        <% set_calculate_summary(representative.monthly_reports) %>
-
-        <%= render "summary", monthly_reports: representative.monthly_reports, accumulated: representative.monthly_reports %>
-        <%= render "totals_by_bank", totals_by_bank: @totals_by_bank, total_count: @totals_count, total_value: @total_bank %>
-        <%= render "totals_by_store", totals_by_store: @totals_by_store, total_store: @total_store, total_count_store: @total_count_store %>
-        <%= render "note_division", total_in_cash: @total_in_cash, total_marks: @total_marks, total_cash: @total_cash %>
-      </div>
+      <% if @select_action == "save_patient_listing" %>
+        <%= render "shared/patient/listing", closing: @closing, monthly_reports: representative.monthly_reports, representative: representative %>
+      <% elsif @select_action == "saves_summary_patient_listing" %>
+        <%= render "shared/patient_listing", monthly_reports: representative.monthly_reports, closing: @closing, representative: representative %>
+      <% elsif @select_action == "monthly_summary" %>
+        <%= render "monthly_summary",
+            summary: @representative_summaries[representative.id],
+            representative: representative,
+            closing: @closing, title: "Resumo de"
+        %>
+      <% elsif @select_action == "tags" %>
+      <% elsif @select_action == "address_report" %>
+        <div class="card border border-primary p-5">
+          <%= render "shared/label_of", representative: representative, closing: @closing, title: "Clientes de" %>
+          <%= render "shared/address", monthly_reports: representative.monthly_reports %>
+        </div>
+      <% end %>
     </div>
   <% end %>
 </section>

@@ -1,13 +1,14 @@
-<% @note_divisions.each do |representative, note_divisions| %>
-  <section class="flex flex-col p-5">
+<section class="flex flex-col p-5 mb-20 gap-5">
+  <% @representatives.each do |representative| %>
     <div class="card shadow-lg border border-primary p-5">
       <label class="text-lg">
         <span class="text-primary">
-          <%= representative.upcase %>
+          <%= representative.name.upcase %>
         </span>
       </label>
 
-      <%= render "shared/notes", note_divisions: note_divisions, total_marks: @total_marks, total_cash: @total_cash %>
+      <% summary = @representative_summaries[representative.id] %>
+      <%= render "representatives/note_division", total_in_cash: summary[:total_in_cash], total_marks: summary[:total_marks], total_cash: summary[:total_cash] %>
     </div>
-  </section>
-<% end %>
+  <% end %>
+</section>

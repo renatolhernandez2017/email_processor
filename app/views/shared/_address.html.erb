@@ -1,0 +1,46 @@
+<ul class="menu rounded-box">
+  <li>
+    <ul class="border-l-2 border-primary">
+      <div class="overflow-auto">
+        <table class="table w-full">
+          <thead class="text-base">
+            <tr>
+              <th>Envelope</th>
+              <th>Informações</th>
+              <th>Quant.</th>
+              <th>Valor Disponível</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            <% monthly_reports.each do |monthly_report| %>
+              <tr class="bg-gray-200 border-t border-b border-black">
+                <td><%= monthly_report.envelope_number.to_s.rjust(6, '0') %></td>
+
+                <td>
+                  <p>
+                    <b>Nome:</b>
+                    <%= link_to monthly_report.prescriber.name,
+                        prescriber_path(monthly_report.prescriber), class: "text-primary"
+                    %>
+                  </p>
+
+                  <p>
+                    <b>Endereço:</b> <%= monthly_report.prescriber&.full_address %>
+                  </p>
+
+                  <p><b>Fones:</b> <%= monthly_report.prescriber.full_contact %></p>
+                  <p><b>Contatos:</b> <%= monthly_report.prescriber.secretary %></p>
+                  <p><b>OBS:</b> <%= truncate(monthly_report.prescriber.note, length: 50) %></p>
+                </td>
+
+                <td><%= monthly_report.quantity %></td>
+                <td><%= number_to_currency(monthly_report.available_value) %></td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      </div>
+    </ul>
+  </li>
+</ul>

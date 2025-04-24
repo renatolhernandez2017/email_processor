@@ -1,0 +1,7 @@
+<div class="card shadow-lg border border-primary p-5">
+  <%= render "shared/label_of", representative: representative, closing: closing, title: title %>
+  <%= render "summary", monthly_reports: representative.monthly_reports, accumulated: representative.monthly_reports %>
+  <%= render "totals_by_bank", totals_by_bank: summary[:totals_by_bank], total_count: summary[:totals_count], total_value: summary[:total_bank] %>
+  <%= render "totals_by_store", totals_by_store: summary[:totals_by_store], total_store: summary[:total_store], total_count_store: summary[:total_count_store] %>
+  <%= render "note_division", total_in_cash: summary[:total_in_cash], total_marks: summary[:total_marks], total_cash: summary[:total_cash] %>
+</div>

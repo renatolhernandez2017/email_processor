@@ -2,6 +2,7 @@ class RepresentativesController < ApplicationController
   include Pagy::Backend
   include Roundable
   include SharedData
+  include NotesDivisions
 
   before_action :set_closing_date, except: %i[index update change_active]
   before_action :set_representative, except: %i[index]
@@ -68,12 +69,7 @@ class RepresentativesController < ApplicationController
   end
 
   def select
-    # select_action = params[:select_action]
-    @representatives = Representative.includes(:monthly_reports, prescriber: {current_accounts: :bank})
-      .where(active: true, monthly_reports: {closing_id: @current_closing.id, accumulated: false})
-      .order(:name)
-
-    # monthly_summary if select_action == "monthly_summary"
+    @select_action = params[:select_action]
   end
 
   def unaccumulated_addresses

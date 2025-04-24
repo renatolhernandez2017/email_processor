@@ -1,6 +1,7 @@
 class ClosingsController < ApplicationController
   include Pagy::Backend
   include SharedData
+  include NotesDivisions
 
   before_action :set_closing, only: %i[update modify_for_this_closure]
 
@@ -51,11 +52,6 @@ class ClosingsController < ApplicationController
   end
 
   def note_divisions
-    calculator = NoteDivisionCalculator.new(@current_closing.id).call
-
-    @note_divisions = calculator.note_divisions
-    @total_marks = calculator.total_marks
-    @total_cash = calculator.total_cash
   end
 
   def deposits_in_banks
