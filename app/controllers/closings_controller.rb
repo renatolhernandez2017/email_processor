@@ -52,6 +52,7 @@ class ClosingsController < ApplicationController
   end
 
   def note_divisions
+    # Usa informações que vem do include NotesDivisions
   end
 
   def deposits_in_banks
