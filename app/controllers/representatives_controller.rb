@@ -65,9 +65,6 @@ class RepresentativesController < ApplicationController
     load_monthly_reports_false
   end
 
-  def unaccumulated_tags
-  end
-
   def select
     @select_action = params[:select_action]
   end

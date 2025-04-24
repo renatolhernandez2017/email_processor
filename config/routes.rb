@@ -40,7 +40,6 @@ Rails.application.routes.draw do
     get :patient_listing, on: :member
     get :select, on: :collection
     get :summary_patient_listing, on: :member
-    get :unaccumulated_tags, on: :collection
     get :unaccumulated_addresses, on: :member
   end
 
