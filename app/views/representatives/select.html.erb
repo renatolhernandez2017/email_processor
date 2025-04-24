@@ -2,9 +2,15 @@
   <% @representatives.each do |representative| %>
     <div class="mx-2 my-3">
       <% if @select_action == "save_patient_listing" %>
-        <%= render "shared/patient/listing", closing: @closing, monthly_reports: representative.monthly_reports, representative: representative %>
+        <%= render "shared/patient/listing",
+            closing: @closing, monthly_reports: representative.monthly_reports,
+            representative: representative
+        %>
       <% elsif @select_action == "saves_summary_patient_listing" %>
-        <%= render "shared/patient_listing", monthly_reports: representative.monthly_reports, closing: @closing, representative: representative %>
+        <%= render "shared/patient_listing",
+            monthly_reports: representative.monthly_reports,
+            closing: @closing, representative: representative
+        %>
       <% elsif @select_action == "monthly_summary" %>
         <%= render "monthly_summary",
             summary: @representative_summaries[representative.id],
@@ -12,9 +18,15 @@
             closing: @closing, title: "Resumo de"
         %>
       <% elsif @select_action == "tags" %>
+        <%= render "tags", representative: representative,
+            current_closing: @current_closing, closing: @closing
+        %>
       <% elsif @select_action == "address_report" %>
         <div class="card border border-primary p-5">
-          <%= render "shared/label_of", representative: representative, closing: @closing, title: "Clientes de" %>
+          <%= render "shared/label_of", representative: representative,
+              closing: @closing, title: "Clientes de"
+          %>
+
           <%= render "shared/address", monthly_reports: representative.monthly_reports %>
         </div>
       <% end %>

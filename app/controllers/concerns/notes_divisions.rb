@@ -9,10 +9,10 @@ module NotesDivisions
 
   def load_representative_summaries
     @representative_summaries = {}
-    @representatives = Representative.includes(:monthly_reports)
+    @representatives = Representative.includes(:monthly_reports, :prescriber)
       .where(active: true)
       .where(monthly_reports: {closing_id: @current_closing.id, accumulated: false})
-      .order(:name)
+      .order("prescribers.name ASC")
 
     @representatives.each do |representative|
       summary = NoteDivisionCalculator.new(representative.monthly_reports).call

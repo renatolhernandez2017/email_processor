@@ -1,0 +1,49 @@
+<div class="card border border-primary p-5">
+  <% representative.monthly_reports.each do |monthly_report| %>
+    <label class="text-lg">
+      <span class="text-primary">
+        <%= representative.name.upcase %>
+      </span> -
+
+      <span><%= current_closing.end_date.strftime("%d/%m/%Y") %></span>
+
+      <span class="ml-12"><%= closing %></span> -
+      <%= "(ESP) - " if monthly_report.prescriber.current_accounts.nil? %>
+      <b><%= monthly_report.envelope_number.to_s.rjust(5, '0') %></b>
+    </label>
+
+    <ul class="menu rounded-box my-5">
+      <li>
+        <ul class="border-l-2 border-primary">
+          <div class="overflow-hidden">
+            <table class="table-auto w-full">
+              <thead class="text-base">
+                <tr>
+                  <th>ID</th>
+                  <th>Nome</th>
+                  <th>Informações</th>
+                  <th>Observação</th>
+                </tr>
+              </thead>
+
+              <tbody>
+                <tr>
+                  <td><%= monthly_report.prescriber.id %></td>
+                  <td><%= monthly_report.prescriber.name %></td>
+
+                  <td>
+                    <p><%= monthly_report.prescriber&.full_address %></p>
+                    <p><%= monthly_report.prescriber.full_contact %></p>
+                    <p><%= monthly_report.prescriber.secretary %></p>
+                  </td>
+
+                  <td>OBS: <%= truncate(monthly_report.prescriber.note, length: 50) %></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </ul>
+      </li>
+    </ul>
+  <% end %>
+</div>
