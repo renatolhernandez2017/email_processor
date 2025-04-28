@@ -23,7 +23,9 @@
                 <td><%= monthly_report.prescriber.id %></td>
 
                 <td>
-                  <%= link_to monthly_report.prescriber.name, prescriber_path(monthly_report.prescriber), class: "text-primary" %>
+                  <%= link_to monthly_report.prescriber.name,
+                      prescriber_path(monthly_report.prescriber), class: "text-primary"
+                  %>
                 </td>
 
                 <td class="text-center"><%= monthly_report.quantity %></td>
@@ -31,11 +33,7 @@
                 <td><%= number_to_currency(monthly_report.partnership) %></td>
                 <td><%= number_to_currency(monthly_report.discounts) %></td>
                 <td><%= number_to_currency(monthly_report.available_value) %></td>
-
-                <td>
-                  <%= payment_method_display(monthly_report) %>
-                </td>
-
+                <td><%= payment_method_display(monthly_report) %></td>
                 <td><%= monthly_report.envelope_number.to_s.rjust(6, '0') %></td>
               </tr>
             <% end %>

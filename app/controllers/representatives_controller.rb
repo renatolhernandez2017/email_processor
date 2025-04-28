@@ -88,6 +88,15 @@ class RepresentativesController < ApplicationController
     render turbo_stream: turbo_stream.action(:redirect, representatives_path)
   end
 
+  def download_pdf
+    pdf = Pdfs::Summary.new(@representative, @closing, @current_closing).render
+
+    send_data pdf,
+      filename: "resumo_#{@representative.name.parameterize}.pdf",
+      type: "application/pdf",
+      disposition: "inline" # ou "attachment" se quiser forçar download
+  end
+
   private
 
   def load_monthly_reports_false
