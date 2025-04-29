@@ -12,27 +12,18 @@ class Pdfs::Summary
     @totals_by_store = @representative.totals_by_store(current_closing.id)
     @total_in_cash = @representative.total_cash(current_closing.id)
 
-    calculate_totals_by_bank
-    calculate_totals_by_store
-    calculate_totals_note_division
-
+    totals_calculate
     header
     content
   end
 
   private
 
-  def calculate_totals_by_bank
+  def totals_calculate
     @total_count = @totals_by_bank.sum { |bank| bank[:count] if bank.present? }
     @total_value = @totals_by_bank.sum { |bank| bank[:total] if bank.present? }
-  end
-
-  def calculate_totals_by_store
     @total_count_store = @totals_by_store.sum { |store| store[:count] }
     @total_store = @totals_by_store.sum { |store| store[:total] }
-  end
-
-  def calculate_totals_note_division
     @total_marks = @total_in_cash.values.sum
     @total_cash = @total_in_cash.map { |key, value| key * value }.sum
   end
@@ -48,7 +39,7 @@ class Pdfs::Summary
 
   def content
     move_down 20
-    generate_table
+    table_monthly_reports
     move_down 20
 
     table_by_bank
@@ -61,130 +52,14 @@ class Pdfs::Summary
     move_down 20
   end
 
-  def table_by_bank
-    text "Total por Banco", size: 12, style: :bold, color: "00008b"
-    data = [
+  def table_monthly_reports
+    headers = [
+      "Id", "Prescritor", "Qt.", "Total", "Parceria",
+      "Descontos", "Valor Disp.", "Tipo", "N. Envelope"
+    ]
+
+    rows = @monthly_reports.map do |monthly_report|
       [
-        "Quantidade", "Loja", "Valor"
-      ]
-    ]
-
-    @totals_by_bank.each do |bank|
-      data << [
-        bank[:count] || 0,
-        bank[:name] || "N/A",
-        number_to_currency(bank[:total] || 0)
-      ]
-    end
-
-    data << Array.new(3, "")
-
-    data << [
-      "Total de Bancos",
-      "", "Total"
-    ]
-
-    data << [
-      @total_count || 0,
-      "", number_to_currency(@total_value || 0)
-    ]
-
-    table(data.compact,
-      header: true,
-      row_colors: ["F0F0F0", "FFFFFF"],
-      width: bounds.width,
-      cell_style: {borders: [:bottom], border_width: 0.5, size: 8}) do
-        row(0).font_style = :bold
-        row(2).font_style = :bold
-      end
-  end
-
-  def table_by_store
-    text "Total por loja", size: 12, style: :bold, color: "00008b"
-    data1 = [
-      [
-        "Quantidade", "Loja", "Valor"
-      ]
-    ]
-
-    @totals_by_store.each do |store|
-      data1 << [
-        store[:count] || 0,
-        store[:name] || "N/A",
-        number_to_currency(store[:total] || 0)
-      ]
-    end
-
-    data1 << Array.new(3, "")
-
-    data1 << [
-      "Total de Lojas",
-      "", "Total"
-    ]
-
-    data1 << [
-      @total_count_store || 0,
-      "", number_to_currency(@total_store || 0)
-    ]
-
-    table(data1.compact,
-      header: true,
-      row_colors: ["F0F0F0", "FFFFFF"],
-      width: bounds.width,
-      cell_style: {borders: [:bottom], border_width: 0.5, size: 8}) do
-        row(0).font_style = :bold
-        row(2).font_style = :bold
-      end
-  end
-
-  def table_by_notes
-    text "Divisão de Notas", size: 12, style: :bold, color: "00008b"
-    data2 = [
-      [
-        "Quantidade", "Notas", "Valor"
-      ]
-    ]
-
-    @total_in_cash.each do |item, cash|
-      data2 << [
-        cash || 0,
-        item || "N/A",
-        number_to_currency((cash * item) || 0)
-      ]
-    end
-
-    data2 << Array.new(3, "")
-
-    data2 << [
-      "Total de Notas",
-      "", "Total"
-    ]
-
-    data2 << [
-      @total_marks || 0,
-      "", number_to_currency(@total_cash || 0)
-    ]
-
-    table(data2.compact,
-      header: true,
-      row_colors: ["F0F0F0", "FFFFFF"],
-      width: bounds.width,
-      cell_style: {borders: [:bottom], border_width: 0.5, size: 8}) do
-        row(0).font_style = :bold
-        row(2).font_style = :bold
-      end
-  end
-
-  def generate_table
-    data = [
-      [
-        "Id", "Prescritor", "Qt.", "Total", "Parceria",
-        "Descontos", "Valor Disp.", "Tipo", "N. Envelope"
-      ]
-    ]
-
-    @monthly_reports.each do |monthly_report|
-      data << [
         monthly_report.id || "N/A",
         monthly_report&.prescriber&.name || "N/A",
         monthly_report.quantity || "N/A",
@@ -197,60 +72,111 @@ class Pdfs::Summary
       ]
     end
 
-    data << Array.new(9, "")
+    footer = build_monthly_reports_footer
+    data = build_table_data(headers: headers, rows: rows, footer: footer)
 
+    render_table(data, "reports")
+  end
+
+  def table_by_bank
+    build_generic_table(
+      title: "Total por Banco",
+      headers: ["Quantidade", "Banco", "Valor"],
+      rows: @totals_by_bank.map { |b| [b[:count] || 0, b[:name] || "N/A", number_to_currency(b[:total] || 0)] },
+      footer: [["Total de Bancos", "", "Total"], [@total_count || 0, "", number_to_currency(@total_value || 0)]],
+      type: "banks"
+    )
+  end
+
+  def table_by_store
+    build_generic_table(
+      title: "Total por Loja",
+      headers: ["Quantidade", "Loja", "Valor"],
+      rows: @totals_by_store.map { |b| [b[:count] || 0, b[:name] || "N/A", number_to_currency(b[:total] || 0)] },
+      footer: [["Total de Lojas", "", "Total"], [@total_count_store || 0, "", number_to_currency(@total_store || 0)]],
+      type: "stores"
+    )
+  end
+
+  def table_by_notes
+    build_generic_table(
+      title: "Divisão de Notas",
+      headers: ["Quantidade", "Notas", "Valor"],
+      rows: @total_in_cash.map { |item, cash| [cash || 0, item || "N/A", number_to_currency(cash * item || 0)] },
+      footer: [["Total de Notas", "", "Total"], [@total_marks || 0, "", number_to_currency(@total_cash || 0)]],
+      type: "notes"
+    )
+  end
+
+  def build_monthly_reports_footer
     totals = total_or_accumulated(@monthly_reports)
     accumulated = total_or_accumulated(@accumulated)
     real_sale = real_sale(@monthly_reports, @accumulated)
 
-    data << [
-      "Quantidade", "", "", "", "", "", "", "", ""
+    [
+      ["Quantidade", "", "", "", "", "", "", "", ""],
+      [
+        totals[:count] || 0,
+        "Total Geral",
+        totals[:quantity] || 0,
+        number_to_currency(totals[:total_price] || 0),
+        number_to_currency(totals[:partnership] || 0),
+        number_to_currency(totals[:discounts] || 0),
+        number_to_currency(totals[:available_value] || 0),
+        "", ""
+      ],
+      [
+        accumulated[:count] || 0,
+        "Acumulados",
+        accumulated[:quantity] || 0,
+        number_to_currency(accumulated[:total_price] || 0),
+        number_to_currency(accumulated[:partnership] || 0),
+        number_to_currency(accumulated[:discounts] || 0),
+        number_to_currency(accumulated[:available_value] || 0),
+        "", ""
+      ],
+      [
+        real_sale[:count] || 0,
+        "Venda Real",
+        real_sale[:quantity] || 0,
+        number_to_currency(real_sale[:total_price] || 0),
+        number_to_currency(real_sale[:partnership] || 0),
+        number_to_currency(real_sale[:discounts] || 0),
+        number_to_currency(real_sale[:available_value] || 0),
+        "", ""
+      ]
     ]
+  end
 
-    data << [
-      totals[:count] || 0,
-      "Total Geral",
-      totals[:quantity] || 0,
-      number_to_currency(totals[:total_price] || 0),
-      number_to_currency(totals[:partnership] || 0),
-      number_to_currency(totals[:discounts] || 0),
-      number_to_currency(totals[:available_value] || 0),
-      "", ""
-    ]
+  def build_table_data(headers:, rows:, footer: [])
+    data = [headers]
+    data.concat(rows)
+    data << Array.new(headers.size, "")
+    data.concat(footer)
+    data
+  end
 
-    data << [
-      accumulated[:count] || 0,
-      "Acumulados",
-      accumulated[:quantity] || 0,
-      number_to_currency(accumulated[:total_price] || 0),
-      number_to_currency(accumulated[:partnership] || 0),
-      number_to_currency(accumulated[:discounts] || 0),
-      number_to_currency(accumulated[:available_value] || 0),
-      "", ""
-    ]
+  def build_generic_table(title:, headers:, rows:, footer:, type:)
+    text title, size: 12, style: :bold, color: "00008b"
+    data = build_table_data(headers: headers, rows: rows, footer: footer)
+    render_table(data, type)
+  end
 
-    data << [
-      real_sale[:count] || 0,
-      "Venda Real",
-      real_sale[:quantity] || 0,
-      number_to_currency(real_sale[:total_price] || 0),
-      number_to_currency(real_sale[:partnership] || 0),
-      number_to_currency(real_sale[:discounts] || 0),
-      number_to_currency(real_sale[:available_value] || 0),
-      "", ""
-    ]
-
+  def render_table(data, type)
     table(data.compact,
       header: true,
       row_colors: ["F0F0F0", "FFFFFF"],
       width: bounds.width,
       cell_style: {borders: [:bottom], border_width: 0.5, size: 8}) do
         row(0).font_style = :bold
-        row(3).font_style = :bold
-        cells[1, 1].text_color = "00008b"
-        cells[4, 1].font_style = :bold
-        cells[5, 1].font_style = :bold
-        cells[6, 1].font_style = :bold
+        cells[1, 1].text_color = "00008b" if type == "reports"
+        row(2).font_style = :bold if type == "banks"
+        row(3).font_style = :bold if type == "stores"
+        row(5).font_style = :bold if type == "notes"
+        cells[3, 0].font_style = :bold if type == "reports"
+        cells[4, 1].font_style = :bold if data.size > 4
+        cells[5, 1].font_style = :bold if data.size > 5
+        cells[6, 1].font_style = :bold if data.size > 6
       end
   end
 end
