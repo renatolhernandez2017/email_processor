@@ -92,7 +92,7 @@ class RepresentativesController < ApplicationController
     pdf = Pdfs::Summary.new(@representative, @closing, @current_closing).render
 
     send_data pdf,
-      filename: "resumo_#{@representative.name.parameterize}.pdf",
+      filename: "resumo_#{@representative.name.parameterize}_#{@closing.downcase}.pdf",
       type: "application/pdf",
       disposition: "inline" # ou "attachment" se quiser forçar download
   end
