@@ -1,4 +1,4 @@
-class Pdfs::Summary
+class Pdfs::MonthlyReport
   include Prawn::View
   include ActionView::Helpers::NumberHelper
   include MonthlyReportsHelper

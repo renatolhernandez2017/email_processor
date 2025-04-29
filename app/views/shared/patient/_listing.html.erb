@@ -21,7 +21,7 @@
 
                 <tbody>
                   <tr class="bg-gray-200 border-t border-b border-black h-10">
-                    <td><%= request.patient_name.present? ? request.patient_name : "Sem Nome" %></td>
+                    <td><%= request&.patient_name || "Sem Nome" %></td>
                     <td><%= request.repeat ? "-R" : "" %></td>
                     <td><%= request.entry_date.strftime("%d/%m/%y") %></td>
                     <td><%= request.set_payment_date(request) %></td>

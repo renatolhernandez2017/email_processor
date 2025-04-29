@@ -89,7 +89,14 @@ class RepresentativesController < ApplicationController
   end
 
   def download_pdf
-    pdf = Pdfs::Summary.new(@representative, @closing, @current_closing).render
+    case params[:kind]
+    when "monthly_report"
+      pdf = Pdfs::MonthlyReport.new(@representative, @closing, @current_closing).render
+    when "patient_listing"
+      load_monthly_reports_false
+
+      pdf = Pdfs::PatientListing.new(@representative, @monthly_reports, @closing).render
+    end
 
     send_data pdf,
       filename: "resumo_#{@representative.name.parameterize}_#{@closing.downcase}.pdf",
