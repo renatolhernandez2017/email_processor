@@ -8,16 +8,11 @@ class Pdfs::PatientListing
     @closing = closing
     @monthly_reports = monthly_reports
 
-    formatted_text [
-      {text: "Listagem de Pacientes de ", size: 12, style: :bold},
-      {text: @representative.name.upcase, size: 12, color: "00008b", style: :bold}
-    ], align: :center
-
+    header
     move_down 10
 
     @monthly_reports.each do |monthly_report|
       @monthly_report = monthly_report
-      header
 
       @monthly_report.requests.map do |request|
         @request = request
@@ -31,10 +26,16 @@ class Pdfs::PatientListing
   def header
     table([
       [
-        {content: "Fechamento: ", font_style: :bold},
-        {content: @closing.to_s, text_color: "00008b"}
+        {content: "Listagem de Pacientes de "},
+        {content: @representative.name.upcase},
+        {content: " em "},
+        {content: @closing.to_s}
       ]
-    ], cell_style: {borders: [], size: 12}, position: :center)
+    ], cell_style: {borders: [], size: 12}, position: :center) do
+      row(0).font_style = :bold
+      cells[0, 1].text_color = "00008b"
+      cells[0, 3].text_color = "00008b"
+    end
   end
 
   def content
@@ -87,8 +88,9 @@ class Pdfs::PatientListing
       row_colors: ["F0F0F0", "FFFFFF"],
       width: bounds.width,
       cell_style: {borders: [:bottom], border_width: 0.5, size: 8}) do
-        row(0).font_style = :bold
-        row(3).font_style = :bold
+        [0, 3].each do |col|
+          row(col).font_style = :bold
+        end
       end
   end
 end

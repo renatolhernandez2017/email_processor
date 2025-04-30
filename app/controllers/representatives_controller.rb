@@ -99,6 +99,8 @@ class RepresentativesController < ApplicationController
     when "summary_patient_listing"
       load_monthly_reports_false
       pdf = Pdfs::SummaryPatientListing.new(@representative, @monthly_reports, @closing).render
+    when "unaccumulated_addresses"
+      pdf = Pdfs::UnaccumulatedAddresses.new(@representative, @closing, @current_closing).render
     end
 
     send_data pdf,

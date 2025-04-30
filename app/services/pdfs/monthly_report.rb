@@ -29,12 +29,19 @@ class Pdfs::MonthlyReport
   end
 
   def header
-    formatted_text [
-      {text: "Resumo de ", size: 12},
-      {text: @representative.name.upcase.to_s, size: 12, color: "00008b"},
-      {text: " em ", size: 12},
-      {text: @closing.to_s, size: 12, color: "00008b"}
-    ], align: :center
+    table([
+      [
+        {content: "Resumo de"},
+        {content: @representative.name.upcase},
+        {content: "em"},
+        {content: @closing}
+      ]
+    ], cell_style: {borders: [], size: 12}, position: :center) do
+      row(0).font_style = :bold
+      [1, 3].each do |col|
+        columns(col).text_color = "00008b"
+      end
+    end
   end
 
   def content
