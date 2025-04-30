@@ -32,11 +32,7 @@ class Pdfs::PatientListing
     table([
       [
         {content: "Fechamento: ", font_style: :bold},
-        {content: @closing.to_s, text_color: "00008b"},
-        {content: "Situação: ", font_style: :bold},
-        {content: @monthly_report.situation.to_s, text_color: "00008b"},
-        {content: "Número do Envelope: ", size: 12, font_style: :bold},
-        {content: @monthly_report.envelope_number.to_s.rjust(5, "0"), font_style: :bold, text_color: "00008b"}
+        {content: @closing.to_s, text_color: "00008b"}
       ]
     ], cell_style: {borders: [], size: 12}, position: :center)
   end
@@ -61,10 +57,12 @@ class Pdfs::PatientListing
     ]
 
     footer = [
-      ["Quantidade", "", "", "", "", "Valor Disponível"],
+      ["Quantidade", "", "", "Situação", "Número do Envelope", "Valor Disponível"],
       [
         @monthly_report.quantity,
-        "", "", "", "",
+        "", "",
+        @monthly_report.situation,
+        @monthly_report.envelope_number.to_s.rjust(5, "0"),
         number_to_currency(@monthly_report.available_value)
       ]
     ]
