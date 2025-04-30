@@ -1,7 +1,10 @@
-<% monthly_reports.each do |monthly_report| %>
-  <div class="card border border-primary p-5">
-    <%= render "shared/patient/header", closing: closing, monthly_report: monthly_report, representative: representative %>
+<div class="card border border-primary p-5">
+  <div class="flex mb-5 gap-3 font-bold">
+    <span class="text-primary"><%= representative.name.upcase %></span>
+    em <span class="text-primary"><%= closing %>
+  </div>
 
+  <% monthly_reports.each do |monthly_report| %>
     <ul class="menu rounded-box mb-4">
       <li>
         <ul class="border-l-2 border-primary">
@@ -37,5 +40,5 @@
         </ul>
       </li>
     </ul>
-  </div>
-<% end %>
+  <% end %>
+</div>

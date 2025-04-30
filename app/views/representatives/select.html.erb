@@ -4,12 +4,12 @@
   <% @representatives.each do |representative| %>
     <div class="mx-2 my-3">
       <% if @select_action == "save_patient_listing" %>
-        <%= render "shared/patient/listing",
+        <%= render "shared/patient/listing", representative: @representative,
             closing: @closing, monthly_reports: representative.monthly_reports,
             representative: representative
         %>
       <% elsif @select_action == "saves_summary_patient_listing" %>
-        <%= render "shared/patient_listing",
+        <%= render "shared/patient_listing", representative: @representative,
             monthly_reports: representative.monthly_reports,
             closing: @closing, representative: representative
         %>
