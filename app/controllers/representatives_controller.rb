@@ -4,6 +4,7 @@ class RepresentativesController < ApplicationController
   include SharedData
   include NotesDivisions
 
+  before_action :set_selects_label
   before_action :set_closing_date, except: %i[index update change_active]
   before_action :set_representative, except: %i[index]
 
@@ -68,14 +69,8 @@ class RepresentativesController < ApplicationController
   def select
     @select_action = params[:select_action]
 
-    @title = [
-      ["save_patient_listing", "Salva Listagem de Pacientes"],
-      ["saves_summary_patient_listing", "Salva Listagem de Pacientes Resumida"],
-      ["monthly_summary", "Resumido Mensal"],
-      ["tags", "Etiquetas"],
-      ["address_report", "Relatório de Endereços"]
-    ].select { |action| action.is_a?(Array) && @select_action.include?(action[0]) }
-      .map { |action| action[1] }
+    @title = @select.select { |action| action.is_a?(Array) && @select_action.include?(action[1]) }
+      .map { |action| action[0] }
       .first
   end
 
@@ -149,5 +144,15 @@ class RepresentativesController < ApplicationController
   def set_closing_date
     month_abbr = @current_closing.closing.split("/")
     @closing = "#{t("view.months.#{month_abbr[0]}")}/#{month_abbr[1]}"
+  end
+
+  def set_selects_label
+    @select = [
+      ["Salva Listagem de Pacientes", "save_patient_listing"],
+      ["Salva Listagem de Pacientes resumida", "saves_summary_patient_listing"],
+      ["Resumido Mensal", "monthly_summary"],
+      ["Etiquetas", "tags"],
+      ["Relatório de Endereços", "address_report"]
+    ]
   end
 end

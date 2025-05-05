@@ -6,14 +6,7 @@
 
     <div class="join border border-primary join-item rounded-r-full">
       <%= form_with url: select_representatives_path, method: :get, local: true do |form| %>
-        <%= form.select :select_action, options_for_select([
-          ['Salva Listagem de Pacientes', 'save_patient_listing'],
-          ['Salva Listagem de Pacientes resumida', 'saves_summary_patient_listing'],
-          ['Resumido Mensal', 'monthly_summary'],
-          ['Etiquetas', 'tags'],
-          ['Relatório de Endereços', 'address_report']
-        ]), {}, class: 'select' %>
-
+        <%= form.select :select_action, options_for_select(@select), {}, class: 'select' %>
         <%= form.submit 'Ok', class: 'btn btn-primary join-item' %>
       <% end %>
     </div>
