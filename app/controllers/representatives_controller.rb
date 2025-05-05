@@ -67,6 +67,16 @@ class RepresentativesController < ApplicationController
 
   def select
     @select_action = params[:select_action]
+
+    @title = [
+      ["save_patient_listing", "Salva Listagem de Pacientes"],
+      ["saves_summary_patient_listing", "Salva Listagem de Pacientes Resumida"],
+      ["monthly_summary", "Resumido Mensal"],
+      ["tags", "Etiquetas"],
+      ["address_report", "Relatório de Endereços"]
+    ].select { |action| action.is_a?(Array) && @select_action.include?(action[0]) }
+      .map { |action| action[1] }
+      .first
   end
 
   def unaccumulated_addresses
