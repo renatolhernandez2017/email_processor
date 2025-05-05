@@ -70,7 +70,7 @@ class RepresentativesController < ApplicationController
   end
 
   def unaccumulated_addresses
-    @monthly_reports = @representative.load_monthly_reports(@current_closing.id, [{representative: [:address, :prescriber]}])
+    @monthly_reports = @representative.monthly_reports_false(@current_closing.id, [{representative: [:address, :prescriber]}])
   end
 
   def change_active
@@ -113,6 +113,13 @@ class RepresentativesController < ApplicationController
 
   def load_monthly_reports_false
     @monthly_reports = @representative.monthly_reports_false(@current_closing.id, [:requests, {representative: :prescriber}])
+      .group_by { |report| [report.envelope_number, report.situation] }
+      .map do |info, reports|
+        {
+          info: info,
+          reports: reports
+        }
+      end
   end
 
   def representative_params

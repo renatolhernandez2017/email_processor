@@ -23,15 +23,14 @@ class Pdfs::UnaccumulatedAddresses
   def header
     table([
       [
-        {content: "Clientes de "},
+        {content: "Clientes de"},
         {content: @representative.name.upcase},
-        {content: " em "},
+        {content: "em"},
         {content: @closing.to_s}
       ]
     ], cell_style: {borders: [], size: 12}, position: :center) do
       row(0).font_style = :bold
-      cells[0, 1].text_color = "00008b"
-      cells[0, 3].text_color = "00008b"
+      [1, 3].each { |col| cells[0, col].text_color = "00008b" }
     end
   end
 

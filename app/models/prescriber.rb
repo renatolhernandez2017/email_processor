@@ -2,6 +2,7 @@ class Prescriber < ApplicationRecord
   audited
 
   include PgSearch::Model
+  include LoadMonthlyReports
 
   belongs_to :representative, optional: true
 
@@ -18,6 +19,10 @@ class Prescriber < ApplicationRecord
   PROFESSIONAL_TYPES = {"CRM" => 1,
                         "CRO" => 2,
                         "CRN" => 9}
+
+  def monthly_reports_false(closing_id, eager_load = [])
+    scoped_monthly_reports(closing_id, eager_load).where(accumulated: false)
+  end
 
   def full_address
     return "Endereço não cadastrado" unless address.present?

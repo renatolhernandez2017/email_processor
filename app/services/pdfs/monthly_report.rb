@@ -126,30 +126,30 @@ class Pdfs::MonthlyReport
         totals[:count] || 0,
         "Total Geral",
         totals[:quantity] || 0,
-        number_to_currency(totals[:total_price] || 0),
-        number_to_currency(totals[:partnership] || 0),
-        number_to_currency(totals[:discounts] || 0),
-        number_to_currency(totals[:available_value] || 0),
+        totals[:total_price] || 0,
+        totals[:partnership] || 0,
+        totals[:discounts] || 0,
+        totals[:available_value] || 0,
         "", ""
       ],
       [
         accumulated[:count] || 0,
         "Acumulados",
         accumulated[:quantity] || 0,
-        number_to_currency(accumulated[:total_price] || 0),
-        number_to_currency(accumulated[:partnership] || 0),
-        number_to_currency(accumulated[:discounts] || 0),
-        number_to_currency(accumulated[:available_value] || 0),
+        accumulated[:total_price] || 0,
+        accumulated[:partnership] || 0,
+        accumulated[:discounts] || 0,
+        accumulated[:available_value] || 0,
         "", ""
       ],
       [
         real_sale[:count] || 0,
         "Venda Real",
         real_sale[:quantity] || 0,
-        number_to_currency(real_sale[:total_price] || 0),
-        number_to_currency(real_sale[:partnership] || 0),
-        number_to_currency(real_sale[:discounts] || 0),
-        number_to_currency(real_sale[:available_value] || 0),
+        real_sale[:total_price] || 0,
+        real_sale[:partnership] || 0,
+        real_sale[:discounts] || 0,
+        real_sale[:available_value] || 0,
         "", ""
       ]
     ]
@@ -176,14 +176,26 @@ class Pdfs::MonthlyReport
       width: bounds.width,
       cell_style: {borders: [:bottom], border_width: 0.5, size: 8}) do
         row(0).font_style = :bold
-        cells[1, 1].text_color = "00008b" if type == "reports"
-        row(2).font_style = :bold if type == "banks"
-        row(3).font_style = :bold if type == "stores"
-        row(5).font_style = :bold if type == "notes"
-        cells[3, 0].font_style = :bold if type == "reports"
-        cells[4, 1].font_style = :bold if data.size > 4
-        cells[5, 1].font_style = :bold if data.size > 5
-        cells[6, 1].font_style = :bold if data.size > 6
+
+        case type
+        when "reports"
+          if data.size <= 7
+            cells[1, 1].text_color = "00008b"
+            row(3).font_style = :bold
+
+            (4..6).each { |row_index| cells[row_index, 1].font_style = :bold }
+          else
+            (1...data.size - 5).each { |i| cells[i, 1].text_color = "00008b" }
+            (4...data.size - 3).each { |i| row(i).font_style = :bold }
+            (4...data.size).each { |row_index| cells[row_index, 1].font_style = :bold }
+          end
+        when "banks", "stores", "notes"
+          if data.size <= 5
+            row(3).font_style = :bold
+          else
+            (4...data.size - 1).each { |row_index| row(row_index).font_style = :bold }
+          end
+        end
       end
   end
 end

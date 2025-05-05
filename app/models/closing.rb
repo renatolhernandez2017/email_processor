@@ -2,6 +2,7 @@ class Closing < ApplicationRecord
   audited
 
   include PgSearch::Model
+  include LoadMonthlyReports
 
   has_many :monthly_reports, dependent: :destroy
   has_many :requests, through: :monthly_reports
@@ -81,7 +82,7 @@ class Closing < ApplicationRecord
       .where.not(representative_id: nil)
 
     @monthly_reports.each do |monthly_report|
-      @requests = monthly_report.requests.eligible(monthly_report)
+      @requests = monthly_report.prescriber.requests.eligible(monthly_report)
 
       patient_listing = ""
 
@@ -125,13 +126,5 @@ class Closing < ApplicationRecord
       monthly_report.report = patient_listing
       monthly_report.save!
     end
-  end
-
-  private
-
-  def scoped_monthly_reports(closing_id, eager_load)
-    monthly_reports.includes(*eager_load)
-      .where(closing_id: closing_id)
-      .order("prescribers.name ASC")
   end
 end

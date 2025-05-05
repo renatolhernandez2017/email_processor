@@ -6,13 +6,12 @@ class Pdfs::SummaryPatientListing
   def initialize(representative, monthly_reports, closing)
     @representative = representative
     @closing = closing
-    @monthly_reports = monthly_reports
 
     header
     move_down 10
 
-    @monthly_reports.each do |monthly_report|
-      @monthly_report = monthly_report
+    monthly_reports.each do |reports|
+      @monthly_reports = reports
       content
     end
   end
@@ -22,9 +21,9 @@ class Pdfs::SummaryPatientListing
   def header
     table([
       [
-        {content: "Listagem de Pacientes de "},
+        {content: "Listagem Resumida de Pacientes de"},
         {content: @representative.name.upcase},
-        {content: " em "},
+        {content: "em"},
         {content: @closing.to_s}
       ]
     ], cell_style: {borders: [], size: 12}, position: :center) do
@@ -37,14 +36,14 @@ class Pdfs::SummaryPatientListing
 
   def content
     move_down 10
-    headers = ["Quantidade", "Situação", "Número do Envelope", "Valor Disponível"]
+    headers = ["Quantidade", "Situação", "Envelope", "Valor Disponível"]
 
     rows = [
       [
-        @monthly_report&.quantity || "Sem Nome",
-        @monthly_report.situation,
-        @monthly_report.envelope_number.to_s.rjust(5, "0"),
-        number_to_currency(@monthly_report.available_value)
+        @monthly_reports[:reports].sum(&:quantity),
+        @monthly_reports[:info][1],
+        @monthly_reports[:info][0].to_s.rjust(5, "0"),
+        number_to_currency(@monthly_reports[:reports].sum(&:available_value))
       ]
     ]
 

@@ -3,6 +3,7 @@ class Representative < ApplicationRecord
 
   include PgSearch::Model
   include Roundable
+  include LoadMonthlyReports
 
   belongs_to :branch, optional: true
 
@@ -56,12 +57,6 @@ class Representative < ApplicationRecord
   end
 
   private
-
-  def scoped_monthly_reports(closing_id, eager_load)
-    monthly_reports.includes(*eager_load)
-      .where(closing_id: closing_id)
-      .order("prescribers.name ASC")
-  end
 
   def monthly_reports_with_accounts(closing_id)
     monthly_reports_false(closing_id, [{prescriber: {current_accounts: :bank}}])

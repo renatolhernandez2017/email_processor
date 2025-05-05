@@ -24,7 +24,7 @@ sp_cities = [
   "Suzano", "Barueri", "Indaiatuba", "Carapicuíba"
 ]
 
-15.times do |i|
+5.times do |i|
   start_date = (date << (i + 1)).next_day - 1
   end_date = (date << i).next_day
 
@@ -58,6 +58,8 @@ sp_cities = [
   representative = Representative.create!(
     partnership: Faker::Commerce.price(range: 1..10.0),
     name: Faker::Name.name,
+    active: i.even?,
+    performs_closing: true,
     branch: branch
   )
 
@@ -109,30 +111,11 @@ sp_cities = [
     discounts: Faker::Commerce.price(range: 1.0..10.0),
     report: Faker::Lorem.sentence,
     quantity: 1,
-    accumulated: i.even?,
+    accumulated: false,
     envelope_number: i + 1,
     closing: closing,
     prescriber: prescriber,
     representative: representative
-  )
-
-  request = Request.create!(
-    cdfil_id: Faker::Number.number(digits: 5),
-    nrreq_id: Faker::Number.number(digits: 5),
-    entry_date: Faker::Date.backward(days: 30),
-    total_price: Faker::Commerce.price(range: 1000.0..10000.0),
-    amount_received: Faker::Commerce.price(range: 150.0..5000.0),
-    total_fees: Faker::Commerce.price(range: 1.0..10.0),
-    total_discounts: Faker::Commerce.price(range: 50.0..200.0),
-    repeat: i.even?,
-    payment_date: Faker::Date.forward(days: 30),
-    value_for_report: Faker::Commerce.price(range: 5.0..500.0),
-    rg: Faker::IdNumber.valid,
-    patient_name: Faker::Name.name,
-    branch: branch,
-    prescriber: prescriber,
-    representative: representative,
-    monthly_report: monthly_report
   )
 
   Discount.create!(
@@ -141,8 +124,46 @@ sp_cities = [
     visible: true,
     branch: branch,
     prescriber: prescriber,
-    monthly_report: monthly_report,
-    request: request
+    monthly_report: monthly_report
+  )
+end
+
+puts "Criar mais 2 relatórios para cada prescritor"
+closing = Closing.find_by(active: true)
+representative = Representative.last
+envelope_number = representative.prescriber.monthly_reports.last.envelope_number
+
+2.times do |i|
+  new_monthly_report = MonthlyReport.create!(
+    total_price: Faker::Commerce.price(range: 100.0..1000.0),
+    partnership: Faker::Commerce.price(range: 10.0..100.0),
+    discounts: Faker::Commerce.price(range: 1.0..10.0),
+    report: Faker::Lorem.sentence,
+    quantity: 1,
+    accumulated: false,
+    envelope_number: envelope_number,
+    closing: closing,
+    prescriber: Prescriber.all.sample,
+    representative: representative
+  )
+
+  Request.create!(
+    cdfil_id: Faker::Number.number(digits: 5),
+    nrreq_id: Faker::Number.number(digits: 5),
+    entry_date: Faker::Date.backward(days: 30),
+    total_price: Faker::Commerce.price(range: 1000.0..10000.0),
+    amount_received: Faker::Commerce.price(range: 150.0..5000.0),
+    total_fees: Faker::Commerce.price(range: 1.0..10.0),
+    total_discounts: Faker::Commerce.price(range: 50.0..200.0),
+    repeat: true,
+    payment_date: Faker::Date.forward(days: 30),
+    value_for_report: Faker::Commerce.price(range: 5.0..500.0),
+    rg: Faker::IdNumber.valid,
+    patient_name: Faker::Name.name,
+    branch: representative.branch,
+    prescriber: new_monthly_report.prescriber,
+    representative: representative,
+    monthly_report: new_monthly_report
   )
 end
 

@@ -1,42 +1,44 @@
 <div class="card border border-primary p-5">
   <div class="flex mb-5 gap-3 font-bold">
     <span class="text-primary"><%= representative.name.upcase %></span>
-    em <span class="text-primary"><%= closing %>
+    em <span class="text-primary"><%= closing %></span>
   </div>
 
-  <% monthly_reports.each do |monthly_report| %>
+  <% monthly_reports.each do |reports| %>
     <ul class="menu rounded-box mb-4">
       <li>
         <ul class="border-l-2 border-primary">
-          <% monthly_report.requests.each do |request| %>
-            <div class="overflow-hidden mb-10">
-              <table class="table-auto w-full">
-                <thead>
-                  <tr>
-                    <th class="font-semibold text-base">Paciente</th>
-                    <th class="font-semibold text-base">Repetida</th>
-                    <th class="font-semibold text-base">Data de Entrada</th>
-                    <th class="font-semibold text-base">Data de Pagamento</th>
-                    <th class="font-semibold text-base">Valor Recebido</th>
-                    <th class="font-semibold text-base">Filial</th>
-                  </tr>
-                </thead>
+          <div class="overflow-hidden mb-10">
+            <table class="table-auto w-full">
+              <thead>
+                <tr>
+                  <th class="font-semibold text-base">Paciente</th>
+                  <th class="font-semibold text-base">Repetida</th>
+                  <th class="font-semibold text-base">Data de Entrada</th>
+                  <th class="font-semibold text-base">Data de Pagamento</th>
+                  <th class="font-semibold text-base">Valor Recebido</th>
+                  <th class="font-semibold text-base">Filial</th>
+                </tr>
+              </thead>
 
-                <tbody>
-                  <tr class="bg-gray-200 border-t border-b border-black h-10">
-                    <td><%= request&.patient_name || "Sem Nome" %></td>
-                    <td><%= request.repeat ? "-R" : "" %></td>
-                    <td><%= request.entry_date.strftime("%d/%m/%y") %></td>
-                    <td><%= request.set_payment_date(request) %></td>
-                    <td><%= request.set_price(request) %></td>
-                    <td><%= request.branch.name %></td>
-                  </tr>
-                </tbody>
+              <tbody>
+                <% reports[:reports].each do |monthly_report| %>
+                  <% monthly_report.prescriber.requests.each do |request| %>
+                    <tr class="bg-gray-200 border-t border-b border-black h-10">
+                      <td><%= request&.patient_name || "Sem Nome" %></td>
+                      <td><%= request.repeat ? "-R" : "" %></td>
+                      <td><%= request.entry_date.strftime("%d/%m/%y") %></td>
+                      <td><%= request.set_payment_date(request) %></td>
+                      <td><%= request.set_price(request) %></td>
+                      <td><%= request.branch.name %></td>
+                    </tr>
+                  <% end %>
+                <% end %>
+              </tbody>
 
-                <%= render "shared/patient/foot", monthly_report: monthly_report %>
-              </table>
-            </div>
-          <% end %>
+              <%= render "shared/patient/foot", monthly_report: reports[:reports], situation: reports[:info][1], envelope_number: reports[:info][0] %>
+            </table>
+          </div>
         </ul>
       </li>
     </ul>
