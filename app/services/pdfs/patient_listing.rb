@@ -1,7 +1,6 @@
 class Pdfs::PatientListing
   include Prawn::View
   include ActionView::Helpers::NumberHelper
-  include MonthlyReportsHelper
 
   def initialize(representative, monthly_reports, closing)
     @representative = representative

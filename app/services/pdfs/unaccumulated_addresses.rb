@@ -2,7 +2,6 @@ class Pdfs::UnaccumulatedAddresses
   include Prawn::View
   include ActionView::Helpers::NumberHelper
   include ActionView::Helpers::TextHelper
-  include MonthlyReportsHelper
 
   def initialize(representative, closing, current_closing)
     @representative = representative
