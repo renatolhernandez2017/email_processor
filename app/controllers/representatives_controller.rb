@@ -114,15 +114,13 @@ class RepresentativesController < ApplicationController
   end
 
   def download_select_pdf
-    selected_action = @select.find { |action| params[:kind].include?(action[0]) }[1]
+    selected_action = @select.find { |action| action[0] == params[:kind] }&.last
 
     case selected_action
     when "save_patient_listing"
       @pdf = Pdfs::SavePatientListing.new(@representatives, @closing, @current_closing.id).render
     when "saves_summary_patient_listing"
-      #   load_monthly_reports_false
-
-      #   pdf = Pdfs::SavesSummaryPatientListing.new(@representative, @monthly_reports, @closing).render
+      @pdf = Pdfs::SavesSummaryPatientListing.new(@representatives, @closing, @current_closing.id).render
     when "monthly_summary"
       #   load_monthly_reports_false
       #   pdf = Pdfs::MonthlySummary.new(@representative, @monthly_reports, @closing).render
@@ -173,7 +171,7 @@ class RepresentativesController < ApplicationController
   def set_selects_label
     @select = [
       ["Salva Listagem de Pacientes", "save_patient_listing"],
-      ["Salva Listagem de Pacientes resumida", "saves_summary_patient_listing"],
+      ["Salva Listagem de Pacientes Resumida", "saves_summary_patient_listing"],
       ["Resumido Mensal", "monthly_summary"],
       ["Etiquetas", "tags"],
       ["Relatório de Endereços", "address_report"]
