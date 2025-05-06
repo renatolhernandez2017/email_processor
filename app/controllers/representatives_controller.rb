@@ -70,8 +70,7 @@ class RepresentativesController < ApplicationController
     @select_action = params[:select_action]
 
     @title = @select.select { |action| action.is_a?(Array) && @select_action.include?(action[1]) }
-      .map { |action| action[0] }
-      .first
+      .map { |action| action[0] }.first
   end
 
   def unaccumulated_addresses
@@ -110,6 +109,31 @@ class RepresentativesController < ApplicationController
 
     send_data pdf,
       filename: "resumo_#{@representative.name.parameterize}_#{@closing.downcase}.pdf",
+      type: "application/pdf",
+      disposition: "inline" # ou "attachment" se quiser forçar download
+  end
+
+  def download_select_pdf
+    selected_action = @select.find { |action| params[:kind].include?(action[0]) }[1]
+
+    case selected_action
+    when "save_patient_listing"
+      @pdf = Pdfs::SavePatientListing.new(@representatives, @closing, @current_closing.id).render
+    when "saves_summary_patient_listing"
+      #   load_monthly_reports_false
+
+      #   pdf = Pdfs::SavesSummaryPatientListing.new(@representative, @monthly_reports, @closing).render
+    when "monthly_summary"
+      #   load_monthly_reports_false
+      #   pdf = Pdfs::MonthlySummary.new(@representative, @monthly_reports, @closing).render
+    when "tags"
+      #   pdf = Pdfs::Tags.new(@representative, @closing, @current_closing).render
+    when "address_report"
+      # pdf = Pdfs::AddressReport.new(@representative, @closing, @current_closing).render
+    end
+
+    send_data @pdf,
+      filename: "resumo_#{@closing.downcase}.pdf",
       type: "application/pdf",
       disposition: "inline" # ou "attachment" se quiser forçar download
   end

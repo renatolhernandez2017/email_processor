@@ -56,6 +56,25 @@ class Representative < ApplicationRecord
     }
   end
 
+  def set_monthly_reports(representative, closing_id)
+    representative.monthly_reports_false(closing_id, [:requests, {representative: :prescriber}])
+      .group_by { |report| [report.envelope_number, report.situation] }
+      .map do |info, reports|
+      {
+        info: info,
+        reports: reports
+      }
+    end
+  end
+
+  def set_situation(monthly_reports)
+    monthly_reports.map { |info| info[:info][1] }.last
+  end
+
+  def set_envelope_number(monthly_reports)
+    monthly_reports.map { |info| info[:info][0] }.last.to_s.rjust(5, "0")
+  end
+
   private
 
   def monthly_reports_with_accounts(closing_id)

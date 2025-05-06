@@ -2,7 +2,7 @@ module NotesDivisions
   extend ActiveSupport::Concern
 
   included do
-    before_action :load_representative_summaries, only: %i[select note_divisions]
+    before_action :load_representative_summaries, only: %i[select note_divisions download_select_pdf]
   end
 
   private

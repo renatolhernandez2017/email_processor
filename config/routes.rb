@@ -42,6 +42,7 @@ Rails.application.routes.draw do
     get :summary_patient_listing, on: :member
     get :unaccumulated_addresses, on: :member
     get :download_pdf, on: :member
+    get :download_select_pdf, on: :collection
   end
 
   ###############
