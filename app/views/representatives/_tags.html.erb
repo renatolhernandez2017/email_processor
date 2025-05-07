@@ -1,20 +1,19 @@
 <div class="card border border-primary p-5 my-2">
+  <label class="text-lg">
+    <span class="text-primary"><%= representative.name.upcase %> </span> -
+    <span><%= current_closing.end_date.strftime("%d/%m/%Y") %></span>
+    <span class="text-primary ml-12"><%= closing %></span>
+  </label>
+
   <% representative.monthly_reports.each do |monthly_report| %>
-    <label class="text-lg">
-      <span class="text-primary">
-        <%= representative.name.upcase %>
-      </span> -
-
-      <span><%= current_closing.end_date.strftime("%d/%m/%Y") %></span>
-
-      <span class="ml-12"><%= closing %></span> -
-      <%= "(ESP) - " if monthly_report.prescriber.current_accounts.nil? %>
-      <b><%= monthly_report.envelope_number.to_s.rjust(5, "0") %></b>
+    <label class="text-lg my-5">
+      <%= monthly_report.envelope_number.to_s.rjust(5, "0") %>
+      <span class="text-red-500"><%= "- (ESP)" unless monthly_report.prescriber.current_accounts.present? %>
     </label>
 
-    <ul class="menu rounded-box my-5">
+    <ul class="menu rounded-box">
       <li>
-        <ul class="border-l-2 border-primary">
+        <ul class="border-l-2 border-primary border-b-2">
           <div class="overflow-hidden">
             <table class="table-auto w-full">
               <thead class="text-base">

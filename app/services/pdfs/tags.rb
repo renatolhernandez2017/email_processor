@@ -4,13 +4,15 @@ module Pdfs
       @representatives.each_with_index do |representative, index|
         start_new_page unless index == 0
         @representative = representative
+        @monthly_reports = @representative.load_monthly_reports(@current_closing.id, [{prescriber: {current_accounts: :bank}}])
 
-        @representative.monthly_reports.each do |monthly_report|
+        header
+        move_down 5
+
+        @monthly_reports.each do |monthly_report|
           @monthly_report = monthly_report
 
-          header
-          move_down 5
-
+          other_header
           content
         end
       end
@@ -22,26 +24,35 @@ module Pdfs
       table([
         [
           {content: "Etiquetas de"},
-          {content: @representative.name.upcase},
-          {content: "-"},
+          {content: @representative.name.upcase + " -"},
           {content: @current_closing.end_date.strftime("%d/%m/%Y")},
-          {content: @closing.to_s},
-          {content: @monthly_report&.prescriber&.current_accounts.nil? ? "(ESP) -" : ""},
-          {content: @monthly_report.envelope_number.to_s.rjust(5, "0")}
+          {content: @closing.to_s}
         ]
-      ], cell_style: {borders: [], size: 12}, position: :center) do
+      ], cell_style: {borders: [], size: 12}) do
         row(0).font_style = :bold
-        [1].each { |col_index| cells[0, col_index].text_color = "00008b" }
+        [1, 3].each { |col_index| cells[0, col_index].text_color = "00008b" }
+      end
+    end
+
+    def other_header
+      table([
+        [
+          {content: @monthly_report.envelope_number.to_s.rjust(5, "0")},
+          {content: @monthly_report&.prescriber&.current_accounts.present? ? "" : "- (ESP)"}
+        ]
+      ], cell_style: {borders: [], size: 12}) do
+        row(0).columns(1).text_color = "FF0000" unless @monthly_report&.prescriber&.current_accounts.present?
       end
     end
 
     def content
-      headers = ["ID", "Nome", "Informações", "Observação"]
+      headers = ["ID", "Nome", "Env.", "Informações", "Observação"]
 
       rows = [
         [
           @monthly_report.prescriber.id,
           @monthly_report.prescriber.name,
+          @monthly_report.envelope_number.to_s.rjust(5, "0"),
           [
             @monthly_report&.prescriber&.full_address,
             @monthly_report&.prescriber&.full_contact,

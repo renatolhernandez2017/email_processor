@@ -7,7 +7,7 @@
   <% monthly_reports.each do |reports| %>
     <ul class="menu rounded-box mb-4">
       <li>
-        <ul class="border-l-2 border-primary">
+        <ul class="border-l-2 border-b-2 border-primary">
           <div class="overflow-hidden my-2">
             <table class="table-auto w-full">
               <%= render "shared/patient/foot", monthly_report: reports[:reports], situation: reports[:info][1], envelope_number: reports[:info][0] %>
