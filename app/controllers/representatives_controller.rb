@@ -98,7 +98,7 @@ class RepresentativesController < ApplicationController
     when "monthly_summary"
       @pdf = Pdfs::MonthlySummary.new(@representatives, @closing, @current_closing.id).render
     when "tags"
-      #   pdf = Pdfs::Tags.new(@representative, @closing, @current_closing).render
+      @pdf = Pdfs::Tags.new(@representatives, @closing, @current_closing).render
     when "address_report"
       # pdf = Pdfs::AddressReport.new(@representative, @closing, @current_closing).render
     end
