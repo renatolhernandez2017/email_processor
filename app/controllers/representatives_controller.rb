@@ -3,6 +3,7 @@ class RepresentativesController < ApplicationController
   include Roundable
   include SharedData
   include RepresentativeSummaries
+  include PdfClassMapper
 
   before_action :set_selects_label
   before_action :set_closing_date, except: %i[index update change_active]
@@ -70,43 +71,24 @@ class RepresentativesController < ApplicationController
   end
 
   def download_pdf
-    pdf = case params[:kind]
-    when "monthly_report"
-      Pdfs::MonthlyReport.new(@representative, @closing, @current_closing).render
-    when "patient_listing"
-      Pdfs::PatientListing.new(@representative, @closing, @current_closing).render
-    when "summary_patient_listing"
-      Pdfs::SummaryPatientListing.new(@representative, @closing, @current_closing).render
-    when "unaccumulated_addresses"
-      Pdfs::UnaccumulatedAddresses.new(@representative, @closing, @current_closing).render
-    end
+    pdf_class = PDF_CLASSES[params[:kind]]
+    pdf = pdf_class.new([@representative], @closing, @current_closing).render
 
     send_data pdf,
-      filename: "resumo_#{@representative.name.parameterize}_#{@closing.downcase}.pdf",
+      filename: "#{pdf_class}_#{@representative.name.parameterize}_#{@closing.downcase}.pdf",
       type: "application/pdf",
       disposition: "inline" # ou "attachment" se quiser forçar download
   end
 
   def download_select_pdf
-    selected_action = @select.find { |action| action[0] == params[:kind] }&.last
-
-    pdf = case selected_action
-    when "save_patient_listing"
-      Pdfs::SavePatientListing.new(@representatives, @closing, @current_closing).render
-    when "saves_summary_patient_listing"
-      Pdfs::SavesSummaryPatientListing.new(@representatives, @closing, @current_closing).render
-    when "monthly_summary"
-      Pdfs::MonthlySummary.new(@representatives, @closing, @current_closing).render
-    when "tags"
-      Pdfs::Tags.new(@representatives, @closing, @current_closing).render
-    when "address_report"
-      Pdfs::AddressReport.new(@representatives, @closing, @current_closing).render
-    end
+    selected_key = @select.find { |action| action[0] == params[:kind] }&.last
+    pdf_class = PDF_CLASSES[selected_key]
+    pdf = pdf_class.new(@representatives, @closing, @current_closing).render
 
     send_data pdf,
-      filename: "resumo_#{@closing.downcase}.pdf",
+      filename: "#{pdf_class}_#{@closing.downcase}.pdf",
       type: "application/pdf",
-      disposition: "inline" # ou "attachment" se quiser forçar download
+      disposition: "inline"
   end
 
   private
