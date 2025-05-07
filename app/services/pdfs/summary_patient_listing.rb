@@ -2,10 +2,10 @@ class Pdfs::SummaryPatientListing
   include Prawn::View
   include ActionView::Helpers::NumberHelper
 
-  def initialize(representative, closing, closing_id)
+  def initialize(representative, closing, current_closing)
     @representative = representative
     @closing = closing
-    monthly_reports = @representative.set_monthly_reports(closing_id)
+    monthly_reports = @representative.set_monthly_reports(current_closing.id)
 
     header
     move_down 10

@@ -2,7 +2,7 @@ class Pdfs::SavesSummaryPatientListing
   include Prawn::View
   include ActionView::Helpers::NumberHelper
 
-  def initialize(representatives, closing, closing_id)
+  def initialize(representatives, closing, current_closing)
     @closing = closing
 
     representatives.each_with_index do |representative, index|
@@ -11,7 +11,7 @@ class Pdfs::SavesSummaryPatientListing
       header
       move_down 10
 
-      monthly_reports = representative.set_monthly_reports(closing_id)
+      monthly_reports = representative.set_monthly_reports(current_closing.id)
 
       @situation = @representative.set_situation(monthly_reports)
       @envelope_number = @representative.set_envelope_number(monthly_reports)

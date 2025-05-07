@@ -3,18 +3,18 @@ class Pdfs::MonthlySummary
   include ActionView::Helpers::NumberHelper
   include MonthlyReportsHelper
 
-  def initialize(representatives, closing, closing_id)
+  def initialize(representatives, closing, current_closing)
     @closing = closing
 
     representatives.each_with_index do |representative, index|
       start_new_page unless index == 0
       @representative = representative
 
-      @monthly_reports = @representative.load_monthly_reports(closing_id, [{prescriber: {current_accounts: :bank}}])
+      @monthly_reports = @representative.load_monthly_reports(current_closing.id, [{prescriber: {current_accounts: :bank}}])
       @accumulated = @monthly_reports.where(accumulated: false)
-      @totals_by_bank = @representative.totals_by_bank(closing_id)
-      @totals_by_store = @representative.totals_by_store(closing_id)
-      @total_in_cash = @representative.total_cash(closing_id)
+      @totals_by_bank = @representative.totals_by_bank(current_closing.id)
+      @totals_by_store = @representative.totals_by_store(current_closing.id)
+      @total_in_cash = @representative.total_cash(current_closing.id)
 
       totals_calculate
       header

@@ -74,9 +74,9 @@ class RepresentativesController < ApplicationController
     when "monthly_report"
       pdf = Pdfs::MonthlyReport.new(@representative, @closing, @current_closing).render
     when "patient_listing"
-      pdf = Pdfs::PatientListing.new(@representative, @closing, @current_closing.id).render
+      pdf = Pdfs::PatientListing.new(@representative, @closing, @current_closing).render
     when "summary_patient_listing"
-      pdf = Pdfs::SummaryPatientListing.new(@representative, @closing, @current_closing.id).render
+      pdf = Pdfs::SummaryPatientListing.new(@representative, @closing, @current_closing).render
     when "unaccumulated_addresses"
       pdf = Pdfs::UnaccumulatedAddresses.new(@representative, @closing, @current_closing).render
     end
@@ -92,11 +92,11 @@ class RepresentativesController < ApplicationController
 
     case selected_action
     when "save_patient_listing"
-      pdf = Pdfs::SavePatientListing.new(@representatives, @closing, @current_closing.id).render
+      pdf = Pdfs::SavePatientListing.new(@representatives, @closing, @current_closing).render
     when "saves_summary_patient_listing"
-      pdf = Pdfs::SavesSummaryPatientListing.new(@representatives, @closing, @current_closing.id).render
+      pdf = Pdfs::SavesSummaryPatientListing.new(@representatives, @closing, @current_closing).render
     when "monthly_summary"
-      pdf = Pdfs::MonthlySummary.new(@representatives, @closing, @current_closing.id).render
+      pdf = Pdfs::MonthlySummary.new(@representatives, @closing, @current_closing).render
     when "tags"
       pdf = Pdfs::Tags.new(@representatives, @closing, @current_closing).render
     when "address_report"
