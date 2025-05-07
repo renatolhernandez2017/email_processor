@@ -92,18 +92,18 @@ class RepresentativesController < ApplicationController
 
     case selected_action
     when "save_patient_listing"
-      @pdf = Pdfs::SavePatientListing.new(@representatives, @closing, @current_closing.id).render
+      pdf = Pdfs::SavePatientListing.new(@representatives, @closing, @current_closing.id).render
     when "saves_summary_patient_listing"
-      @pdf = Pdfs::SavesSummaryPatientListing.new(@representatives, @closing, @current_closing.id).render
+      pdf = Pdfs::SavesSummaryPatientListing.new(@representatives, @closing, @current_closing.id).render
     when "monthly_summary"
-      @pdf = Pdfs::MonthlySummary.new(@representatives, @closing, @current_closing.id).render
+      pdf = Pdfs::MonthlySummary.new(@representatives, @closing, @current_closing.id).render
     when "tags"
-      @pdf = Pdfs::Tags.new(@representatives, @closing, @current_closing).render
+      pdf = Pdfs::Tags.new(@representatives, @closing, @current_closing).render
     when "address_report"
-      # pdf = Pdfs::AddressReport.new(@representative, @closing, @current_closing).render
+      pdf = Pdfs::AddressReport.new(@representatives, @closing, @current_closing).render
     end
 
-    send_data @pdf,
+    send_data pdf,
       filename: "resumo_#{@closing.downcase}.pdf",
       type: "application/pdf",
       disposition: "inline" # ou "attachment" se quiser forçar download
