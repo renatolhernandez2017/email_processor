@@ -6,12 +6,12 @@ class Pdfs::UnaccumulatedAddresses
   def initialize(representative, closing, current_closing)
     @representative = representative
     @closing = closing
-    @monthly_reports = @representative.load_monthly_reports(current_closing.id, [{prescriber: {current_accounts: :bank}}])
+    monthly_reports = @representative.load_monthly_reports(current_closing.id, [{prescriber: {current_accounts: :bank}}])
 
     header
     move_down 10
 
-    @monthly_reports.each do |monthly_report|
+    monthly_reports.each do |monthly_report|
       @monthly_report = monthly_report
       content
     end

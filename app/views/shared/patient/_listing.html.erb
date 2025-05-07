@@ -4,7 +4,7 @@
     em <span class="text-primary"><%= closing %></span>
   </div>
 
-  <% monthly_reports.each do |reports| %>
+  <% monthly_reports&.each do |reports| %>
     <ul class="menu rounded-box mb-4">
       <li>
         <ul class="border-l-2 border-primary">

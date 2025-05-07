@@ -36,11 +36,11 @@ class RepresentativesController < ApplicationController
   end
 
   def patient_listing
-    load_monthly_reports_false
+    @monthly_reports = @representative.set_monthly_reports(@current_closing.id)
   end
 
   def summary_patient_listing
-    load_monthly_reports_false
+    @monthly_reports = @representative.set_monthly_reports(@current_closing.id)
   end
 
   def select
@@ -74,12 +74,9 @@ class RepresentativesController < ApplicationController
     when "monthly_report"
       pdf = Pdfs::MonthlyReport.new(@representative, @closing, @current_closing).render
     when "patient_listing"
-      load_monthly_reports_false
-
-      pdf = Pdfs::PatientListing.new(@representative, @monthly_reports, @closing).render
+      pdf = Pdfs::PatientListing.new(@representative, @closing, @current_closing.id).render
     when "summary_patient_listing"
-      load_monthly_reports_false
-      pdf = Pdfs::SummaryPatientListing.new(@representative, @monthly_reports, @closing).render
+      pdf = Pdfs::SummaryPatientListing.new(@representative, @closing, @current_closing.id).render
     when "unaccumulated_addresses"
       pdf = Pdfs::UnaccumulatedAddresses.new(@representative, @closing, @current_closing).render
     end
@@ -113,17 +110,6 @@ class RepresentativesController < ApplicationController
   end
 
   private
-
-  def load_monthly_reports_false
-    @monthly_reports = @representative.monthly_reports_false(@current_closing.id, [:requests, {representative: :prescriber}])
-      .group_by { |report| [report.envelope_number, report.situation] }
-      .map do |info, reports|
-        {
-          info: info,
-          reports: reports
-        }
-      end
-  end
 
   def representative_params
     params.require(:representative).permit(

@@ -11,7 +11,7 @@ class Pdfs::SavesSummaryPatientListing
       header
       move_down 10
 
-      monthly_reports = @representative.set_monthly_reports(@representative, closing_id)
+      monthly_reports = representative.set_monthly_reports(closing_id)
 
       @situation = @representative.set_situation(monthly_reports)
       @envelope_number = @representative.set_envelope_number(monthly_reports)
