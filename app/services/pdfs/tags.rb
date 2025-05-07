@@ -49,9 +49,9 @@ class Pdfs::Tags
         @monthly_report.prescriber.id,
         @monthly_report.prescriber.name,
         [
-          "<p>#{@monthly_report&.prescriber&.full_address}</p>",
-          "<p>#{@monthly_report&.prescriber&.full_contact}</p>",
-          "<p>#{@monthly_report&.prescriber&.secretary}</p>"
+          @monthly_report&.prescriber&.full_address,
+          @monthly_report&.prescriber&.full_contact,
+          @monthly_report&.prescriber&.secretary
         ].compact.join("\n"),
         "OBS: #{truncate(@monthly_report&.prescriber&.note, length: 50)}"
       ]
@@ -75,6 +75,11 @@ class Pdfs::Tags
       row_colors: ["F0F0F0", "FFFFFF"],
       width: bounds.width,
       cell_style: {borders: [:bottom], border_width: 0.5, size: 8}) do
+        [0, 1, 3].each do |col|
+          columns(col).align = :center
+          columns(col).valign = :center
+        end
+
         if data.size <= 5
           [0, 3].each { |i| row(i).font_style = :bold }
         else

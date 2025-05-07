@@ -191,7 +191,7 @@ class Pdfs::MonthlyReport
           end
         when "banks", "stores", "notes"
           if data.size <= 5
-            row(3).font_style = :bold
+            row(data.size - 2).font_style = :bold
           else
             (4...data.size - 1).each { |row_index| row(row_index).font_style = :bold }
           end

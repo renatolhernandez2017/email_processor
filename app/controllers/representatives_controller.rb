@@ -70,15 +70,15 @@ class RepresentativesController < ApplicationController
   end
 
   def download_pdf
-    case params[:kind]
+    pdf = case params[:kind]
     when "monthly_report"
-      pdf = Pdfs::MonthlyReport.new(@representative, @closing, @current_closing).render
+      Pdfs::MonthlyReport.new(@representative, @closing, @current_closing).render
     when "patient_listing"
-      pdf = Pdfs::PatientListing.new(@representative, @closing, @current_closing).render
+      Pdfs::PatientListing.new(@representative, @closing, @current_closing).render
     when "summary_patient_listing"
-      pdf = Pdfs::SummaryPatientListing.new(@representative, @closing, @current_closing).render
+      Pdfs::SummaryPatientListing.new(@representative, @closing, @current_closing).render
     when "unaccumulated_addresses"
-      pdf = Pdfs::UnaccumulatedAddresses.new(@representative, @closing, @current_closing).render
+      Pdfs::UnaccumulatedAddresses.new(@representative, @closing, @current_closing).render
     end
 
     send_data pdf,
@@ -90,17 +90,17 @@ class RepresentativesController < ApplicationController
   def download_select_pdf
     selected_action = @select.find { |action| action[0] == params[:kind] }&.last
 
-    case selected_action
+    pdf = case selected_action
     when "save_patient_listing"
-      pdf = Pdfs::SavePatientListing.new(@representatives, @closing, @current_closing).render
+      Pdfs::SavePatientListing.new(@representatives, @closing, @current_closing).render
     when "saves_summary_patient_listing"
-      pdf = Pdfs::SavesSummaryPatientListing.new(@representatives, @closing, @current_closing).render
+      Pdfs::SavesSummaryPatientListing.new(@representatives, @closing, @current_closing).render
     when "monthly_summary"
-      pdf = Pdfs::MonthlySummary.new(@representatives, @closing, @current_closing).render
+      Pdfs::MonthlySummary.new(@representatives, @closing, @current_closing).render
     when "tags"
-      pdf = Pdfs::Tags.new(@representatives, @closing, @current_closing).render
+      Pdfs::Tags.new(@representatives, @closing, @current_closing).render
     when "address_report"
-      pdf = Pdfs::AddressReport.new(@representatives, @closing, @current_closing).render
+      Pdfs::AddressReport.new(@representatives, @closing, @current_closing).render
     end
 
     send_data pdf,
