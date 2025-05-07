@@ -7,8 +7,7 @@
         </span>
       </label>
 
-      <% summary = @representative_summaries[representative.id] %>
-      <%= render "representatives/note_division", total_in_cash: summary[:total_in_cash], total_marks: summary[:total_marks], total_cash: summary[:total_cash] %>
+      <%= render "representatives/note_division", cashes: @summary[representative.id][:cashes] %>
     </div>
   <% end %>
 </section>

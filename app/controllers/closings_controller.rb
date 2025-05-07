@@ -1,7 +1,7 @@
 class ClosingsController < ApplicationController
   include Pagy::Backend
   include SharedData
-  include NotesDivisions
+  include RepresentativeSummaries
 
   before_action :set_closing, only: %i[update modify_for_this_closure]
 
@@ -52,7 +52,7 @@ class ClosingsController < ApplicationController
   end
 
   def note_divisions
-    # Usa informações que vem do include NotesDivisions
+    # Usa informações que vem do include RepresentativeSummaries
   end
 
   def deposits_in_banks

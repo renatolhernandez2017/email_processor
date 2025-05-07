@@ -2,7 +2,7 @@ class RepresentativesController < ApplicationController
   include Pagy::Backend
   include Roundable
   include SharedData
-  include NotesDivisions
+  include RepresentativeSummaries
 
   before_action :set_selects_label
   before_action :set_closing_date, except: %i[index update change_active]
@@ -32,30 +32,7 @@ class RepresentativesController < ApplicationController
   end
 
   def monthly_report
-    @monthly_reports = @representative.load_monthly_reports(@current_closing.id, [{prescriber: {current_accounts: :bank}}])
-    @accumulated = @monthly_reports.where(accumulated: false)
-
-    calculate_totals_by_bank
-    calculate_totals_by_store
-    calculate_totals_note_division
-  end
-
-  def calculate_totals_by_bank
-    @totals_by_bank = @representative.totals_by_bank(@current_closing.id)
-    @total_count = @totals_by_bank.sum { |bank| bank[:count] if bank.present? }
-    @total_value = @totals_by_bank.sum { |bank| bank[:total] if bank.present? }
-  end
-
-  def calculate_totals_by_store
-    @totals_by_store = @representative.totals_by_store(@current_closing.id)
-    @total_count_store = @totals_by_store.sum { |store| store[:count] }
-    @total_store = @totals_by_store.sum { |store| store[:total] }
-  end
-
-  def calculate_totals_note_division
-    @total_in_cash = @representative.total_cash(@current_closing.id)
-    @total_marks = @total_in_cash.values.sum
-    @total_cash = @total_in_cash.map { |key, value| key * value }.sum
+    @summary = @representative.monthly_reports_load(@representative, @current_closing.id)
   end
 
   def patient_listing
@@ -122,8 +99,7 @@ class RepresentativesController < ApplicationController
     when "saves_summary_patient_listing"
       @pdf = Pdfs::SavesSummaryPatientListing.new(@representatives, @closing, @current_closing.id).render
     when "monthly_summary"
-      #   load_monthly_reports_false
-      #   pdf = Pdfs::MonthlySummary.new(@representative, @monthly_reports, @closing).render
+      @pdf = Pdfs::MonthlySummary.new(@representatives, @closing, @current_closing.id).render
     when "tags"
       #   pdf = Pdfs::Tags.new(@representative, @closing, @current_closing).render
     when "address_report"
