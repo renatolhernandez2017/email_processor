@@ -1,33 +1,29 @@
 #!/bin/sh
 NOW=$(date +"%d-%m-%y")
-WORK_DIR="/workspaces/unipharmus_v2/"
+WORK_DIR="/workspaces/unipharmus_v2"
 LOG_FILE="$WORK_DIR/tmp/log-$NOW.log"
 TMP_DIR="$WORK_DIR/tmp/"
 
+echo "Faz a conexão com a VPN"
+/bin/bash /workspaces/unipharmus_v2/script/vpn_start.sh
+
+# Agora conecta ao banco Firebird
 echo "O fechamento acabou de ser iniciado e está em andamento, não execute tarefas no sistema enquanto não receber o email com o log gerado!"
-
-# echo "**** $(date) **** FAZENDO BACKUP DO BANCO DE DADOS DBFS ****" > $LOG_FILE
-# mysqldump -u root -pYOH2mLwso7m dbfs bancos conta_correntes descontos fechamentos log_conversoes pessoas relatorio_mensais requisicoes schema_info usuarios > "$WORK_DIR/tmp/dbfs-$NOW.sql"
-# cp -f "$WORK_DIR/tmp/dbfs-$NOW.sql" "$TMP_DIR/dbfs.sql" >> $LOG_FILE 2>> $LOG_FILE
-
-# echo "**** $(date) **** REMOVENDO BASE PASSADA **** " >> $LOG_FILE
-# # rm -Rf "$TMP_DIR/alterdb.ib"  >> $LOG_FILE
-# rm -Rf "$TMP_DIR/*.sql" >> $LOG_FILE
-# rm -Rf "$TMP_DIR/*.csv" >> $LOG_FILE
-
-# echo "**** $(date) **** COPIANDO ARQUIVO DE BANCO DE DADOS **** " >> $LOG_FILE
-#mount -t smbfs //192.168.0.5/FCerta /mnt/alternate -o username=rodrigo,password=jampers2 >> $LOG_FILE 2>> $LOG_FILE
-#cp /mnt/alternate/DB/alterdb.ib "$TMP_DIR/alterdb.ib" >> $LOG_FILE 2>> $LOG_FILE
-#umount /mnt/alternate >> $LOG_FILE 2>> $LOG_FILE
-# net use x: /delete >> $LOG_FILE
-# net use x: \\server04\FCerta >> $LOG_FILE
-# copy x:\db\alterdb.ib d:\alternate\ >> $LOG_FILE
-
 echo "**** $(date) **** CRIANDO ARQUIVOS CSV **** " >> $LOG_FILE
-isql-fb "192.168.0.11:d:\\fcerta\\db\\alterdb.ib" -u sysdba -p masterkey -i "$WORK_DIR/script/gera_csv_fc12100.sql" > "$TMP_DIR/fc12100.csv"  2>> $LOG_FILE
-isql-fb "192.168.0.11:d:\\fcerta\\db\\alterdb.ib" -u sysdba -p masterkey -i "$WORK_DIR/script/gera_csv_fc17000.sql" > "$TMP_DIR/fc17000.csv"  2>> $LOG_FILE
-isql-fb "192.168.0.11:d:\\fcerta\\db\\alterdb.ib" -u sysdba -p masterkey -i "$WORK_DIR/script/gera_csv_fc04000.sql" > "$TMP_DIR/fc04000.csv"  2>> $LOG_FILE
-isql-fb "192.168.0.11:d:\\fcerta\\db\\alterdb.ib" -u sysdba -p masterkey -i "$WORK_DIR/script/gera_csv_fc17100.sql" > "$TMP_DIR/fc17100.csv"  2>> $LOG_FILE
+
+isql-fb "192.168.0.12:D:\\Fcerta-teste\\DB\\ALTERDB.ib" -u sysdba -p masterkey < "$WORK_DIR/script/gera_csv_fc12100.sql" > "$TMP_DIR/fc12100.csv" 2>> $LOG_FILE
+sleep 2
+
+isql-fb "192.168.0.12:D:\\Fcerta-teste\\DB\\ALTERDB.ib" -u sysdba -p masterkey < "$WORK_DIR/script/gera_csv_fc17000.sql" > "$TMP_DIR/fc17000.csv" 2>> $LOG_FILE
+sleep 2
+
+isql-fb "192.168.0.12:D:\\Fcerta-teste\\DB\\ALTERDB.ib" -u sysdba -p masterkey < "$WORK_DIR/script/gera_csv_fc04000.sql" > "$TMP_DIR/fc04000.csv" 2>> $LOG_FILE
+sleep 2
+
+isql-fb "192.168.0.12:D:\\Fcerta-teste\\DB\\ALTERDB.ib" -u sysdba -p masterkey < "$WORK_DIR/script/gera_csv_fc17100.sql" > "$TMP_DIR/fc17100.csv" 2>> $LOG_FILE
+
+echo "Fecha a conexão com a VPN"
+/bin/bash /workspaces/unipharmus_v2/script/vpn_close.sh
 
 # echo "**** $(date) **** CONVERTENDO CSV PARA IB.SQL **** " >> $LOG_FILE
 # ruby "$WORK_DIR/script/gera_ib_sql.rb" >> $LOG_FILE 2>> $LOG_FILE
