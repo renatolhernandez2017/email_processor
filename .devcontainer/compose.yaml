@@ -3,6 +3,10 @@ services:
     build:
       context: ..
       dockerfile: .devcontainer/Dockerfile
+    cap_add:
+      - NET_ADMIN
+    devices:
+      - /dev/net/tun:/dev/net/tun
 
     volumes:
       - ../..:/workspaces:cached

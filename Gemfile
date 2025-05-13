@@ -4,6 +4,7 @@ source "https://rubygems.org"
 
 ruby "3.3.1"
 
+gem "fb_adapter", "~> 0.6.2"
 gem "audited", "~> 5.0"
 gem "bootsnap", require: false
 gem "cssbundling-rails"
