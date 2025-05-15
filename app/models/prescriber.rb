@@ -20,6 +20,8 @@ class Prescriber < ApplicationRecord
                         "CRO" => 2,
                         "CRN" => 9}
 
+  validates :crm, presence: true, uniqueness: true
+
   def monthly_reports_false(closing_id, eager_load = [])
     scoped_monthly_reports(closing_id, eager_load).where(accumulated: false)
   end
