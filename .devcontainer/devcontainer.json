@@ -41,7 +41,13 @@
         "hridoy.rails-snippets",
         "miguel-savignano.ruby-symbols",
         "vortizhe.simple-ruby-erb",
-        "eamodio.gitlens"
+        "eamodio.gitlens",
+        "ms-vscode-remote.remote-containers",
+        "MS-CEINTL.vscode-language-pack-pt-BR",
+        "Hridoy.rails-snippets",
+        "GitHub.copilot",
+        "GitHub.copilot-chat",
+        "Shopify.ruby-extensions-pack"
       ]
     }
   }
