@@ -99,6 +99,7 @@ class RepresentativesController < ApplicationController
       :partnership,
       :performs_closing,
       :active,
+      :number,
       :branch_id
     )
   end

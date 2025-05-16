@@ -107,6 +107,7 @@ class PrescribersController < ApplicationController
       :number_council,
       :uf_council,
       :birthdate,
+      :crm,
       :representative_id,
       address_attributes: %i[
         street district number complement city uf zip_code phone cellphone fax
