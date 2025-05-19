@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_05_16_132606) do
+ActiveRecord::Schema[7.1].define(version: 2025_05_19_135851) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
   enable_extension "unaccent"
@@ -164,6 +164,7 @@ ActiveRecord::Schema[7.1].define(version: 2025_05_16_132606) do
     t.string "uf_council", limit: 2
     t.date "birthdate"
     t.string "crm"
+    t.string "representative_number"
     t.index ["crm"], name: "index_prescribers_on_crm", unique: true
     t.index ["representative_id"], name: "index_prescribers_on_representative_id"
   end
