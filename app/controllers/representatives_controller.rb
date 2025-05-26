@@ -10,7 +10,7 @@ class RepresentativesController < ApplicationController
   before_action :set_representative, except: %i[index]
 
   def index
-    @pagy, @representatives = pagy(Representative.all.order(created_at: :desc))
+    @pagy, @representatives = pagy(Representative.all.order(:number))
 
     @representative = Representative.new
     @current_account = CurrentAccount.new

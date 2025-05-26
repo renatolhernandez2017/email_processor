@@ -7,13 +7,20 @@ class PrescribersController < ApplicationController
   before_action :set_prescriber, except: %i[index]
 
   def index
-    @pagy, @prescribers = pagy(@prescribers_map.order(created_at: :desc))
+    # Carregue tudo com includes e selecione só o necessário
+    @pagy, @prescribers = pagy(
+      @prescribers_map
+        .includes(:representative, :address) # EVITA N+1
+        .select(:id, :name, :created_at, :representative_id, :class_council, :uf_council, :number_council)
+        .order(created_at: :desc)
+    )
 
     @current_account = CurrentAccount.new
     @current_account.build_bank
     @discount = Discount.new
-    @prescribers.each(&:ensure_address)
     @requests = Request.set_requests(@prescribers, @current_closing.id)
+
+    PrescriberRequestProcessingJob.perform_later
   end
 
   def update
