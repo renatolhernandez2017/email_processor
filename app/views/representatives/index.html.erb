@@ -20,8 +20,8 @@
           <tr class="border-t border-black items-center <%= index % 2 == 0 ? "bg-gray-200" : "bg-gray-100" %>">
             <td><%= representative.id %></td>
             <td><%= representative.name %></td>
-            <td><%= representative.branch.branch_number.to_s.rjust(3, '0') %></td>
-            <td><%= representative.branch.name %></td>
+            <td><%= representative.number.to_s.rjust(3, '0') %></td>
+            <td><%= representative&.branch&.name %></td>
             <td><%= formatted_percentage(representative.partnership) %></td>
 
             <td class="flex justify-center items-center gap-2 h-10">
