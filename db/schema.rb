@@ -164,7 +164,7 @@ ActiveRecord::Schema[7.1].define(version: 2025_05_19_135851) do
     t.string "uf_council", limit: 2
     t.date "birthdate"
     t.string "crm"
-    t.string "representative_number"
+    t.integer "representative_number"
     t.index ["crm"], name: "index_prescribers_on_crm", unique: true
     t.index ["representative_id"], name: "index_prescribers_on_representative_id"
   end
@@ -177,7 +177,7 @@ ActiveRecord::Schema[7.1].define(version: 2025_05_19_135851) do
     t.datetime "updated_at", null: false
     t.bigint "branch_id"
     t.boolean "active", default: false
-    t.string "number"
+    t.integer "number"
     t.index ["branch_id"], name: "index_representatives_on_branch_id"
   end
 
