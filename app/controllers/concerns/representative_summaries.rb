@@ -13,7 +13,7 @@ module RepresentativeSummaries
 
     @representatives = Representative.includes(:monthly_reports, :prescriber)
       .where(active: true)
-      .where(monthly_reports: {closing_id: @current_closing.id, accumulated: false})
+      .where(monthly_reports: {closing_id: @current_closing&.id, accumulated: false})
       .order("prescribers.name ASC")
 
     @representatives.each do |representative|

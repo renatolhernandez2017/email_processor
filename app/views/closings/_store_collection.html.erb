@@ -13,7 +13,7 @@
           </thead>
 
           <tbody>
-            <% store_collections.each do |report| %>
+            <% store_collections&.each do |report| %>
               <tr class="bg-gray-200 border-t border-b border-black h-8">
                 <td><%= report[:name] %></td>
                 <td><%= report[:count] %></td>

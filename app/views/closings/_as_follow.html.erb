@@ -13,7 +13,7 @@
           </thead>
 
           <tbody>
-            <% as_follows.each do |as_follow| %>
+            <% as_follows&.each do |as_follow| %>
               <tr class="bg-gray-200 border-t border-b border-black h-8">
                 <td><%= as_follow[:name].present? ? as_follow[:name] : "DINHEIRO" %></td>
                 <td><%= as_follow[:count] %></td>

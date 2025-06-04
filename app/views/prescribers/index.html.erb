@@ -72,7 +72,7 @@
               </button>
 
               <dialog id="account_balance_prescriber<%= prescriber.id %>" class="modal place-items-center">
-                <%= render ModalComponent.new(form: render("current_accounts/form", representative: prescriber, current_account: @current_account, representatives: @prescribers_map, title: "Criar Nova Conta Corrente", btn_save: "Salvar", route: "prescriber")) %>
+                <%#= render ModalComponent.new(form: render("current_accounts/form", representative: prescriber, current_account: @current_account, representatives: @prescribers_map, title: "Criar Nova Conta Corrente", btn_save: "Salvar", route: "prescriber")) %>
               </dialog>
 
               <button onclick="document.getElementById('discount_prescriber<%= prescriber.id %>').showModal();" title="Novo Desconto">

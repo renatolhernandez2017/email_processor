@@ -56,8 +56,8 @@ module ApplicationHelper
   end
 
   def set_closing_date
-    month_abbr = @current_closing.closing.split("/")
-    "#{t("view.months.#{month_abbr[0]}")}/#{month_abbr[1]}"
+    month_abbr = @current_closing&.closing&.split("/")
+    "#{t("view.months.#{month_abbr[0]}")}/#{month_abbr[1]}"  if month_abbr.present?
   end
 
   private

@@ -12,9 +12,6 @@ class CurrentAccount < ApplicationRecord
 
   validates :favored, presence: {message: "deve ser preenchido"}
 
-  before_create :unset_previous_standard
-  after_create :set_as_standard
-
   def update_others_standard(route, current_account)
     return unless route == "prescriber" || route == "representative" || route == "branch"
 
@@ -29,15 +26,5 @@ class CurrentAccount < ApplicationRecord
 
     current_accounts = CurrentAccount.where(object)
     current_accounts.update_all(standard: false)
-  end
-
-  private
-
-  def unset_previous_standard
-    CurrentAccount.where(standard: true).update_all(standard: false)
-  end
-
-  def set_as_standard
-    update_column(:standard, true)
   end
 end

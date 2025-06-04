@@ -13,7 +13,11 @@ class CurrentAccountsController < ApplicationController
   def create
     @current_account = CurrentAccount.new(current_account_params)
 
+    @current_account.update_others_standard(@route, @current_account)
+
     if @current_account.save
+      @current_account.update(standard: true)
+
       flash[:success] = "Conta Corrente criada com sucesso!"
       render_redirect
     else

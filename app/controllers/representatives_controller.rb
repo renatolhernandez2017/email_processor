@@ -86,7 +86,7 @@ class RepresentativesController < ApplicationController
     pdf = pdf_class.new(@representatives, @closing, @current_closing).render
 
     send_data pdf,
-      filename: "#{pdf_class}_#{@closing.downcase}.pdf",
+      filename: "#{pdf_class}_#{@closing&.downcase}.pdf",
       type: "application/pdf",
       disposition: "inline"
   end
@@ -109,8 +109,8 @@ class RepresentativesController < ApplicationController
   end
 
   def set_closing_date
-    month_abbr = @current_closing.closing.split("/")
-    @closing = "#{t("view.months.#{month_abbr[0]}")}/#{month_abbr[1]}"
+    month_abbr = @current_closing&.closing&.split("/")
+    @closing = "#{t("view.months.#{month_abbr[0]}")}/#{month_abbr[1]}" if month_abbr.present?
   end
 
   def set_selects_label
