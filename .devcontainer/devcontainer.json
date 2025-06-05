@@ -47,7 +47,8 @@
         "Hridoy.rails-snippets",
         "GitHub.copilot",
         "GitHub.copilot-chat",
-        "Shopify.ruby-extensions-pack"
+        "Shopify.ruby-extensions-pack",
+        "mechatroner.rainbow-csv"
       ]
     }
   }

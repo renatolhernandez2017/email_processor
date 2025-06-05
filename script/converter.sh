@@ -18,12 +18,12 @@ echo "Abre a conexão com a VPN" >> $LOG_FILE
 # echo "O fechamento acabou de ser iniciado e está em andamento, não execute tarefas no sistema enquanto não receber o email com o log gerado!"
 # echo "**** $(date) **** CRIANDO ARQUIVOS CSV **** " >> $LOG_FILE
 
-# echo "Criando arquivo dos Representante" >> $LOG_FILE
-# isql-fb "192.168.0.12:D:\\Fcerta-teste\\DB\\ALTERDB.ib" -u sysdba -p masterkey < "$WORK_DIR/script/fc08000.sql" > "$TMP_DIR/fc08000.csv" 2>> $LOG_FILE
-# sleep 1
-
 # echo "Criando arquivo das Filial" >> $LOG_FILE
 # isql-fb "192.168.0.12:D:\\Fcerta-teste\\DB\\ALTERDB.ib" -u sysdba -p masterkey < "$WORK_DIR/script/fc01000.sql" > "$TMP_DIR/fc01000.csv" 2>> $LOG_FILE
+# sleep 1
+
+# echo "Criando arquivo dos Representante" >> $LOG_FILE
+# isql-fb "192.168.0.12:D:\\Fcerta-teste\\DB\\ALTERDB.ib" -u sysdba -p masterkey < "$WORK_DIR/script/fc08000.sql" > "$TMP_DIR/fc08000.csv" 2>> $LOG_FILE
 # sleep 1
 
 # echo "Criando arquivo dos Prescritores" >> $LOG_FILE

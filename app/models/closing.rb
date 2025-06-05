@@ -71,19 +71,16 @@ class Closing < ApplicationRecord
     # system("#{Rails.root}/script/converter.sh #{start_date} #{end_date} &")
     # sleep 2
 
-    # fc12100 = "#{Rails.root}/tmp/fc12100.csv"
-    # fc17000 = "#{Rails.root}/tmp/fc17000.csv"
-    # fc17100 = "#{Rails.root}/tmp/fc17100.csv"
-    # destino = "#{Rails.root}/tmp/resultado_unificado.csv"
-
-    # UnificarArquivos.new(fc12100, fc17000, fc17100, destino).unificar_dados
+    # agrupa os dados repetidos(NRRQU) e gera um novo CSV
+    path = "#{Rails.root}/tmp/fc12100_fc17000_fc17100.csv"
+    Importers::GroupDuplicates.new(path).import!
 
     # agora importa os dados para o banco
-    # ["fc06200", "fc08000", "fc04000", "fc12100", "fc17000", "fc17100"].each do |file|
-    ["fc04000"].each do |file|
-      path = "#{Rails.root}/tmp/#{file}.csv"
-      ImportCsvService.new(path).import!
-    end
+    # ["fc01000", "fc08000", "fc04000", "group_duplicates"].each do |file|
+    # ["fc12100_fc17000_fc17100"].each do |file|
+    #   path = "#{Rails.root}/tmp/#{file}.csv"
+    #   ImportCsvService.new(path).import!
+    # end
   end
 
   def this_month
