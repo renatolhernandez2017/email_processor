@@ -8,12 +8,12 @@ module Importers
       File.open(@file_path, "rb") do |file|
         csv_enum = CSV.new(file.read.encode("UTF-8", invalid: :replace, undef: :replace, replace: ""), col_sep: ",")
         csv_enum.each do |row|
-          number = row[0].to_s.strip
-          name = row[1].to_s.strip
-          district = row[2].to_s.strip
-          optional_name = row[3].to_s.strip
+          next if row.empty? || (row[0]&.strip == "N/A")
 
-          next if number == "N/A" || number.empty?
+          number = row[0]&.strip
+          name = row[1]&.strip
+          district = row[2]&.strip
+          optional_name = row[3]&.strip
 
           new_name = if name.present? && name != "." && name != "N/A"
             adjust_name(name)

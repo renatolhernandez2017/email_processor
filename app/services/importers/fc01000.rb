@@ -14,11 +14,11 @@ module Importers
         )
 
         csv_enum.each do |row|
-          name = row[1].to_s.strip
-          branch_number = row[0].to_s.strip.to_i
-          current_account = row[2].to_s.strip
+          next if row.empty? || (row[1]&.strip == "N/A")
 
-          next if name == "N/A" || name.empty?
+          name = row[1]&.strip
+          branch_number = row[0]&.strip&.to_i
+          current_account = row[2]&.strip
 
           normalized_name = name.upcase
 

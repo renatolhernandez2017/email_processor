@@ -8,15 +8,14 @@ module Importers
       File.open(@file_path, "rb") do |file|
         csv_enum = CSV.new(file.read.encode("UTF-8", invalid: :replace, undef: :replace, replace: ""), col_sep: ",")
         csv_enum.each do |row|
-          class_council = row[0].to_s.strip
+          next if row.empty? || (row[0]&.strip == "N/A")
 
-          next if class_council == "N/A" || class_council.empty?
-
-          @uf_council = row[1].to_s.strip
-          @number_council = row[2].to_s.strip
-          @prescriber_name = row[3].to_s.strip
-          @note = row[4].to_s.strip
-          representative_number = row[5].to_s.strip
+          class_council = row[0]&.strip
+          @uf_council = row[1]&.strip
+          @number_council = row[2]&.strip
+          @prescriber_name = row[3]&.strip
+          @note = row[4]&.strip
+          representative_number = row[5]&.strip&.to_i
 
           prescriber = create_prescriber(representative_number)
 
@@ -30,7 +29,7 @@ module Importers
     end
 
     def create_prescriber(representative_number)
-      representative = Representative.find_by(number: representative_number.to_i) if representative_number != "N/A"
+      representative = Representative.find_by(number: representative_number) if representative_number != "N/A"
 
       Prescriber.find_or_create_by(crm: @number_council) do |prescriber|
         prescriber.name = @prescriber_name
@@ -45,16 +44,16 @@ module Importers
     end
 
     def create_address(row, prescriber)
-      street = row[6].to_s.strip
-      number = row[7].to_s.strip
-      complement = row[8].to_s.strip
-      district = row[9].to_s.strip
-      zip_code = row[10].to_s.strip
-      city = row[11].to_s.strip
-      uf = row[12].to_s.strip
-      cellphone = row[13].to_s.strip + " " + row[14].to_s.strip
-      phone = row[15].to_s.strip + " " + row[16].to_s.strip
-      fax = row[18].to_s.strip
+      street = row[6]&.strip
+      number = row[7]&.strip
+      complement = row[8]&.strip
+      district = row[9]&.strip
+      zip_code = row[10]&.strip
+      city = row[11]&.strip
+      uf = row[12]&.strip
+      cellphone = row[13]&.strip + " " + row[14]&.strip
+      phone = row[15]&.strip + " " + row[16]&.strip
+      fax = row[18]&.strip
 
       Address.create!(
         street: street,

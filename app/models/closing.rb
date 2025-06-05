@@ -72,8 +72,8 @@ class Closing < ApplicationRecord
     # sleep 2
 
     # agrupa os dados repetidos(NRRQU) e gera um novo CSV
-    path = "#{Rails.root}/tmp/fc12100_fc17000_fc17100.csv"
-    Importers::GroupDuplicates.new(path).import!
+    # path = "#{Rails.root}/tmp/fc12100_fc17000_fc17100.csv"
+    # Importers::GroupDuplicates.new(path).import!
 
     # agora importa os dados para o banco
     # ["fc01000", "fc08000", "fc04000", "group_duplicates"].each do |file|
