@@ -1,18 +1,18 @@
 puts "apagando dados antigos..."
 # User.destroy_all
-Closing.destroy_all
+# Closing.destroy_all
 Address.destroy_all
 Prescriber.destroy_all
-Representative.destroy_all
-Branch.destroy_all
+# Representative.destroy_all
+# Branch.destroy_all
 CurrentAccount.destroy_all
 Bank.destroy_all
 Discount.destroy_all
 MonthlyReport.destroy_all
 Request.destroy_all
 
-puts "Data atual"
-date = Date.today
+# puts "Data atual"
+# date = Date.today
 
 # puts "Criando user Admin"
 # User.create!(name: "renato", email: "renatolhernandez@gmail.com", password: "120711", role: "admin")
@@ -24,17 +24,17 @@ date = Date.today
 #   "Suzano", "Barueri", "Indaiatuba", "Carapicuíba"
 # ]
 
-5.times do |i|
-  start_date = (date << (i + 1)).next_day - 1
-  end_date = (date << i).next_day
+# 5.times do |i|
+#   start_date = (date << (i + 1)).next_day - 1
+#   end_date = (date << i).next_day
 
-  closing = Closing.create!(
-    start_date: start_date,
-    end_date: end_date,
-    closing: "#{end_date.strftime("%b")}/#{end_date.strftime("%y")}",
-    last_envelope: i + 1,
-    active: i == 0
-  )
+#   closing = Closing.create!(
+#     start_date: start_date,
+#     end_date: end_date,
+#     closing: "#{end_date.strftime("%b")}/#{end_date.strftime("%y")}",
+#     last_envelope: i + 1,
+#     active: i == 0
+#   )
 
   # bank = Bank.create!(
   #   name: I18n.t("bank.names").values.sample,
@@ -125,8 +125,8 @@ date = Date.today
   #   branch: branch,
   #   prescriber: prescriber,
   #   monthly_report: monthly_report
-  # )
-end
+  #)
+# end
 
 # puts "Criar mais 2 relatórios para cada prescritor"
 # closing = Closing.find_by(active: true)

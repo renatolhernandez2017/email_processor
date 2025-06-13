@@ -27,7 +27,7 @@ module Importers
 
           Representative.find_or_create_by(number: number) do |representative|
             representative.name = new_name
-            representative.branch = branch
+            representative.branch = representative&.branch_id.present? ? representative.branch : branch
           end
         end
       rescue CSV::MalformedCSVError => e

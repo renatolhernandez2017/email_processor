@@ -137,7 +137,6 @@ ActiveRecord::Schema[7.1].define(version: 2025_05_19_135851) do
 
   create_table "prescribers", force: :cascade do |t|
     t.string "name"
-    t.string "council"
     t.decimal "partnership", default: "0.0"
     t.string "secretary"
     t.string "note"
@@ -153,9 +152,7 @@ ActiveRecord::Schema[7.1].define(version: 2025_05_19_135851) do
     t.string "number_council"
     t.string "uf_council", limit: 2
     t.date "birthdate"
-    t.string "crm"
     t.integer "representative_number"
-    t.index ["crm"], name: "index_prescribers_on_crm", unique: true
     t.index ["representative_id"], name: "index_prescribers_on_representative_id"
   end
 
@@ -182,7 +179,6 @@ ActiveRecord::Schema[7.1].define(version: 2025_05_19_135851) do
     t.boolean "repeat", default: false
     t.date "payment_date"
     t.decimal "value_for_report", default: "0.0"
-    t.string "rg"
     t.string "patient_name"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false

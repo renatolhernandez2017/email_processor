@@ -17,7 +17,7 @@ module Importers
           next if row.empty? || (row[1]&.strip == "N/A")
 
           name = row[1]&.strip
-          branch_number = row[0]&.strip&.to_i
+          branch_number = row[0]&.strip.to_i
           current_account = row[2]&.strip
 
           normalized_name = name.upcase

@@ -11,7 +11,7 @@ class PrescribersController < ApplicationController
       @prescribers_map
         .includes(:representative, :address)
         .select(:id, :name, :created_at, :representative_id, :class_council, :uf_council, :number_council)
-        .order(created_at: :desc)
+        .order(:name)
     )
 
     @current_account = CurrentAccount.new
@@ -100,7 +100,6 @@ class PrescribersController < ApplicationController
   def prescriber_params
     params.require(:prescriber).permit(
       :name,
-      :council,
       :partnership,
       :secretary,
       :note,
@@ -113,7 +112,6 @@ class PrescribersController < ApplicationController
       :number_council,
       :uf_council,
       :birthdate,
-      :crm,
       :representative_number,
       :representative_id,
       address_attributes: %i[

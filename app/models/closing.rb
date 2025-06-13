@@ -71,16 +71,82 @@ class Closing < ApplicationRecord
     # system("#{Rails.root}/script/converter.sh #{start_date} #{end_date} &")
     # sleep 2
 
-    # agrupa os dados repetidos(NRRQU) e gera um novo CSV
-    # path = "#{Rails.root}/tmp/fc12100_fc17000_fc17100.csv"
+    # agrupa os dados repetidos(NRRQU, PFCRM, UFCRM e NRCRM) e gera um novo CSV
+    # path = "#{Rails.root}/tmp/all.csv"
     # Importers::GroupDuplicates.new(path).import!
 
-    # agora importa os dados para o banco
-    # ["fc01000", "fc08000", "fc04000", "group_duplicates"].each do |file|
-    # ["fc12100_fc17000_fc17100"].each do |file|
+    # agora cria os dados de Filiais e Representantes no banco
+    ["fc01000", "fc08000"].each do |file|
+      path = "#{Rails.root}/tmp/#{file}.csv"
+      ImportCsvService.new(path).import!
+    end
+
+    # ["group_duplicates"].each do |file|
     #   path = "#{Rails.root}/tmp/#{file}.csv"
     #   ImportCsvService.new(path).import!
     # end
+
+    # agora cria os relatórios mensais
+    # create_monthly_reports(start_date, end_date)
+
+    # agora apagar os arquivos temporários fc*.csv e group_duplicates*.csv
+    # %w[fc group_duplicates].each do |prefix|
+    #   Dir.glob(Rails.root.join("tmp", "#{prefix}*.csv")).each do |file|
+    #     File.delete(file)
+    #   end
+    # end
+  end
+
+  def create_monthly_reports(start_date, end_date)
+    requests = Request.where.not(prescriber_id: nil).where(entry_date: start_date..end_date).group_by(&:prescriber_id)
+
+    requests.each do |prescriber_id, requests_all|
+      report = get_patient_listing(requests_all)
+
+      monthly_report = MonthlyReport.create!(
+        total_price: requests_all.sum(&:total_price),
+        partnership: requests_all.sum(&:total_fees),
+        discounts: requests_all.sum(&:total_discounts),
+        accumulated: true,
+        report: report,
+        quantity: requests_all.count,
+        envelope_number: (MonthlyReport.last&.envelope_number || 0) + 1,
+        closing: Closing.last,
+        prescriber_id: prescriber_id,
+        representative: requests_all.last.representative
+      )
+
+      requests_all.map { |r| r.update(monthly_report: monthly_report) }
+    end
+  end
+
+  def get_patient_listing(requests)
+    patient_listing = ""
+
+    requests.each do |request|
+      patient_listing << if request&.patient_name.present?
+        request.patient_name.lstrip[0..23].ljust(24)
+      else
+        "SN.".ljust(24)
+      end
+
+      patient_listing << (request.repeat ? "-R " : "   ")
+      patient_listing << request.entry_date.strftime("%d/%m/%y") + " "
+
+      if request.entry_date
+        if request.amount_received.to_s && request.nrreq_id && request.branch.present?
+          patient_listing << request.entry_date.strftime("%d/%m/%y")
+          patient_listing << " " + request.total_amount_for_report.to_s.rjust(8) + " " + request.nrreq_id.rjust(8) + " " + request.branch.name
+        end
+      elsif !request.entry_date && request.total_price.to_s && request.nrreq_id && request.branch.present?
+        patient_listing << "  /  /  "
+        patient_listing << " " + request.total_price.to_s.rjust(8) + " " + request.nrreq_id.rjust(8) + " " + request.branch.name
+      end
+
+      patient_listing << "\n"
+    end
+
+    patient_listing << "\n\n"
   end
 
   def this_month
@@ -96,37 +162,7 @@ class Closing < ApplicationRecord
     @monthly_reports.each do |monthly_report|
       @requests = monthly_report.prescriber.requests.eligible(monthly_report)
 
-      patient_listing = ""
-
-      @requests.each do |request|
-        patient_listing << if request.patient_name.present?
-          request.patient_name.lstrip[0..23].ljust(24)
-        else
-          "SN.".ljust(24)
-        end
-
-        patient_listing << if request.repeat
-          "-R "
-        else
-          "   "
-        end
-
-        patient_listing << request.entry_date.strftime("%d/%m/%y") + " "
-
-        if request.entry_date
-          if request.amount_received.to_s && request.nrreq_id && request.branch.present?
-            patient_listing << request.entry_date.strftime("%d/%m/%y")
-            patient_listing << " " + request.total_amount_for_report.to_s.rjust(8) + " " + request.nrreq_id.rjust(8) + " " + request.branch.name
-          end
-        elsif !request.entry_date && request.total_price.to_s && request.nrreq_id && request.branch.present?
-          patient_listing << "  /  /  "
-          patient_listing << " " + request.total_price.to_s.rjust(8) + " " + request.nrreq_id.rjust(8) + " " + request.branch.name
-        end
-
-        patient_listing << "\n"
-      end
-
-      patient_listing << "\n\n"
+      patient_listing = get_patient_listing(@requests)
 
       monthly_report.requisition_discounts.each do |discount|
         if discount&.visivel

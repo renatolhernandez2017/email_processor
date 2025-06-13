@@ -2,7 +2,6 @@ class CreatePrescribers < ActiveRecord::Migration[7.1]
   def change
     create_table :prescribers do |t|
       t.string :name
-      t.string :council
       t.decimal :partnership, default: 0.0
       t.string :secretary
       t.string :note
