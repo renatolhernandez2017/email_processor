@@ -67,30 +67,39 @@ class Closing < ApplicationRecord
       end
   end
 
-  def perform_closing(start_date, end_date)
-    # system("#{Rails.root}/script/converter.sh #{start_date} #{end_date} &")
-    # sleep 2
+  def perform_closing(closing)
+    @closing = closing
+    start_date = @closing.start_date.strftime("%Y-%m-%d")
+    end_date = @closing.end_date.strftime("%Y-%m-%d")
 
-    # agrupa os dados repetidos(NRRQU, PFCRM, UFCRM e NRCRM) e gera um novo CSV
-    # path = "#{Rails.root}/tmp/all.csv"
-    # Importers::GroupDuplicates.new(path).import!
+    success = system("#{Rails.root}/script/converter.sh #{start_date} #{end_date}")
+    sleep 2
 
-    # agora cria os dados de Filiais e Representantes no banco
+    raise "Erro ao executar o script de conversão" unless success
+
+    # agrupa os dados repetidos
+    path = "#{Rails.root}/tmp/all.csv"
+    Importers::GroupDuplicates.new(path).import!
+    sleep 2
+
+    # agora cria as Filiais e os Representantes
     ["fc01000", "fc08000"].each do |file|
       path = "#{Rails.root}/tmp/#{file}.csv"
       ImportCsvService.new(path).import!
     end
+    sleep 2
 
-    # ["group_duplicates"].each do |file|
-    #   path = "#{Rails.root}/tmp/#{file}.csv"
-    #   ImportCsvService.new(path).import!
-    # end
+    # agora cria as Requisições dos Prescritores
+    path = "#{Rails.root}/tmp/group_duplicates.csv"
+    ImportCsvService.new(path).import!
+    sleep 2
 
     # agora cria os relatórios mensais
-    # create_monthly_reports(start_date, end_date)
+    create_monthly_reports(start_date, end_date)
+    sleep 2
 
     # agora apagar os arquivos temporários fc*.csv e group_duplicates*.csv
-    # %w[fc group_duplicates].each do |prefix|
+    # %w[fc all group_duplicates].each do |prefix|
     #   Dir.glob(Rails.root.join("tmp", "#{prefix}*.csv")).each do |file|
     #     File.delete(file)
     #   end
@@ -98,81 +107,35 @@ class Closing < ApplicationRecord
   end
 
   def create_monthly_reports(start_date, end_date)
-    requests = Request.where.not(prescriber_id: nil).where(entry_date: start_date..end_date).group_by(&:prescriber_id)
+    requests = Request.where(entry_date: start_date..end_date).group_by(&:prescriber_id)
 
     requests.each do |prescriber_id, requests_all|
-      report = get_patient_listing(requests_all)
+      prescriber = Prescriber.find(prescriber_id)
+      envelope_number = MonthlyReport.last&.envelope_number || 0
+      discounts = requests_all.sum(&:total_discounts) * (prescriber.discount_of_up_to / 100.0)
+      representative = requests_all.last.representative
+      accumulated = !(requests_all.count > 4 && requests_all.sum(&:amount_received) >= 166.66)
+      total = requests_all.sum(&:total_price) * (prescriber.partnership.to_f / 100.0)
+
+      partnership = if prescriber.current_accounts.find_by(standard: true).present?
+        total
+      else
+        total.round(-1)
+      end
 
       monthly_report = MonthlyReport.create!(
         total_price: requests_all.sum(&:total_price),
-        partnership: requests_all.sum(&:total_fees),
-        discounts: requests_all.sum(&:total_discounts),
-        accumulated: true,
-        report: report,
+        partnership: partnership,
+        discounts: discounts,
+        accumulated: accumulated,
         quantity: requests_all.count,
-        envelope_number: (MonthlyReport.last&.envelope_number || 0) + 1,
-        closing: Closing.last,
-        prescriber_id: prescriber_id,
-        representative: requests_all.last.representative
+        envelope_number: envelope_number + 1,
+        closing_id: @closing.id,
+        prescriber: prescriber,
+        representative: representative
       )
 
       requests_all.map { |r| r.update(monthly_report: monthly_report) }
-    end
-  end
-
-  def get_patient_listing(requests)
-    patient_listing = ""
-
-    requests.each do |request|
-      patient_listing << if request&.patient_name.present?
-        request.patient_name.lstrip[0..23].ljust(24)
-      else
-        "SN.".ljust(24)
-      end
-
-      patient_listing << (request.repeat ? "-R " : "   ")
-      patient_listing << request.entry_date.strftime("%d/%m/%y") + " "
-
-      if request.entry_date
-        if request.amount_received.to_s && request.nrreq_id && request.branch.present?
-          patient_listing << request.entry_date.strftime("%d/%m/%y")
-          patient_listing << " " + request.total_amount_for_report.to_s.rjust(8) + " " + request.nrreq_id.rjust(8) + " " + request.branch.name
-        end
-      elsif !request.entry_date && request.total_price.to_s && request.nrreq_id && request.branch.present?
-        patient_listing << "  /  /  "
-        patient_listing << " " + request.total_price.to_s.rjust(8) + " " + request.nrreq_id.rjust(8) + " " + request.branch.name
-      end
-
-      patient_listing << "\n"
-    end
-
-    patient_listing << "\n\n"
-  end
-
-  def this_month
-    today = Date.today - 1
-    find_by("end_date >= ? AND start_date <= ?", today, today)
-  end
-
-  def update_monthly_report
-    @monthly_reports = MonthlyReport.includes(:prescriber, :requisition_discounts)
-      .where(accumulated: false, closing_id: Closing.find_by(active: true))
-      .where.not(representative_id: nil)
-
-    @monthly_reports.each do |monthly_report|
-      @requests = monthly_report.prescriber.requests.eligible(monthly_report)
-
-      patient_listing = get_patient_listing(@requests)
-
-      monthly_report.requisition_discounts.each do |discount|
-        if discount&.visivel
-          patient_listing << discount.description.ljust(25)
-          patient_listing << discount.price.to_s.rjust(8)
-        end
-      end
-
-      monthly_report.report = patient_listing
-      monthly_report.save!
     end
   end
 end

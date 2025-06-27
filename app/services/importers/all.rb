@@ -15,11 +15,11 @@ module Importers
           @patient_name = row[2]&.strip
           @entry_date = row[3]&.strip
           @repeat = row[4]&.strip
-          @total_price = row[5]&.strip&.to_f
-          @total_discounts = row[6]&.strip&.to_f
+          @total_price = row[5]&.strip.to_f
+          @total_discounts = row[6]&.strip.to_f
           @total_fees = row[7]&.strip&.to_f
           @payment_date = row[8]&.strip
-          @amount_received = row[9]&.strip&.to_f - @total_discounts
+          @amount_received = row[9]&.strip.to_f - @total_discounts
           @class_council = row[10]&.strip
           @uf_council = row[11]&.strip
           @number_council = row[12]&.strip
@@ -37,16 +37,16 @@ module Importers
     end
 
     def create_prescriber(representative_number)
-      @prescriber = Prescriber.find_or_create_by(class_council: @class_council, uf_council: @uf_council, number_council: @number_council)
+      prescriber = Prescriber.find_or_create_by(class_council: @class_council, uf_council: @uf_council, number_council: @number_council)
 
-      @prescriber.update!(
+      prescriber.update!(
         name: @prescriber_name,
         note: @note,
         representative_number: representative_number,
         representative: @representative
       )
 
-      @prescriber
+      prescriber
     end
 
     def create_address(row)
