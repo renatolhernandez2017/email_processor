@@ -9,23 +9,6 @@ class Request < ApplicationRecord
   belongs_to :prescriber, optional: true
   belongs_to :representative, optional: true
 
-  has_one :discount, dependent: :destroy
-
-  scope :eligible, ->(monthly_report) {
-    min_payment_date = monthly_report.requests.minimum(:payment_date) - 45.days
-
-    where(monthly_report_id: monthly_report.id)
-      .or(
-        where(
-          monthly_report_id: nil,
-          entry_date: min_payment_date,
-          repeat: false,
-          payment_date: nil,
-          total_discounts: 0.0
-        )
-      )
-  }
-
   scope :with_adjusted_totals, ->(start_date:, end_date:) {
     select(<<~SQL.squish)
       branch_id,
@@ -71,38 +54,17 @@ class Request < ApplicationRecord
 
   def set_payment_date(request)
     if request.payment_date
-      request.payment_date.strftime("%d/%m/%y") if request.amount_received
+      request.payment_date.strftime("%d/%m/%y")
     else
       "  /  /  "
     end
   end
 
   def set_price(request)
-    if request.entry_date
-      number_to_currency(request.total_amount_for_report) if request.amount_received
-    elsif !request.entry_date && request.total_price
+    if request.payment_date
+      number_to_currency(request.amount_received) if request.amount_received
+    elsif request.entry_date && request.total_price
       number_to_currency(request.total_price)
     end
-  end
-
-  def self.set_requests(prescribers, closing_id)
-    Request.includes(:monthly_report, :prescriber)
-      .where(monthly_reports: {prescriber_id: prescribers.pluck(:id), closing_id: closing_id})
-      .where.not(payment_date: nil).order(:payment_date)
-      .group_by(&:prescriber_id)
-  end
-
-  def self.set_requests_params(requests_attributes)
-    requests_attributes&.values&.map do |request_attributes|
-      next unless request_attributes[:id].present?
-
-      {
-        id: request_attributes[:id],
-        amount_received: request_attributes[:amount_received].to_s.delete(".").tr(",", ".").to_f,
-        cdfil_id: request_attributes[:cdfil_id],
-        payment_date: request_attributes[:payment_date],
-        patient_name: request_attributes[:patient_name]
-      }
-    end&.compact || []
   end
 end

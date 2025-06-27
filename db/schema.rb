@@ -25,7 +25,6 @@ ActiveRecord::Schema[7.1].define(version: 2025_05_19_135851) do
     t.string "zip_code"
     t.string "phone"
     t.string "cellphone"
-    t.string "fax"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.bigint "representative_id"
@@ -215,10 +214,6 @@ ActiveRecord::Schema[7.1].define(version: 2025_05_19_135851) do
   add_foreign_key "current_accounts", "branches"
   add_foreign_key "current_accounts", "prescribers"
   add_foreign_key "current_accounts", "representatives"
-  add_foreign_key "discounts", "branches"
-  add_foreign_key "discounts", "monthly_reports"
-  add_foreign_key "discounts", "prescribers"
-  add_foreign_key "discounts", "requests"
   add_foreign_key "monthly_reports", "closings"
   add_foreign_key "monthly_reports", "prescribers"
   add_foreign_key "monthly_reports", "representatives"

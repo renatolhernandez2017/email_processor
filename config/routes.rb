@@ -26,12 +26,9 @@ Rails.application.routes.draw do
     get :print_all_stores, on: :collection
   end
 
-  resources :discounts, only: %i[index create update destroy]
-
   resources :prescribers, only: %i[index create update show destroy] do
     post :change_accumulated, on: :member
     get :patient_listing, on: :member
-    patch :requests, on: :member
   end
 
   resources :representatives, only: %i[index create update] do

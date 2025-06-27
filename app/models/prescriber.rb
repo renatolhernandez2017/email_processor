@@ -8,7 +8,6 @@ class Prescriber < ApplicationRecord
 
   has_one :address, dependent: :destroy
 
-  has_many :discounts, dependent: :destroy
   has_many :current_accounts, dependent: :destroy
   has_many :monthly_reports, dependent: :destroy
   has_many :requests, dependent: :destroy
@@ -19,8 +18,6 @@ class Prescriber < ApplicationRecord
   PROFESSIONAL_TYPES = {"CRM" => 1,
                         "CRO" => 2,
                         "CRN" => 9}
-
-  validates :crm, presence: true, uniqueness: true
 
   def monthly_reports_false(closing_id, eager_load = [])
     scoped_monthly_reports(closing_id, eager_load).where(accumulated: false)
@@ -44,7 +41,6 @@ class Prescriber < ApplicationRecord
 
     [
       address.phone,
-      address.fax,
       address.cellphone
     ].compact.join(" - ")
   end
