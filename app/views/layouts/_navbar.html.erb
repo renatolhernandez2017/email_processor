@@ -1,5 +1,5 @@
 <section class="flex flex-col w-full mt-16 px-5">
-  <ul role="tablist" class="tabs tabs-lifted grid grid-cols-[1fr,1fr,1fr,1fr,1fr]">
+  <ul role="tablist" class="tabs tabs-lifted grid grid-cols-[1fr,1fr,1fr,1fr]">
     <li role="tab" class="tab text-center checked:[--tab-bg:darkblue] checked:bg-blue-900 checked:text-primary-content h-12 <%= active_tab?("closing") %>">
       <%= link_to "Fechamentos e Relatórios", closings_path, class: "lg:text-base md:text-sm" %>
     </li>
@@ -14,10 +14,6 @@
 
     <li role="tab" class="tab text-center checked:[--tab-bg:darkblue] checked:text-primary-content h-12 <%= active_tab?("branch") %>">
       <%= link_to "Filiais", branches_path, class: "lg:text-base md:text-sm" %>
-    </li>
-
-    <li role="tab" class="tab text-center checked:[--tab-bg:darkblue] checked:text-primary-content h-12 <%= active_tab?("discount") %>">
-      <%= link_to "Descontos", discounts_path, class: "lg:text-base md:text-sm" %>
     </li>
   </ul>
 </section>

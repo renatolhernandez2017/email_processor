@@ -17,26 +17,26 @@
                   <th class="font-semibold text-base">Data de Entrada</th>
                   <th class="font-semibold text-base">Data de Pagamento</th>
                   <th class="font-semibold text-base">Valor Recebido</th>
+                  <th class="font-semibold text-base">Requisição ID</th>
                   <th class="font-semibold text-base">Filial</th>
                 </tr>
               </thead>
 
               <tbody>
-                <% reports[:reports].each do |monthly_report| %>
-                  <% monthly_report.prescriber.requests.each do |request| %>
-                    <tr class="bg-gray-200 border-t border-b border-black h-10">
-                      <td><%= request&.patient_name || "Sem Nome" %></td>
-                      <td><%= request.repeat ? "-R" : "" %></td>
-                      <td><%= request.entry_date.strftime("%d/%m/%y") %></td>
-                      <td><%= request.set_payment_date(request) %></td>
-                      <td><%= request.set_price(request) %></td>
-                      <td><%= request.branch.name %></td>
-                    </tr>
-                  <% end %>
+                <% reports[:requests].each do |request| %>
+                  <tr class="bg-gray-200 border-t border-b border-black h-10">
+                    <td><%= request&.patient_name || "Sem Nome" %></td>
+                    <td><%= request.repeat ? "-R" : "" %></td>
+                    <td><%= request.entry_date.strftime("%d/%m/%y") %></td>
+                    <td><%= request.set_payment_date(request) %></td>
+                    <td><%= request.set_price(request) %></td>
+                    <td><%= request.nrreq_id %></td>
+                    <td><%= request.branch.name %></td>
+                  </tr>
                 <% end %>
               </tbody>
 
-              <%= render "shared/patient/foot", monthly_report: reports[:reports], situation: reports[:info][1], envelope_number: reports[:info][0] %>
+              <%= render "shared/patient/foot", requests: reports[:requests], monthly_report: reports[:monthly_report], situation: reports[:situation], envelope_number: reports[:envelope_number] %>
             </table>
           </div>
         </ul>

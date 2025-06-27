@@ -10,7 +10,7 @@
           <span class="text-primary"><%= @closing %></span>
         </label>
 
-        <% calculate_branch_metrics(@discounts[id], @billings[id], @total_billings[id]) %>
+        <% calculate_branch_metrics(@billings[id], @total_billings[id]) %>
 
         <%= render "total_orders", total_orders: @total_orders[id]&.first %>
         <%= render "billings" %>

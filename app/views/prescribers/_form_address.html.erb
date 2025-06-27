@@ -17,8 +17,7 @@
           <%= render SelectFieldComponent.new(form: address, field_name: :uf, label: "UF", options: I18n.t('address.state').invert.keys.map { |state| [state, state] }, data: { mask_target: "ufMask" }) %>
         </div>
 
-        <div class="grid grid-cols-3 gap-5">
-          <%= render TextFieldComponent.new(form: address, field_name: :fax, label: "Fax", data: { mask_target: "phoneMask" }) %>
+        <div class="grid grid-cols-2 gap-5">
           <%= render TextFieldComponent.new(form: address, field_name: :phone, label: "Telefone 1", data: { mask_target: "phoneMask" }) %>
           <%= render TextFieldComponent.new(form: address, field_name: :cellphone, label: "Telefone 2", data: { mask_target: "mobileMask" }) %>
         </div>

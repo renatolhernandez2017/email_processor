@@ -24,11 +24,11 @@
 
                 <td>
                   <%= link_to monthly_report.prescriber.name,
-                      prescriber_path(monthly_report.prescriber), class: "text-primary"
+                      patient_listing_prescriber_path(monthly_report.prescriber), class: "text-primary"
                   %>
                 </td>
 
-                <td class="text-center"><%= monthly_report.quantity %></td>
+                <td class="text-center"><%= monthly_report.requests.select { |request| request.total_price != 0 }.count %></td>
                 <td><%= number_to_currency(monthly_report.total_price) %></td>
                 <td><%= number_to_currency(monthly_report.partnership) %></td>
                 <td><%= number_to_currency(monthly_report.discounts) %></td>

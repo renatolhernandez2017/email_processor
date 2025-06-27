@@ -33,18 +33,6 @@
                 <span class="material-symbols-outlined text-primary">personal_injury</span>
               <% end %>
 
-              <% if @requests[prescriber.id].present? %>
-                <button onclick="document.getElementById('requests_prescriber<%= prescriber.id %>').showModal();" title="Requisições">
-                  <span class="material-symbols-outlined text-primary">repeat</span>
-                </button>
-
-                <dialog id="requests_prescriber<%= prescriber.id %>" class="modal place-items-center">
-                  <%= render ModalComponent.new(form: render("form_requests", prescriber: prescriber, requests: @requests[prescriber.id], title: "Requisições", btn_save: "Salvar")) %>
-                </dialog>
-              <% else %>
-                <span class="material-symbols-outlined text-black" title="Requisições">repeat</span>
-              <% end %>
-
               <button onclick="document.getElementById('edit_prescriber<%= prescriber.id %>').showModal();" title="Editar">
                 <span class="material-symbols-outlined text-primary">edit</span>
               </button>
@@ -73,14 +61,6 @@
 
               <dialog id="account_balance_prescriber<%= prescriber.id %>" class="modal place-items-center">
                 <%#= render ModalComponent.new(form: render("current_accounts/form", representative: prescriber, current_account: @current_account, representatives: @prescribers_map, title: "Criar Nova Conta Corrente", btn_save: "Salvar", route: "prescriber")) %>
-              </dialog>
-
-              <button onclick="document.getElementById('discount_prescriber<%= prescriber.id %>').showModal();" title="Novo Desconto">
-                <span class="material-symbols-outlined text-primary">percent</span>
-              </button>
-
-              <dialog id="discount_prescriber<%= prescriber.id %>" class="modal place-items-center">
-                <%= render ModalComponent.new(form: render("discounts/form", discount: @discount, branches: @branches, prescriber: prescriber, title: "Novo Desconto", btn_save: "Salvar", route: "prescribers")) %>
               </dialog>
             </td>
           </tr>

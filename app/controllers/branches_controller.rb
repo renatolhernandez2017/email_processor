@@ -25,8 +25,6 @@ class BranchesController < ApplicationController
   end
 
   def print_all_stores
-    @discounts = Discount.with_adjusted_discounts(closing_id: @current_closing&.id)
-
     @total_orders = Request.with_adjusted_totals(
       start_date: @current_closing&.start_date,
       end_date: @current_closing&.end_date

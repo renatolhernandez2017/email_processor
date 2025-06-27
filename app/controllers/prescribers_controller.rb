@@ -16,10 +16,8 @@ class PrescribersController < ApplicationController
 
     @current_account = CurrentAccount.new
     @current_account.build_bank
-    @discount = Discount.new
-    @requests = Request.set_requests(@prescribers, @current_closing&.id)
 
-    PrescriberRequestProcessingJob.perform_later
+    @prescribers.each(&:ensure_address)
   end
 
   def update
@@ -40,10 +38,6 @@ class PrescribersController < ApplicationController
   def show
     @address = @prescriber.address
     @current_accounts = @prescriber.current_accounts
-
-    @discounts = @prescriber.discounts
-      .includes(prescriber: :monthly_reports)
-      .where(monthly_reports: {closing_id: @current_closing.id}, visible: true)
   end
 
   def destroy
@@ -74,6 +68,7 @@ class PrescribersController < ApplicationController
 
   def patient_listing
     @representative = @prescriber.representative
+
     @monthly_reports = @prescriber.monthly_reports_false(@current_closing.id, [:prescriber])
       .group_by { |report| [report.envelope_number, report.situation] }
       .map do |info, reports|
@@ -82,17 +77,6 @@ class PrescribersController < ApplicationController
           reports: reports
         }
       end
-  end
-
-  def requests
-    @requests = Request.set_requests_params(params.dig(:prescriber, :requests_attributes))
-
-    @requests.each do |request|
-      Request.find(request[:id]).update(request)
-    end
-
-    flash[:success] = "Valores alterados com sucesso!"
-    render turbo_stream: turbo_stream.action(:redirect, prescribers_path)
   end
 
   private
@@ -115,7 +99,7 @@ class PrescribersController < ApplicationController
       :representative_number,
       :representative_id,
       address_attributes: %i[
-        street district number complement city uf zip_code phone cellphone fax
+        street district number complement city uf zip_code phone cellphone
         representative_id prescriber_id _destroy
       ]
     )
