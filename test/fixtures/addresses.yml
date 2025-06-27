@@ -8,7 +8,6 @@ one:
   zip_code: MyString
   phone: MyString
   cellphone: MyString
-  fax: MyString
 
 two:
   street: MyString
@@ -18,4 +17,3 @@ two:
   zip_code: MyString
   phone: MyString
   cellphone: MyString
-  fax: MyString

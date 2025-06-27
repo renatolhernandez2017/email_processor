@@ -8346,8 +8346,7 @@ var change_controller_default = class extends Controller {
       uf: "data-uf",
       zip_code: "data-zip",
       phone: "data-phone",
-      cellphone: "data-cellphone",
-      fax: "data-fax"
+      cellphone: "data-cellphone"
     };
     Object.entries(fields).forEach(([field, attribute]) => {
       const input = document.getElementById(`prescriber_representative_attributes_address_attributes_${field}`);

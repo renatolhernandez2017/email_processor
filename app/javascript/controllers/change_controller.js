@@ -20,8 +20,7 @@ export default class extends Controller {
       uf: "data-uf",
       zip_code: "data-zip",
       phone: "data-phone",
-      cellphone: "data-cellphone",
-      fax: "data-fax"
+      cellphone: "data-cellphone"
     };
 
     Object.entries(fields).forEach(([field, attribute]) => {
