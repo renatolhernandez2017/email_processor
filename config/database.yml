@@ -20,4 +20,4 @@ production:
   database: pharmus_production
   username: root
   password: 'YOH2mLwso7m'
-  host: localhost
+  host: db
