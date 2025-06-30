@@ -1,0 +1,18 @@
+version: '3.8'
+
+services:
+  web:
+    build: .
+    image: pharmus_v2
+    ports:
+      - "3000:3000"
+    env_file:
+      - .env
+    environment:
+      RAILS_ENV: production
+      SECRET_KEY_BASE: aa7a5dc110ebc4621f3117223007b7348118ab4d0eeefc19c61309e4b5f11602145ed44e301d1d3ed079114098639800b61d74cc5d2223e2155159e443f0308b
+      DATABASE_URL: postgres://root:YOH2mLwso7m@host:5432/database
+    volumes:
+      - ./log:/rails/log
+      - ./storage:/rails/storage
+    restart: always
