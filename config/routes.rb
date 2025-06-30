@@ -9,7 +9,14 @@ Rails.application.routes.draw do
 
   get "up" => "rails/health#show", :as => :rails_health_check
 
-  root "closings#index"
+  # 👇 Define root diferente para logado e não logado
+  authenticated :user do
+    root to: "closings#index", as: :authenticated_root
+  end
+
+  unauthenticated do
+    root to: redirect("/users/sign_in")
+  end
 
   resources :closings, only: %i[index create update] do
     get :closing_audit, on: :collection
@@ -42,10 +49,7 @@ Rails.application.routes.draw do
     get :download_select_pdf, on: :collection
   end
 
-  ###############
-  ###   API22  ###
-  ###############
-
+  # API namespace (mantido vazio por enquanto)
   namespace :api do
   end
 end
