@@ -23,20 +23,22 @@
               </thead>
 
               <tbody>
-                <% reports[:requests].each do |request| %>
-                  <tr class="bg-gray-200 border-t border-b border-black h-10">
-                    <td><%= request&.patient_name || "Sem Nome" %></td>
-                    <td><%= request.repeat ? "-R" : "" %></td>
-                    <td><%= request.entry_date.strftime("%d/%m/%y") %></td>
-                    <td><%= request.set_payment_date(request) %></td>
-                    <td><%= request.set_price(request) %></td>
-                    <td><%= request.nrreq_id %></td>
-                    <td><%= request.branch.name %></td>
-                  </tr>
+                <% reports[:monthly_reports].each do |monthly_report| %>
+                  <% monthly_report.requests.each do |request| %>
+                    <tr class="bg-gray-200 border-t border-b border-black h-10">
+                      <td><%= request&.patient_name || "Sem Nome" %></td>
+                      <td><%= request.repeat ? "-R" : "" %></td>
+                      <td><%= request.entry_date.strftime("%d/%m/%y") %></td>
+                      <td><%= request.set_payment_date(request) %></td>
+                      <td><%= request.set_price(request) %></td>
+                      <td><%= request.nrreq_id %></td>
+                      <td><%= request.branch.name %></td>
+                    </tr>
+                  <% end %>
                 <% end %>
               </tbody>
 
-              <%= render "shared/patient/foot", requests: reports[:requests], monthly_report: reports[:monthly_report], situation: reports[:situation], envelope_number: reports[:envelope_number] %>
+              <%#= render "shared/patient/foot", requests: reports[:requests], monthly_report: reports[:monthly_report], situation: reports[:situation], envelope_number: reports[:envelope_number] %>
             </table>
           </div>
         </ul>

@@ -22,34 +22,22 @@ class Representative < ApplicationRecord
     scoped_monthly_reports(closing_id, eager_load).where(accumulated: false)
   end
 
-  def totals_by_bank(closing_id)
-    monthly_reports_with_accounts(closing_id)
-      .group_by { |m| m.prescriber&.current_accounts&.find_by(standard: true)&.bank&.name }
-      .reject { |bank, _| bank.nil? }
-      .map do |bank, reports|
-        {
-          count: reports.size,
-          name: bank,
-          total: reports.sum { |r| r.partnership - r.discounts }
-        }
-      end
+  def totals_by_bank(monthly_reports)
+    monthly_reports.joins(prescriber: {current_accounts: :bank})
+      .where(accumulated: false)
+      .group("banks.name")
+      .select("banks.name AS name, COUNT(monthly_reports.id) AS count, SUM(monthly_reports.partnership - monthly_reports.discounts) AS total")
   end
 
-  def totals_by_store(closing_id)
-    monthly_reports_false(closing_id, [:requests, {representative: [:branch, :prescriber]}])
-      .group_by { |m| m.prescriber&.representative&.branch&.name }
-      .map do |branch, reports|
-        {
-          name: branch,
-          count: reports.sum { |r| r.requests.count },
-          total: reports.sum { |r| r.requests.sum(&:amount_received) }
-        }
-      end
+  def totals_by_store(monthly_reports)
+    monthly_reports.joins(:requests, prescriber: {representative: :branch})
+      .where(accumulated: false)
+      .group("branches.name")
+      .select("branches.name AS name", "COUNT(requests.id) AS count", "SUM(requests.amount_received) AS total")
   end
 
-  def total_cash(closing_id)
-    monthly_reports_with_accounts(closing_id)
-      .where.not(monthly_reports: {prescribers: {current_accounts: {id: nil}}})
+  def total_cash(monthly_reports)
+    monthly_reports.joins(prescriber: {current_accounts: :bank})
       .map { |mr| divide_into_notes(mr.available_value.to_f) }
       .each_with_object(Hash.new(0)) { |hash, sums|
       hash.each { |key, value| sums[key] += value }
@@ -57,14 +45,10 @@ class Representative < ApplicationRecord
   end
 
   def set_monthly_reports(closing_id)
-    monthly_reports_false(closing_id, [:requests, {representative: :prescriber}])
-      .group_by { |report| [report.envelope_number, report.situation] }
-      .map do |info, reports|
-      {
-        info: info,
-        reports: reports
-      }
-    end
+    monthly_reports.group_by { |report| [report.envelope_number, report.situation] }
+      .map do |info, monthly_reports|
+        {info: info, monthly_reports: monthly_reports}
+      end
   end
 
   def set_situation(monthly_reports)
@@ -73,11 +57,5 @@ class Representative < ApplicationRecord
 
   def set_envelope_number(monthly_reports)
     monthly_reports.map { |info| info[:info][0] }.last.to_s.rjust(5, "0")
-  end
-
-  private
-
-  def monthly_reports_with_accounts(closing_id)
-    monthly_reports_false(closing_id, [{prescriber: {current_accounts: :bank}}])
   end
 end

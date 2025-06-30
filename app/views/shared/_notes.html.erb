@@ -31,8 +31,8 @@
 
             <tbody>
               <tr class="bg-gray-200 border-t border-b border-black h-8">
-                <td colspan="2"><%= total_marks %></td>
-                <td><%= number_to_currency(total_cash) %></td>
+                <td colspan="2"><%= note_divisions.values.sum %></td>
+                <td><%= number_to_currency(note_divisions.sum { |key, value| key * value }) %></td>
               </tr>
             </tbody>
           </tfoot>

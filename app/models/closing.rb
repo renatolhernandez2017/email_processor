@@ -71,28 +71,26 @@ class Closing < ApplicationRecord
     @closing = closing
     start_date = @closing.start_date.strftime("%Y-%m-%d")
     end_date = @closing.end_date.strftime("%Y-%m-%d")
+    # success = system("#{Rails.root}/script/converter.sh #{start_date} #{end_date}")
 
-    success = system("#{Rails.root}/script/converter.sh #{start_date} #{end_date}")
-    sleep 2
-
-    raise "Erro ao executar o script de conversão" unless success
+    # raise "Erro ao executar o script de conversão" unless success
 
     # agrupa os dados repetidos
-    path = "#{Rails.root}/tmp/all.csv"
-    Importers::GroupDuplicates.new(path).import!
-    sleep 2
+    # path = "#{Rails.root}/tmp/all.csv"
+    # Importers::GroupDuplicates.new(path).import!
+    # sleep 2
 
-    # agora cria as Filiais e os Representantes
-    ["fc01000", "fc08000"].each do |file|
-      path = "#{Rails.root}/tmp/#{file}.csv"
-      ImportCsvService.new(path).import!
-    end
-    sleep 2
+    # # agora cria as Filiais e os Representantes
+    # ["fc01000", "fc08000"].each do |file|
+    #   path = "#{Rails.root}/tmp/#{file}.csv"
+    #   ImportCsvService.new(path).import!
+    # end
+    # sleep 2
 
-    # agora cria as Requisições dos Prescritores
-    path = "#{Rails.root}/tmp/group_duplicates.csv"
-    ImportCsvService.new(path).import!
-    sleep 2
+    # # agora cria as Requisições dos Prescritores
+    # path = "#{Rails.root}/tmp/group_duplicates.csv"
+    # ImportCsvService.new(path).import!
+    # sleep 2
 
     # agora cria os relatórios mensais
     create_monthly_reports(start_date, end_date)
@@ -112,16 +110,14 @@ class Closing < ApplicationRecord
     requests.each do |prescriber_id, requests_all|
       prescriber = Prescriber.find(prescriber_id)
       envelope_number = MonthlyReport.last&.envelope_number || 0
-      discounts = requests_all.sum(&:total_discounts) * (prescriber.discount_of_up_to / 100.0)
+      discount_of_up_to = [prescriber.discount_of_up_to, 1].max
+      discounts = requests_all.sum(&:total_discounts) * (discount_of_up_to / 100.0)
       representative = requests_all.last.representative
       accumulated = !(requests_all.count > 4 && requests_all.sum(&:amount_received) >= 166.66)
       total = requests_all.sum(&:total_price) * (prescriber.partnership.to_f / 100.0)
 
-      partnership = if prescriber.current_accounts.find_by(standard: true).present?
-        total
-      else
-        total.round(-1)
-      end
+      standard_account = prescriber.current_accounts.find_by(standard: true)
+      partnership = standard_account ? total : total.round(-1)
 
       monthly_report = MonthlyReport.create!(
         total_price: requests_all.sum(&:total_price),

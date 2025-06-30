@@ -13,10 +13,10 @@ module Importers
           next if row[0].nil?
 
           # indices dos campos de agrupamento:
-          key = [row[1], row[11], row[12], row[13]].join("-")
+          key = [row[1], row[11], row[12], row[13]&.strip&.downcase&.gsub(/\W+/, "")]&.join("-")
 
-          # Salva apenas o primeiro registro único por chave
-          grouped_data[key] ||= row
+          # Salva sempre o último registro encontrado para a chave
+          grouped_data[key] = row
         end
 
         export_csv(grouped_data)

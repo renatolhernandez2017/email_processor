@@ -2,7 +2,7 @@ class RepresentativesController < ApplicationController
   include Pagy::Backend
   include Roundable
   include SharedData
-  include RepresentativeSummaries
+  # include RepresentativeSummaries
   include PdfClassMapper
 
   before_action :set_selects_label
@@ -33,11 +33,23 @@ class RepresentativesController < ApplicationController
   end
 
   def monthly_report
-    @summary = @representative.monthly_reports_load(@representative, @current_closing.id)
+    monthly_reports = @representative.monthly_reports.joins(:prescriber)
+      .where(closing_id: @current_closing.id)
+
+    @summary = monthly_reports.order("prescribers.name ASC")
+    @accumulated = monthly_reports.where(accumulated: true)
+
+    @totals_by_bank = @representative.totals_by_bank(monthly_reports)
+    @totals_by_store = @representative.totals_by_store(monthly_reports)
+    @total_in_cash = @representative.total_cash(monthly_reports)
   end
 
   def patient_listing
-    @monthly_reports = @representative.set_monthly_reports(@current_closing.id)
+    monthly_reports = @representative.monthly_reports
+      .joins(:requests, {representative: :prescriber})
+      .where(closing_id: @current_closing.id)
+
+    @monthly_reports = @representative.set_monthly_reports(monthly_reports)
   end
 
   def summary_patient_listing

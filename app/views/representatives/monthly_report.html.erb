@@ -15,12 +15,12 @@
   <div class="card shadow-lg border border-primary p-5">
     <%= render "shared/label_of", representative: @representative, closing: @closing, title: "Resumo de" %>
 
-    <%= render "summary", monthly_reports: @summary[:monthly_summary][:monthly_reports],
-        accumulated: @summary[:monthly_summary][:accumulated]
+    <%= render "summary", monthly_reports: @summary,
+        accumulated: @accumulated
     %>
 
-    <%= render "totals_by_bank", banks: @summary[:banks] %>
-    <%= render "totals_by_store", stores: @summary[:stores] %>
-    <%= render "note_division", cashes: @summary[:cashes] %>
+    <%= render "totals_by_bank", banks: @totals_by_bank %>
+    <%= render "totals_by_store", stores: @totals_by_store %>
+    <%= render "note_division", cashes: @total_in_cash %>
   </div>
 </section>

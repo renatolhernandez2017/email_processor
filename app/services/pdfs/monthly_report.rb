@@ -5,25 +5,16 @@ module Pdfs
         start_new_page unless index == 0
         @representative = representative
 
-        @monthly_reports = @representative.load_monthly_reports(@current_closing.id, [{prescriber: {current_accounts: :bank}}])
-        @accumulated = @monthly_reports.where(accumulated: false)
-        @totals_by_bank = @representative.totals_by_bank(@current_closing.id)
-        @totals_by_store = @representative.totals_by_store(@current_closing.id)
-        @total_in_cash = @representative.total_cash(@current_closing.id)
+        @monthly_reports = @representative.monthly_reports.joins(:prescriber).where(closing_id: @current_closing.id)
+        @accumulated = @monthly_reports.where(accumulated: true)
 
-        totals_calculate
+        @totals_by_bank = @representative.totals_by_bank(@monthly_reports)
+        @totals_by_store = @representative.totals_by_store(@monthly_reports)
+        @total_in_cash = @representative.total_cash(@monthly_reports)
+
         header
         content
       end
-    end
-
-    def totals_calculate
-      @total_count = @totals_by_bank.sum { |bank| bank[:count] if bank.present? }
-      @total_value = @totals_by_bank.sum { |bank| bank[:total] if bank.present? }
-      @total_count_store = @totals_by_store.sum { |store| store[:count] }
-      @total_store = @totals_by_store.sum { |store| store[:total] }
-      @total_marks = @total_in_cash.values.sum
-      @total_cash = @total_in_cash.map { |key, value| key * value }.sum
     end
 
     def header
@@ -87,8 +78,8 @@ module Pdfs
       build_generic_table(
         title: "Total por Banco",
         headers: ["Quantidade", "Banco", "Valor"],
-        rows: @totals_by_bank.map { |b| [b[:count] || 0, b[:name] || "N/A", number_to_currency(b[:total] || 0)] },
-        footer: [["Total de Bancos", "", "Total"], [@total_count || 0, "", number_to_currency(@total_value || 0)]],
+        rows: @totals_by_bank.map { |b| [b.count || 0, b.name || "N/A", number_to_currency(b.total || 0)] },
+        footer: [["Total de Bancos", "", "Total"], [@totals_by_bank.sum(&:count) || 0, "", number_to_currency(@totals_by_bank.sum(&:total) || 0)]],
         type: "banks"
       )
     end
@@ -97,8 +88,8 @@ module Pdfs
       build_generic_table(
         title: "Total por Loja",
         headers: ["Quantidade", "Loja", "Valor"],
-        rows: @totals_by_store.map { |b| [b[:count] || 0, b[:name] || "N/A", number_to_currency(b[:total] || 0)] },
-        footer: [["Total de Lojas", "", "Total"], [@total_count_store || 0, "", number_to_currency(@total_store || 0)]],
+        rows: @totals_by_store.map { |b| [b.count || 0, b.name || "N/A", number_to_currency(b.total || 0)] },
+        footer: [["Total de Lojas", "", "Total"], [@totals_by_store.sum(&:count) || 0, "", number_to_currency(@totals_by_store.sum(&:total) || 0)]],
         type: "stores"
       )
     end
@@ -108,7 +99,7 @@ module Pdfs
         title: "Divisão de Notas",
         headers: ["Quantidade", "Notas", "Valor"],
         rows: @total_in_cash.map { |item, cash| [cash || 0, item || "N/A", number_to_currency(cash * item || 0)] },
-        footer: [["Total de Notas", "", "Total"], [@total_marks || 0, "", number_to_currency(@total_cash || 0)]],
+        footer: [["Total de Notas", "", "Total"], [@total_in_cash.values.sum || 0, "", number_to_currency(@total_in_cash.sum { |key, value| key * value } || 0)]],
         type: "notes"
       )
     end

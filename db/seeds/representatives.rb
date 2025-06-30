@@ -27,7 +27,7 @@ File.open("#{Rails.root}/public/representatives.csv", "rb") do |file|
     branch = Branch.search_global(branch_name.capitalize).last
 
     Representative.create!(
-      number: number, name: new_name, branch: branch,
+      number: number, name: new_name, branch: branch, active: true,
       partnership: partnership, performs_closing: performs_closing 
     )
   end
