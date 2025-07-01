@@ -4,13 +4,15 @@ module Pdfs
       @representatives.each_with_index do |representative, index|
         start_new_page unless index == 0
         @representative = representative
+        monthly_reports = @representative.monthly_reports.joins(:prescriber)
+          .where(closing_id: @current_closing.id)
 
-        @monthly_reports = @representative.monthly_reports.joins(:prescriber).where(closing_id: @current_closing.id)
-        @accumulated = @monthly_reports.where(accumulated: true)
+        @monthly_reports = monthly_reports.order("prescribers.name ASC")
+        @accumulated = monthly_reports.where(accumulated: true)
 
-        @totals_by_bank = @representative.totals_by_bank(@monthly_reports)
-        @totals_by_store = @representative.totals_by_store(@monthly_reports)
-        @total_in_cash = @representative.total_cash(@monthly_reports)
+        @totals_by_bank = @representative.totals_by_bank(monthly_reports)
+        @totals_by_store = @representative.totals_by_store(monthly_reports)
+        @total_in_cash = @representative.total_cash(monthly_reports)
 
         header
         content

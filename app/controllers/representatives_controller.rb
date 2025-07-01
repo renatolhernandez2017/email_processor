@@ -60,7 +60,7 @@ class RepresentativesController < ApplicationController
   end
 
   def unaccumulated_addresses
-    @monthly_reports = @representative.monthly_reports_false(@current_closing.id, [{representative: [:address, :prescriber]}])
+    @monthly_reports = @representative.get_monthly_reports(@current_closing.id)
   end
 
   def change_active

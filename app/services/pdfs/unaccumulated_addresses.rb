@@ -4,7 +4,8 @@ module Pdfs
       @representatives.each_with_index do |representative, index|
         start_new_page unless index == 0
         @representative = representative
-        monthly_reports = @representative.load_monthly_reports(@current_closing.id, [{prescriber: {current_accounts: :bank}}])
+
+        monthly_reports = @representative.get_monthly_reports(@current_closing.id)
 
         header
         move_down 5

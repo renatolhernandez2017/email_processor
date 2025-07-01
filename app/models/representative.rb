@@ -14,14 +14,12 @@ class Representative < ApplicationRecord
   has_many :monthly_reports, dependent: :destroy
   has_many :requests, dependent: :destroy
 
-  def load_monthly_reports(closing_id, eager_load = [])
-    scoped_monthly_reports(closing_id, eager_load)
+  def get_monthly_reports(closing_id)
+    monthly_reports
+      .joins(prescriber: :address)
+      .where(closing_id: closing_id, accumulated: false)
   end
-
-  def monthly_reports_false(closing_id, eager_load = [])
-    scoped_monthly_reports(closing_id, eager_load).where(accumulated: false)
-  end
-
+  
   def totals_by_bank(monthly_reports)
     monthly_reports.joins(prescriber: {current_accounts: :bank})
       .where(accumulated: false)
@@ -59,12 +57,4 @@ class Representative < ApplicationRecord
       }
     end
   end
-
-  # def set_situation(monthly_reports)
-  #   monthly_reports.map { |info| info[:info][1] }.last
-  # end
-
-  # def set_envelope_number(monthly_reports)
-  #   monthly_reports.map { |info| info[:info][0] }.last.to_s.rjust(5, "0")
-  # end
 end
