@@ -45,11 +45,7 @@ class RepresentativesController < ApplicationController
   end
 
   def patient_listing
-    monthly_reports = @representative.monthly_reports
-      .joins(:requests, {representative: :prescriber})
-      .where(closing_id: @current_closing.id)
-
-    @monthly_reports = @representative.set_monthly_reports(monthly_reports)
+    @monthly_reports = @representative.set_monthly_reports(@current_closing.id)
   end
 
   def summary_patient_listing

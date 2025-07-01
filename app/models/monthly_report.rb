@@ -29,6 +29,21 @@ class MonthlyReport < ApplicationRecord
       .group_by { |m| m.branch_id }
   }
 
+  # scope :with_situation, -> {
+  #   joins("LEFT JOIN prescribers ON prescribers.id = monthly_reports.prescriber_id")
+  #   .joins("LEFT JOIN current_accounts ON current_accounts.prescriber_id = prescribers.id AND current_accounts.standard = TRUE")
+  #   .select(
+  #     "monthly_reports.*",
+  #     <<~SQL.squish
+  #       CASE
+  #         WHEN monthly_reports.accumulated = TRUE THEN 'A'
+  #         WHEN monthly_reports.accumulated = FALSE AND current_accounts.id IS NOT NULL THEN 'D'
+  #         ELSE 'E'
+  #       END AS situation
+  #     SQL
+  #   )
+  # }
+
   def available_value
     return 0.00 if partnership <= 0.0
 

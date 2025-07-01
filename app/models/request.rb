@@ -46,14 +46,12 @@ class Request < ApplicationRecord
   def total_amount_for_report
     return value_for_report if value_for_report > 24.0
 
-    if value_for_report <= 24.0
-      return total_price if total_discounts <= 0.0
-      amount_received if total_discounts > 0.0
-    end
+    total_discounts <= 0.0 ? total_price : amount_received
   end
 
   def set_payment_date(request)
-    if request.payment_date
+    case
+    when request.payment_date?
       request.payment_date.strftime("%d/%m/%y")
     else
       "  /  /  "
@@ -61,10 +59,13 @@ class Request < ApplicationRecord
   end
 
   def set_price(request)
-    if request.payment_date
-      number_to_currency(request.amount_received) if request.amount_received
-    elsif request.entry_date && request.total_price
+    case
+    when request.payment_date?
+      number_to_currency(request.total_amount_for_report)
+    when request.entry_date?
       number_to_currency(request.total_price)
+    else
+      0.0
     end
   end
 end

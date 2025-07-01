@@ -3,7 +3,7 @@ class Representative < ApplicationRecord
 
   include PgSearch::Model
   include Roundable
-  include LoadMonthlyReports
+  # include LoadMonthlyReports
 
   belongs_to :branch, optional: true
 
@@ -45,17 +45,26 @@ class Representative < ApplicationRecord
   end
 
   def set_monthly_reports(closing_id)
-    monthly_reports.group_by { |report| [report.envelope_number, report.situation] }
-      .map do |info, monthly_reports|
-        {info: info, monthly_reports: monthly_reports}
-      end
+    grouped = monthly_reports.where(closing_id: closing_id)
+      .where(closing_id: closing_id)
+      .group_by { |report| [report.envelope_number, report.situation] }
+
+    grouped.map do |info, reports|
+      {
+        envelope_number: info[0].to_s.rjust(5, "0"),
+        situation: info[1],
+        monthly_reports: reports,
+        quantity: reports.sum { |m| m.requests.size },
+        available_value: reports.sum(&:available_value)
+      }
+    end
   end
 
-  def set_situation(monthly_reports)
-    monthly_reports.map { |info| info[:info][1] }.last
-  end
+  # def set_situation(monthly_reports)
+  #   monthly_reports.map { |info| info[:info][1] }.last
+  # end
 
-  def set_envelope_number(monthly_reports)
-    monthly_reports.map { |info| info[:info][0] }.last.to_s.rjust(5, "0")
-  end
+  # def set_envelope_number(monthly_reports)
+  #   monthly_reports.map { |info| info[:info][0] }.last.to_s.rjust(5, "0")
+  # end
 end

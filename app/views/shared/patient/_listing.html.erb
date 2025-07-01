@@ -12,7 +12,7 @@
             <table class="table-auto w-full">
               <thead>
                 <tr>
-                  <th class="font-semibold text-base">Paciente</th>
+                  <th class="font-semibold text-base">Pacientes</th>
                   <th class="font-semibold text-base">Repetida</th>
                   <th class="font-semibold text-base">Data de Entrada</th>
                   <th class="font-semibold text-base">Data de Pagamento</th>
@@ -24,6 +24,28 @@
 
               <tbody>
                 <% reports[:monthly_reports].each do |monthly_report| %>
+                  <div class="grid grid-rows-2 mb-7 gap-2 text-center border-b border-primary">
+                    <div class="grid grid-cols-3">
+                      <span class="font-semibold text-base">Prescritor</span>
+                      <span class="font-semibold text-base">Situação</span>
+                      <span class="font-semibold text-base">Envelope</span>
+                    </div>
+
+                    <div class="grid grid-cols-3 text-primary">
+                      <span class="">
+                        <%= monthly_report.prescriber.name %>
+                      </span>
+
+                      <span class="">
+                        <%= reports[:situation] %>
+                      </span>
+
+                      <span class="">
+                        <%= reports[:envelope_number] %>
+                      </span>
+                    </div>
+                  </div>
+
                   <% monthly_report.requests.each do |request| %>
                     <tr class="bg-gray-200 border-t border-b border-black h-10">
                       <td><%= request&.patient_name || "Sem Nome" %></td>
@@ -38,7 +60,7 @@
                 <% end %>
               </tbody>
 
-              <%#= render "shared/patient/foot", requests: reports[:requests], monthly_report: reports[:monthly_report], situation: reports[:situation], envelope_number: reports[:envelope_number] %>
+              <%= render "shared/patient/foot", reports: reports %>
             </table>
           </div>
         </ul>

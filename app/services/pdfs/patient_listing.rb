@@ -1,18 +1,21 @@
 module Pdfs
   class PatientListing < BaseMonthlyPdf
     def generate_content
-      @representatives.each_with_index do |representative, index|
-        start_new_page unless index == 0
-        @representative = representative
-        header
-        move_down 10
-
+      @representatives.each do |representative|
+        first_page = true
         monthly_reports = representative.set_monthly_reports(@current_closing.id)
 
-        @situation = @representative.set_situation(monthly_reports)
-        @envelope_number = @representative.set_envelope_number(monthly_reports)
-
         monthly_reports.each do |reports|
+          if !first_page && reports[:situation].present?
+            start_new_page
+          end
+
+          first_page = false
+          @representative = representative
+
+          header
+          move_down 10
+
           @monthly_reports = reports
           content
         end
@@ -36,13 +39,28 @@ module Pdfs
     end
 
     def content
-      headers = [
-        "Paciente", "Repetida", "Data de Entrada",
-        "Data de Pagamento", "Valor Recebido", "Filial"
-      ]
+      @monthly_reports[:monthly_reports].each do |monthly_report|
+        move_down 10
+        table([
+          [
+            { content: "Prescritor:", font_style: :bold },
+            { content: monthly_report.prescriber.name },
+            { content: "Situação:", font_style: :bold },
+            { content: @monthly_reports[:situation] },
+            { content: "Envelope:", font_style: :bold },
+            { content: @monthly_reports[:envelope_number] }
+          ]
+        ], cell_style: { borders: [], size: 10 }, position: :center) do
+          [1, 3, 5].each { |i| cells[0, i].text_color = "00008b" }
+        end
+        move_down 20
 
-      rows = @monthly_reports[:reports].flat_map do |monthly_report|
-        monthly_report.prescriber.requests.map do |request|
+        headers = [
+          "Pacientes", "Repetida", "Data de Entrada",
+          "Data de Pagamento", "Valor Recebido", "Filial"
+        ]
+
+        rows = monthly_report.requests.map do |request|
           [
             request&.patient_name || "Sem Nome",
             request.repeat ? "-R" : "",
@@ -52,23 +70,21 @@ module Pdfs
             request&.branch&.name || "Sem Filial"
           ]
         end
-      end
 
-      footer = [
-        ["Quantidade", "", "", "Situação", "Número do Envelope", "Valor Disponível"],
-        [
-          @monthly_reports[:reports].sum(&:quantity),
-          "", "",
-          @monthly_reports[:info][1],
-          @monthly_reports[:info][0].to_s.rjust(5, "0"),
-          number_to_currency(@monthly_reports[:reports].sum(&:available_value))
+        footer = [
+          ["Quantidade", "", "", "", "", "Valor Disponível"],
+          [
+            monthly_report.quantity,
+            "", "", "", "",
+            number_to_currency(monthly_report.available_value)
+          ]
         ]
-      ]
 
-      data = build_table_data(headers: headers, rows: rows, footer: footer)
+        data = build_table_data(headers: headers, rows: rows, footer: footer)
+        render_table(data)
 
-      render_table(data)
-      move_down 20
+        move_down 20
+      end
     end
 
     def build_table_data(headers:, rows:, footer: [])
