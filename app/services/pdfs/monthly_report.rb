@@ -163,7 +163,7 @@ module Pdfs
         header: true,
         row_colors: ["F0F0F0", "FFFFFF"],
         width: bounds.width,
-        cell_style: {borders: [:bottom], border_width: 0.5, size: 8}) do
+        cell_style: {borders: [:bottom], border_width: 0.5, size: 6.5}) do
           row(0).font_style = :bold
 
           case type

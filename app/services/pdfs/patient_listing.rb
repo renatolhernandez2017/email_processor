@@ -101,6 +101,8 @@ module Pdfs
         row_colors: ["F0F0F0", "FFFFFF"],
         width: bounds.width,
         cell_style: {borders: [:bottom], border_width: 0.5, size: 8}) do
+          (1...data.size - 3).each { |i| cells[i, 0].text_color = "00008b" }
+
           if data.size <= 5
             [0, 3].each { |i| row(i).font_style = :bold }
           else
