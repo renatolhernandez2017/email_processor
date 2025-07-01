@@ -10,7 +10,23 @@
         <ul class="border-l-2 border-b-2 border-primary">
           <div class="overflow-hidden my-2">
             <table class="table-auto w-full">
-              <%= render "shared/patient/foot", monthly_report: reports[:reports], situation: reports[:info][1], envelope_number: reports[:info][0] %>
+              <% reports[:monthly_reports].each do |monthly_report| %>
+                <div class="grid grid-rows-2 mb-7 gap-2 text-center border-b border-primary">
+                  <div class="grid grid-cols-3">
+                    <span class="font-semibold text-base">Prescritor</span>
+                    <span class="font-semibold text-base">Situação</span>
+                    <span class="font-semibold text-base">Envelope</span>
+                  </div>
+
+                  <div class="grid grid-cols-3 text-primary">
+                    <span><%= monthly_report.prescriber.name %></span>
+                    <span><%= reports[:situation] %></span>
+                    <span><%= reports[:envelope_number] %></span>
+                  </div>
+                </div>
+
+                <%= render "shared/patient/foot", reports: reports %>
+              <% end %>
             </table>
           </div>
         </ul>
