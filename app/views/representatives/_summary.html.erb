@@ -18,7 +18,7 @@
           </thead>
 
           <tbody>
-            <% monthly_reports.each do |monthly_report| %>
+            <% monthly_reports&.each do |monthly_report| %>
               <tr class="bg-gray-200 border-t border-b border-black h-8">
                 <td><%= monthly_report.prescriber.id %></td>
 

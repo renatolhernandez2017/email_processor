@@ -19,7 +19,7 @@ class Representative < ApplicationRecord
       .joins(prescriber: :address)
       .where(closing_id: closing_id, accumulated: false)
   end
-  
+
   def totals_by_bank(monthly_reports)
     monthly_reports.joins(prescriber: {current_accounts: :bank})
       .where(accumulated: false)

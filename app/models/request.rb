@@ -46,7 +46,7 @@ class Request < ApplicationRecord
   def total_amount_for_report
     return value_for_report if value_for_report > 24.0
 
-    total_discounts <= 0.0 ? total_price : amount_received
+    (total_discounts <= 0.0) ? total_price : amount_received
   end
 
   def set_payment_date(request)

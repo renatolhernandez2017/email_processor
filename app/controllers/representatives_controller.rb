@@ -57,6 +57,26 @@ class RepresentativesController < ApplicationController
 
     @title = @select.select { |action| action.is_a?(Array) && @select_action.include?(action[1]) }
       .map { |action| action[0] }.first
+
+    @summary = {}
+    @accumulated = {}
+    @totals_by_bank = {}
+    @totals_by_store = {}
+    @total_in_cash = {}
+
+    @representatives = Representative.joins(:monthly_reports).where(active: true).distinct
+
+    @representatives.each do |representative|
+      monthly_reports = representative.monthly_reports.joins(:prescriber)
+        .where(closing_id: @current_closing.id)
+
+      @summary[representative.id] = monthly_reports
+      @accumulated[representative.id] = monthly_reports.where(accumulated: true)
+
+      @totals_by_bank[representative.id] = representative.totals_by_bank(monthly_reports)
+      @totals_by_store[representative.id] = representative.totals_by_store(monthly_reports)
+      @total_in_cash[representative.id] = representative.total_cash(monthly_reports)
+    end
   end
 
   def unaccumulated_addresses
