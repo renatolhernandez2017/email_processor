@@ -1,4 +1,10 @@
-Rails.application.routes.draw do
+require "sidekiq/web"
+
+Rails.application.routes.draw do 
+  authenticate :user, ->(u) { u.admin? } do
+    mount Sidekiq::Web => "/sidekiq"
+  end
+
   devise_for :users, controllers: {
     sessions: "users/sessions",
     registrations: "users/registrations",
@@ -23,6 +29,7 @@ Rails.application.routes.draw do
     get :deposits_in_banks, on: :collection
     post :modify_for_this_closure, on: :collection
     get :note_divisions, on: :collection
+    post :perform_closing, on: :member
   end
 
   resources :current_accounts, only: %i[index create update destroy] do

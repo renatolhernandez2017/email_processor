@@ -1,5 +1,11 @@
 <li class="border-b border-gray-300">
-  <%= link_to @label, @url, class: "text-primary lg:text-lg md:text-base font-semibold" %>
+  <% if @method_http.present? %>
+    <%= button_to @label, @url, method: @method_http, form: { data: { turbo: false } },
+        class: "text-primary lg:text-lg md:text-base font-semibold"
+    %>
+  <% else %>
+    <%= link_to @label, @url, class: "text-primary lg:text-lg md:text-base font-semibold" %>
+  <% end %>
 
   <span class="lg:text-sm md:text-xs pointer-events-none">
     <%= @subtitle %>

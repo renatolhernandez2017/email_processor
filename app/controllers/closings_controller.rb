@@ -3,7 +3,7 @@ class ClosingsController < ApplicationController
   include SharedData
   include RepresentativeSummaries
 
-  before_action :set_closing, only: %i[update modify_for_this_closure]
+  before_action :set_closing, only: %i[update perform_closing modify_for_this_closure]
 
   def index
     @pagy, @closings = pagy(Closing.all.order(start_date: :desc))
@@ -41,6 +41,10 @@ class ClosingsController < ApplicationController
           closing: @closing, title: "Novo fechamento", btn_save: "Salvar"
         })
     end
+  end
+
+  def perform_closing
+    PerformClosingJob.perform_later(@closing.id)
   end
 
   def modify_for_this_closure

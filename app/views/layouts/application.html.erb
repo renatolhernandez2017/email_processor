@@ -37,6 +37,8 @@
       <% end %>
     </div>
 
+    <div data-controller="notifications" data-notifications-target="container" class="w-full fixed z-50"></div>
+
     <%= render 'layouts/header' unless params[:controller].include?('users/sessions') %>
 
     <div class="grid grid-cols-12 font-jost h-screen">
@@ -52,4 +54,10 @@
 
     <%= render 'layouts/footer' unless params[:controller].include?('users/sessions') %>
   </body>
+
+  <script type="module">
+    document.addEventListener("DOMContentLoaded", () => {
+      subscribeToClosing(<%= @current_closing.id %>)
+    });
+  </script>
 </html>

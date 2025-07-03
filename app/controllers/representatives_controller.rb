@@ -64,7 +64,7 @@ class RepresentativesController < ApplicationController
     @totals_by_store = {}
     @total_in_cash = {}
 
-    @representatives = Representative.joins(:monthly_reports).where(active: true).distinct
+    @representatives = Representative.joins(:monthly_reports).where(active: true).order("name ASC").distinct
 
     @representatives.each do |representative|
       monthly_reports = representative.monthly_reports.joins(:prescriber)

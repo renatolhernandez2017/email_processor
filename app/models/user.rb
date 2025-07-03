@@ -22,4 +22,8 @@ class User < ApplicationRecord
     },
     order_within_rank: "name",
     ignoring: :accents
+
+  def admin?
+    role == "admin"
+  end
 end

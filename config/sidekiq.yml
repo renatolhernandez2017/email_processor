@@ -1,8 +1,9 @@
-:concurrency: 3
-:timeout: 60
+:concurrency: 5
+:timeout: 120
 :verbose: true
 :queues:
-  - default
-  - mailers
-  - active_storage_analysis
-  - active_storage_purge
+  - [closings, 5]
+  - [default, 4]
+  - [mailers, 3]
+  - [active_storage_analysis, 2]
+  - [active_storage_purge, 1]
