@@ -22,7 +22,7 @@ services:
       - "3000:3000"
     environment:
       RAILS_ENV: production
-      SECRET_KEY_BASE: aa7a5d...
+      SECRET_KEY_BASE: f45a8b738106fa056ef7ec5adebca72e4ad37e8974503c06a0b7b540b3eddb7cb8077131392557279431bfbe6fdc86ee09c71235d7c6b56a20b87dee024d02c6
       DATABASE_URL: postgres://root:YOH2mLwso7m@db:5432/database
       REDIS_URL: redis://redis:6379/1
     volumes:
@@ -44,7 +44,7 @@ services:
       RAILS_ENV: production
       DATABASE_URL: postgres://root:YOH2mLwso7m@db:5432/database
       REDIS_URL: redis://redis:6379/1
-      SECRET_KEY_BASE: aa7a5d...
+      SECRET_KEY_BASE: f45a8b738106fa056ef7ec5adebca72e4ad37e8974503c06a0b7b540b3eddb7cb8077131392557279431bfbe6fdc86ee09c71235d7c6b56a20b87dee024d02c6
     volumes:
       - ./log:/rails/log
     command: bundle exec sidekiq
