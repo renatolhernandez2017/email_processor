@@ -43,8 +43,17 @@ RUN SECRET_KEY_BASE_DUMMY=1 ./bin/rails assets:precompile
 
 FROM base
 
+# ⚠️ Aqui foi o ajuste importante
 RUN apt-get update -qq && \
-    apt-get install --no-install-recommends -y curl libvips postgresql-client nodejs npm yarn && \
+    apt-get install --no-install-recommends -y \
+      curl \
+      libvips \
+      postgresql-client \
+      nodejs \
+      npm \
+      yarn \
+      firebird-utils \
+      firebird-dev && \
     rm -rf /var/lib/apt/lists /var/cache/apt/archives
 
 COPY --from=build /usr/local/bundle /usr/local/bundle
