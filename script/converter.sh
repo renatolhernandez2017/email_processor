@@ -7,8 +7,6 @@ WORK_DIR="/rails"
 LOG_FILE="$WORK_DIR/tmp/log-$NOW.log"
 TMP_DIR="$WORK_DIR/tmp/"
 
-mkdir -p "$TMP_DIR"
-
 START_DATE=$1
 END_DATE=$2
 
