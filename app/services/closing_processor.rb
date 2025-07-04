@@ -29,7 +29,7 @@ class ClosingProcessor
   end
 
   def execute_script
-    success = system("#{Rails.root}/script/converter.sh #{@start_date} #{@end_date}")
+    success = system("#{Rails.root}/script/converter.sh #{@start_date} #{@end_date} #{Rails.root}")
 
     raise "Erro ao executar script" unless success
   end
