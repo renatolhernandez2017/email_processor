@@ -32,7 +32,7 @@ services:
       - db
       - redis
     restart: always
-    command: bundle exec puma -C config/puma.rb
+    command: sh -c "chmod -R 775 /rails/tmp && bundle exec puma -C config/puma.rb"
 
   sidekiq:
     build: .

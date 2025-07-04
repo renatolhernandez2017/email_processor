@@ -9,15 +9,15 @@ class ClosingProcessor
     broadcast("Iniciando fechamento...")
     execute_script
 
-    Importers::GroupDuplicates.new("#{Rails.root}/public/all.csv").import!
+    Importers::GroupDuplicates.new("#{Rails.root}/tmp/all.csv").import!
 
     ["fc01000", "fc08000"].each do |file|
-      ImportCsvService.new("#{Rails.root}/public/#{file}.csv").import!
+      ImportCsvService.new("#{Rails.root}/tmp/#{file}.csv").import!
       sleep 3
     end
 
     broadcast("Gerando requisições dos prescritores...")
-    ImportCsvService.new("#{Rails.root}/public/group_duplicates.csv").import!
+    ImportCsvService.new("#{Rails.root}/tmp/group_duplicates.csv").import!
 
     broadcast("Gerando relatórios mensais...")
     create_monthly_reports
@@ -71,7 +71,7 @@ class ClosingProcessor
 
   def cleanup_temp_files
     %w[fc all group_duplicates].each do |prefix|
-      Dir.glob(Rails.root.join("public", "#{prefix}*.csv")).each { |file| File.delete(file) }
+      Dir.glob(Rails.root.join("tmp", "#{prefix}*.csv")).each { |file| File.delete(file) }
     end
   end
 end
