@@ -13,6 +13,7 @@ END_DATE=$2
 export START_DATE
 export END_DATE
 
+echo "Caminho Rails: $WORK_DIR"
 echo "Data Inicio: $START_DATE"
 echo "Data Final: $END_DATE"
 
