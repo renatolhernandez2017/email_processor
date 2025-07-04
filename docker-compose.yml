@@ -28,6 +28,7 @@ services:
     volumes:
       - ./log:/rails/log
       - ./storage:/rails/storage
+      - ./tmp:/rails/tmp
     depends_on:
       - db
       - redis
