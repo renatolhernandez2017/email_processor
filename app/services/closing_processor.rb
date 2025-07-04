@@ -1,6 +1,8 @@
 class ClosingProcessor
   def initialize(closing)
     @closing = closing
+    @start_date = @closing.start_date.strftime("%Y-%m-%d")
+    @end_date = @closing.end_date.strftime("%Y-%m-%d")
   end
 
   def call
@@ -18,7 +20,7 @@ class ClosingProcessor
     ImportCsvService.new("#{Rails.root}/tmp/group_duplicates.csv").import!
 
     broadcast("Gerando relatórios mensais...")
-    create_monthly_reports(start_date, end_date)
+    create_monthly_reports
     cleanup_temp_files
 
     broadcast("Fechamento concluído com sucesso.")
@@ -27,9 +29,7 @@ class ClosingProcessor
   end
 
   def execute_script
-    start_date = @closing.start_date.strftime("%Y-%m-%d")
-    end_date = @closing.end_date.strftime("%Y-%m-%d")
-    success = system("#{Rails.root}/script/converter.sh #{start_date} #{end_date}")
+    success = system("#{Rails.root}/script/converter.sh #{@start_date} #{@end_date}")
 
     raise "Erro ao executar script" unless success
   end
@@ -38,8 +38,8 @@ class ClosingProcessor
     ClosingChannel.broadcast_to("closing_#{@closing.id}", {message: message})
   end
 
-  def create_monthly_reports(start_date, end_date)
-    requests = Request.where(entry_date: start_date..end_date).group_by(&:prescriber_id)
+  def create_monthly_reports
+    requests = Request.where(entry_date: @start_date..@end_date).group_by(&:prescriber_id)
 
     requests.each do |prescriber_id, requests_all|
       prescriber = Prescriber.find(prescriber_id)

@@ -50,8 +50,7 @@ class Request < ApplicationRecord
   end
 
   def set_payment_date(request)
-    case
-    when request.payment_date?
+    if request.payment_date?
       request.payment_date.strftime("%d/%m/%y")
     else
       "  /  /  "
@@ -59,13 +58,10 @@ class Request < ApplicationRecord
   end
 
   def set_price(request)
-    case
-    when request.payment_date?
+    if request.payment_date?
       number_to_currency(request.total_amount_for_report)
-    when request.entry_date?
-      number_to_currency(request.total_price)
     else
-      0.0
+      number_to_currency(request.total_price)
     end
   end
 end

@@ -63,6 +63,7 @@ class RepresentativesController < ApplicationController
     @totals_by_bank = {}
     @totals_by_store = {}
     @total_in_cash = {}
+    @monthly_reports = {}
 
     @representatives = Representative.joins(:monthly_reports).where(active: true).order("name ASC").distinct
 
@@ -70,8 +71,18 @@ class RepresentativesController < ApplicationController
       monthly_reports = representative.monthly_reports.joins(:prescriber)
         .where(closing_id: @current_closing.id)
 
-      @summary[representative.id] = monthly_reports
+      @summary[representative.id] = monthly_reports.order("prescribers.name ASC")
       @accumulated[representative.id] = monthly_reports.where(accumulated: true)
+      @monthly_reports[representative.id] = monthly_reports.group_by { |report| [report.envelope_number, report.situation] }
+        .map do |info, reports|
+          {
+            envelope_number: info[0].to_s.rjust(5, "0"),
+            situation: info[1],
+            monthly_reports: reports,
+            quantity: reports.sum { |m| m.requests.size },
+            available_value: reports.sum(&:available_value)
+          }
+        end
 
       @totals_by_bank[representative.id] = representative.totals_by_bank(monthly_reports)
       @totals_by_store[representative.id] = representative.totals_by_store(monthly_reports)

@@ -3,7 +3,7 @@
 <section class="flex flex-col mb-20 my-5">
   <% @representatives.each do |representative| %>
     <% if @select_action == "save_patient_listing" %>
-      <%#= render "shared/patient/listing", representative: representative,
+      <%= render "shared/patient/listing", representative: representative,
           closing: @closing, monthly_reports: @monthly_reports[representative.id]
       %>
     <% elsif @select_action == "saves_summary_patient_listing" %>

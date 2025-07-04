@@ -20,6 +20,12 @@
     <%= action_cable_meta_tag %>
     <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
     <%= javascript_include_tag "application", "data-turbo-track": "reload", type: "module" %>
+
+    <script type="module">
+      document.addEventListener("DOMContentLoaded", () => {
+        window.subscribeToClosing(<%= @current_closing.id %>);
+      });
+    </script>
   </head>
 
   <body class="bg-white">
@@ -54,10 +60,4 @@
 
     <%= render 'layouts/footer' unless params[:controller].include?('users/sessions') %>
   </body>
-
-  <script type="module">
-    document.addEventListener("DOMContentLoaded", () => {
-      subscribeToClosing(<%= @current_closing.id %>)
-    });
-  </script>
 </html>
