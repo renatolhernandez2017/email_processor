@@ -29,6 +29,7 @@ services:
       - ./log:/rails/log
       - ./storage:/rails/storage
       - ./tmp:/rails/tmp
+      - /d/FCERTA/DB:/mnt/db
     depends_on:
       - db
       - redis
