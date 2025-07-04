@@ -35,7 +35,7 @@ Rails.application.configure do
     config.action_controller.perform_caching = false
 
     # config/environments/development.rb
-    config.cache_store = :redis_cache_store, { url: "redis://localhost:6379/1" }
+    config.cache_store = :redis_cache_store, {url: "redis://localhost:6379/1"}
   end
 
   # Store uploaded files on the local file system (see config/storage.yml for options).
@@ -77,7 +77,7 @@ Rails.application.configure do
 
   # Highlight code that enqueued background job in logs.
   config.active_job.verbose_enqueue_logs = true
-  config.action_cable.mount_path = '/cable'
+  config.action_cable.mount_path = "/cable"
 
   # Raises error for missing translations.
   # config.i18n.raise_on_missing_translations = true
