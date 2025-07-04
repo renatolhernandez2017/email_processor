@@ -15,8 +15,8 @@ FROM base as build
 RUN apt-get update -qq && \
     apt-get install --no-install-recommends -y build-essential curl git libpq-dev libvips node-gyp pkg-config python-is-python3
 
-RUN sudo apt-get update && sudo apt-get install -y openvpn
-RUN sudo apt-get update && sudo apt-get install -y firebird-dev firebird-utils
+RUN apt-get update && apt-get install -y openvpn
+RUN apt-get update && apt-get install -y firebird-dev firebird-utils
 
 ARG NODE_VERSION=18.17.1
 ARG YARN_VERSION=1.22.19
