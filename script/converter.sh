@@ -3,9 +3,9 @@ set -e
 
 NOW=$(date +"%d-%m-%y")
 # WORK_DIR="/workspaces/unipharmus_v2"
-WORK_DIR=$3
-LOG_FILE="$WORK_DIR/tmp/log-$NOW.log"
-TMP_DIR="$WORK_DIR/tmp/"
+WORK_DIR="/rails"
+LOG_FILE="$WORK_DIR/public/log-$NOW.log"
+TMP_DIR="$WORK_DIR/public/"
 
 START_DATE=$1
 END_DATE=$2
@@ -13,7 +13,6 @@ END_DATE=$2
 export START_DATE
 export END_DATE
 
-echo "Caminho Rails: $WORK_DIR"
 echo "Data Inicio: $START_DATE"
 echo "Data Final: $END_DATE"
 
