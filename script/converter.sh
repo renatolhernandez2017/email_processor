@@ -2,7 +2,8 @@
 set -e
 
 NOW=$(date +"%d-%m-%y")
-WORK_DIR="/workspaces/unipharmus_v2"
+# WORK_DIR="/workspaces/unipharmus_v2"
+WORK_DIR="/rails"
 LOG_FILE="$WORK_DIR/tmp/log-$NOW.log"
 TMP_DIR="$WORK_DIR/tmp/"
 
