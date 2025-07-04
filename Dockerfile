@@ -35,22 +35,20 @@ RUN yarn install --frozen-lockfile
 COPY . .
 
 RUN bundle exec bootsnap precompile app/ lib/
+
 RUN SECRET_KEY_BASE_DUMMY=1 ./bin/rails assets:precompile
 
 FROM base
 
-# Apenas mantenha pacotes essenciais no runtime
 RUN apt-get update -qq && \
-    apt-get install --no-install-recommends -y curl libvips postgresql-client && \
+    apt-get install --no-install-recommends -y curl libvips postgresql-client nodejs npm yarn && \
     rm -rf /var/lib/apt/lists /var/cache/apt/archives
 
 COPY --from=build /usr/local/bundle /usr/local/bundle
 COPY --from=build /rails /rails
 
-# Garante que os diretórios existam e tenham permissão
-RUN mkdir -p tmp log storage public && \
-    useradd rails --create-home --shell /bin/bash && \
-    chown -R rails:rails tmp log storage public
+RUN useradd rails --create-home --shell /bin/bash && \
+    chown -R rails:rails db log storage tmp
 
 USER rails:rails
 
