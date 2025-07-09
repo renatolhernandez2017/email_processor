@@ -15,7 +15,7 @@ module Importers
           @patient_name = row[2]&.strip
           @entry_date = row[3]&.strip
           @repeat = row[4]&.strip
-          @total_price = row[5]&.strip.to_f
+          @total_price = row[5]&.strip.to_f - row[7]&.strip&.to_f
           @total_discounts = row[6]&.strip.to_f
           @total_fees = row[7]&.strip&.to_f
           @payment_date = row[8]&.strip

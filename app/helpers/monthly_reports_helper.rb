@@ -19,24 +19,24 @@ module MonthlyReportsHelper
 
   private
 
-  def calculate_totals(reports)
+  def calculate_totals(monthly_reports)
     {
-      count: reports.count,
-      quantity: reports.sum(&:quantity),
-      total_price: number_to_currency(reports.sum(&:total_price)),
-      partnership: number_to_currency(reports.sum(&:partnership)),
-      discounts: number_to_currency(reports.sum(&:discounts)),
-      available_value: number_to_currency(reports.sum(&:available_value))
+      count: monthly_reports.count,
+      quantity: monthly_reports.sum(&:quantity),
+      total_price: number_to_currency(monthly_reports.sum(&:total_price)),
+      partnership: number_to_currency(monthly_reports.sum(&:partnership)),
+      discounts: number_to_currency(monthly_reports.sum(&:discounts)),
+      available_value: number_to_currency(monthly_reports.sum(&:available_value))
     }
   end
 
-  def calculate_differences(all, accumulated)
+  def calculate_differences(monthly_reports, accumulated)
     {
-      quantity: all.sum(&:quantity) - accumulated.sum(&:quantity),
-      total_price: number_to_currency(all.sum(&:total_price) - accumulated.sum(&:total_price)),
-      partnership: number_to_currency(all.sum(&:partnership) - accumulated.sum(&:partnership)),
-      discounts: number_to_currency(all.sum(&:discounts) - accumulated.sum(&:discounts)),
-      available_value: number_to_currency(all.sum(&:available_value) - accumulated.sum(&:available_value))
+      quantity: monthly_reports.sum(&:quantity) - accumulated.sum(&:quantity),
+      total_price: number_to_currency(monthly_reports.sum(&:total_price) - accumulated.sum(&:total_price)),
+      partnership: number_to_currency(monthly_reports.sum(&:partnership) - accumulated.sum(&:partnership)),
+      discounts: number_to_currency(monthly_reports.sum(&:discounts) - accumulated.sum(&:discounts)),
+      available_value: number_to_currency(monthly_reports.sum(&:available_value) - accumulated.sum(&:available_value))
     }
   end
 end
