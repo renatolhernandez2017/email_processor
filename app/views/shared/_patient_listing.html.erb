@@ -4,29 +4,27 @@
     em <span class="text-primary"><%= closing %>
   </div>
 
-  <% monthly_reports.each do |reports| %>
+  <% monthly_reports.each do |monthly_report| %>
     <ul class="menu rounded-box mb-4">
       <li>
         <ul class="border-l-2 border-b-2 border-primary">
           <div class="overflow-hidden my-2">
             <table class="table-auto w-full">
-              <% reports[:monthly_reports].each do |monthly_report| %>
+              <%# reports[:monthly_reports].each do |monthly_report| %>
                 <div class="grid grid-rows-2 mb-7 gap-2 text-center border-b border-primary">
-                  <div class="grid grid-cols-3">
-                    <span class="font-semibold text-base">Prescritor</span>
+                  <div class="grid grid-cols-2">
                     <span class="font-semibold text-base">Situação</span>
                     <span class="font-semibold text-base">Envelope</span>
                   </div>
 
-                  <div class="grid grid-cols-3 text-primary">
-                    <span><%= monthly_report.prescriber.name %></span>
-                    <span><%= reports[:situation] %></span>
-                    <span><%= reports[:envelope_number] %></span>
+                  <div class="grid grid-cols-2 text-primary">
+                    <span><%= monthly_report.situation %></span>
+                    <span><%= monthly_report.number_envelope %></span>
                   </div>
                 </div>
 
-                <%= render "shared/patient/foot", reports: reports %>
-              <% end %>
+                <%= render "shared/patient/foot", monthly_report: monthly_report %>
+              <%# end %>
             </table>
           </div>
         </ul>

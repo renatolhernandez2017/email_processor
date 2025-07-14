@@ -19,7 +19,7 @@ module Importers
           @total_discounts = row[6]&.strip.to_f
           @total_fees = row[7]&.strip&.to_f
           @payment_date = row[8]&.strip
-          @amount_received = row[9]&.strip.to_f - @total_discounts
+          @amount_received = row[9]&.strip.to_f
           @class_council = row[10]&.strip
           @uf_council = row[11]&.strip
           @number_council = row[12]&.strip

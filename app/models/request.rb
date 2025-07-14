@@ -16,11 +16,11 @@ class Request < ApplicationRecord
       SUM(total_discounts) AS total_discounts,
       SUM(total_fees) AS total_fees,
       CASE
-        WHEN branch_id != 243724 THEN SUM(total_price) / COUNT(id)
+        WHEN branch_number != 13 THEN SUM(total_price) / COUNT(id)
         ELSE (SUM(total_price) / 0.85) / COUNT(id)
       END AS adjusted_revenue_value,
       CASE
-        WHEN branch_id != 243724 THEN SUM(total_price)
+        WHEN branch_number != 13 THEN SUM(total_price)
         ELSE SUM(total_price) / 0.85
       END AS adjusted_total_orders
     SQL
@@ -34,7 +34,7 @@ class Request < ApplicationRecord
       branch_id,
       SUM(amount_received) AS amount_received,
       CASE
-        WHEN branch_id != 243724 THEN SUM(amount_received)
+        WHEN branch_number != 13 THEN SUM(amount_received)
         ELSE (SUM(amount_received) / 0.85)
       END AS billing
     SQL

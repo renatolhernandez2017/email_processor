@@ -18,7 +18,7 @@
           </thead>
 
           <tbody>
-            <% monthly_reports&.each do |monthly_report| %>
+            <% monthly_reports.each do |monthly_report| %>
               <tr class="bg-gray-200 border-t border-b border-black h-8">
                 <td><%= monthly_report.prescriber.id %></td>
 
@@ -28,13 +28,13 @@
                   %>
                 </td>
 
-                <td class="text-center"><%= monthly_report.requests.select { |request| request.total_price != 0 }.count %></td>
+                <td class="text-center"><%= monthly_report.quantity %></td>
                 <td><%= number_to_currency(monthly_report.total_price) %></td>
                 <td><%= number_to_currency(monthly_report.partnership) %></td>
                 <td><%= number_to_currency(monthly_report.discounts) %></td>
                 <td><%= number_to_currency(monthly_report.available_value) %></td>
                 <td><%= payment_method_display(monthly_report) %></td>
-                <td><%= monthly_report.envelope_number.to_s.rjust(6, '0') %></td>
+                <td><%= monthly_report.envelope_number.to_s.rjust(6, "0") %></td>
               </tr>
             <% end %>
           </tbody>
@@ -48,33 +48,33 @@
 
             <tbody>
               <tr>
-                <td><%= total_or_accumulated(monthly_reports)[:count] %></td>
+                <td><%= totals[:grand_total][:count] %></td>
                 <td class="font-semibold text-base">Total Geral</td>
-                <td class="text-center"><%= total_or_accumulated(monthly_reports)[:quantity] %></td>
-                <td><%= total_or_accumulated(monthly_reports)[:total_price] %></td>
-                <td><%= total_or_accumulated(monthly_reports)[:partnership] %></td>
-                <td><%= total_or_accumulated(monthly_reports)[:discounts] %></td>
-                <td><%= total_or_accumulated(monthly_reports)[:available_value] %></td>
+                <td class="text-center"><%= totals[:grand_total][:quantity] %></td>
+                <td><%= totals[:grand_total][:total_price] %></td>
+                <td><%= totals[:grand_total][:partnership] %></td>
+                <td><%= totals[:grand_total][:discounts] %></td>
+                <td><%= totals[:grand_total][:available_value] %></td>
               </tr>
 
               <tr>
-                <td><%= total_or_accumulated(accumulated)[:count] %></td>
+                <td><%= totals[:accumulated][:count] %></td>
                 <td class="font-semibold text-base">Acumulados</td>
-                <td class="text-center"><%= total_or_accumulated(accumulated)[:quantity] %></td>
-                <td><%= total_or_accumulated(accumulated)[:total_price] %></td>
-                <td><%= total_or_accumulated(accumulated)[:partnership] %></td>
-                <td><%= total_or_accumulated(accumulated)[:discounts] %></td>
-                <td><%= total_or_accumulated(accumulated)[:available_value] %></td>
+                <td class="text-center"><%= totals[:accumulated][:quantity] %></td>
+                <td><%= totals[:accumulated][:total_price] %></td>
+                <td><%= totals[:accumulated][:partnership] %></td>
+                <td><%= totals[:accumulated][:discounts] %></td>
+                <td><%= totals[:accumulated][:available_value] %></td>
               </tr>
 
               <tr>
-                <td><%= real_sale(monthly_reports, accumulated)[:count] %></td>
+                <td><%= totals[:real_sale][:count] %></td>
                 <td class="font-semibold text-base">Venda Real</td>
-                <td class="text-center"><%= real_sale(monthly_reports, accumulated)[:quantity] %></td>
-                <td><%= real_sale(monthly_reports, accumulated)[:total_price] %></td>
-                <td><%= real_sale(monthly_reports, accumulated)[:partnership] %></td>
-                <td><%= real_sale(monthly_reports, accumulated)[:discounts] %></td>
-                <td><%= real_sale(monthly_reports, accumulated)[:available_value] %></td>
+                <td class="text-center"><%= totals[:real_sale][:quantity] %></td>
+                <td><%= totals[:real_sale][:total_price] %></td>
+                <td><%= totals[:real_sale][:partnership] %></td>
+                <td><%= totals[:real_sale][:discounts] %></td>
+                <td><%= totals[:real_sale][:available_value] %></td>
               </tr>
             </tbody>
           </tfoot>

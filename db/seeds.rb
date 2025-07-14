@@ -15,8 +15,8 @@ User.create!(name: "renato", email: "renatolhernandez@gmail.com", password: "120
 User.create!(name: "luiz", email: "luizunipharmus@yahoo.com.br", password: "ro050604", role: "admin")
 puts "Fim Users admin"
 
-start_date = "29-07-2023".to_date
-end_date = "29-08-2023".to_date
+start_date = "31-07-2024".to_date
+end_date = "29-08-2024".to_date
 
 puts "Criando Fechamento"
 Closing.create!(

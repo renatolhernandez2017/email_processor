@@ -1,18 +1,20 @@
 <section class="flex flex-col p-5 mb-20 gap-5">
-  <div class="grid grid-cols-12 mx-10">
-    <div class="col-start-1 col-end-11">
-      <h1 class="text-2xl font-bold text-primary text-center">Listagem de Pacientes</h1>
+  <% @representatives.each do |representative| %>
+    <div class="grid grid-cols-12 mx-10">
+      <div class="col-start-1 col-end-11">
+        <h1 class="text-2xl font-bold text-primary text-center">Listagem de Pacientes</h1>
+      </div>
+
+      <div class="col-start-12">
+        <%= link_to "Download PDF",
+            download_pdf_representative_path(representative, kind: "patient_listing"),
+            target: "_blank", class: "btn btn-primary w-36"
+        %>
+      </div>
     </div>
 
-    <div class="col-start-12">
-      <%= link_to "Download PDF",
-          download_pdf_representative_path(@representative, kind: "patient_listing"),
-          target: "_blank", class: "btn btn-primary w-36"
-      %>
-    </div>
-  </div>
-
-  <%= render "shared/patient/listing", closing: @closing,
-      monthly_reports: @monthly_reports, representative: @representative
-  %>
+    <%= render "shared/patient/listing", closing: @closing, representative: representative,
+        monthly_reports: @monthly_reports
+    %>
+  <% end %>
 </section>

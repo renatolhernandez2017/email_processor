@@ -14,11 +14,11 @@
           </thead>
 
           <tbody>
-            <% stores.each do |store| %>
+            <% stores.each do |branch_name, store| %>
               <tr class="bg-gray-200 border-t border-b border-black h-8">
-                <td><%= store.count %></td>
-                <td><%= store.name %></td>
-                <td><%= number_to_currency(store.total) %></td>
+                <td><%= store.sum(&:number_of_requests) %></td>
+                <td><%= branch_name %></td>
+                <td><%= number_to_currency(store.sum(&:total_requests)) %></td>
               </tr>
             <% end %>
           </tbody>
@@ -33,8 +33,8 @@
 
             <tbody>
               <tr class="bg-gray-200 border-t border-b border-black h-8">
-                <th colspan="2"><%= stores.sum(&:count) %></th>
-                <th><%= number_to_currency(stores.sum(&:total)) %></th>
+                <th colspan="2"><%= stores.values.flatten.sum(&:number_of_requests) %></th>
+                <th><%= number_to_currency(stores.values.flatten.sum(&:total_requests)) %></th>
               </tr>
             </tbody>
           </tfoot>

@@ -7,7 +7,7 @@ class RepresentativesController < ApplicationController
 
   before_action :set_selects_label
   before_action :set_closing_date, except: %i[index update change_active]
-  before_action :set_representative, except: %i[index]
+  before_action :set_representative, except: %i[index monthly_report patient_listing]
 
   def index
     @pagy, @representatives = pagy(Representative.all.order(:number))
@@ -33,23 +33,47 @@ class RepresentativesController < ApplicationController
   end
 
   def monthly_report
-    monthly_reports = @representative.monthly_reports.joins(:prescriber)
-      .where(closing_id: @current_closing.id)
+    @representatives = [
+      Representative.get_representatives(@current_closing.id, params[:id], monthly_reports: {prescriber: {current_accounts: :bank}})
+    ]
 
-    @summary = monthly_reports.order("prescribers.name ASC")
-    @accumulated = monthly_reports.where(accumulated: true)
+    @representatives.each do |representative|
+      monthly_reports = representative.monthly_reports
+      @monthly_reports = monthly_reports.sort_by { |r| r.prescriber.name }
+      accumulated = monthly_reports.where(accumulated: true).sort_by { |r| r.prescriber.name }
 
-    @totals_by_bank = @representative.totals_by_bank(monthly_reports)
-    @totals_by_store = @representative.totals_by_store(monthly_reports)
-    @total_in_cash = @representative.total_cash(monthly_reports)
+      @totals = {
+        grand_total: representative.calculate_totals(@monthly_reports),
+        accumulated: representative.calculate_totals(accumulated),
+        real_sale: representative.real_sale(@monthly_reports, accumulated)
+      }
+
+      @totals_by_bank = representative.totals_by_bank(@current_closing.id)
+      @totals_by_store = representative.monthly_reports
+        .with_adjusted_billings(closing_id: @current_closing.id)
+
+      @total_in_cash = representative.total_cash(@current_closing.id)
+    end
   end
 
   def patient_listing
-    @monthly_reports = @representative.set_monthly_reports(@current_closing.id)
+    @representatives = [
+      Representative.get_representatives(@current_closing.id, params[:id], monthly_reports: {prescriber: {current_accounts: :bank}})
+    ]
+
+    @representatives.each do |representative|
+      @monthly_reports = representative.monthly_reports.with_monthly_reports
+    end
   end
 
   def summary_patient_listing
-    @monthly_reports = @representative.set_monthly_reports(@current_closing.id)
+    @representatives = [
+      Representative.get_representatives(@current_closing.id, params[:id], monthly_reports: {prescriber: {current_accounts: :bank}})
+    ]
+
+    @representatives.each do |representative|
+      @monthly_reports = representative.monthly_reports.with_monthly_reports
+    end
   end
 
   def select
@@ -73,16 +97,7 @@ class RepresentativesController < ApplicationController
 
       @summary[representative.id] = monthly_reports.order("prescribers.name ASC")
       @accumulated[representative.id] = monthly_reports.where(accumulated: true)
-      @monthly_reports[representative.id] = monthly_reports.group_by { |report| [report.envelope_number, report.situation] }
-        .map do |info, reports|
-          {
-            envelope_number: info[0].to_s.rjust(5, "0"),
-            situation: info[1],
-            monthly_reports: reports,
-            quantity: reports.sum { |m| m.requests.size },
-            available_value: reports.sum(&:available_value)
-          }
-        end
+      @monthly_reports[representative.id] = representative.set_monthly_reports(@current_closing.id)
 
       @totals_by_bank[representative.id] = representative.totals_by_bank(monthly_reports)
       @totals_by_store[representative.id] = representative.totals_by_store(monthly_reports)
@@ -91,7 +106,13 @@ class RepresentativesController < ApplicationController
   end
 
   def unaccumulated_addresses
-    @monthly_reports = @representative.get_monthly_reports(@current_closing.id)
+    @representatives = [
+      Representative.get_representatives(@current_closing.id, params[:id], monthly_reports: :prescriber)
+    ]
+
+    @representatives.each do |representative|
+      @monthly_reports = representative.monthly_reports.with_monthly_reports
+    end
   end
 
   def change_active
