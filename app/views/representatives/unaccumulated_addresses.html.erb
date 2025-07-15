@@ -20,7 +20,7 @@
         <span class="text-primary"><%= @closing %></span>
       </label>
 
-      <%= render "shared/address", monthly_reports: @monthly_reports %>
+      <%= render "shared/address", monthly_reports: @monthly_reports[representative.id] %>
     </div>
   <% end %>
 </section>

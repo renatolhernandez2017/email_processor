@@ -17,7 +17,7 @@
             <% banks.each do |bank| %>
               <tr class="bg-gray-200 border-t border-b border-black h-8">
                 <td><%= bank.count %></td>
-                <td><%= bank.name %></td>
+                <td><%= bank.bank_name %></td>
                 <td><%= number_to_currency(bank.total) %></td>
               </tr>
             <% end %>

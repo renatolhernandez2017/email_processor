@@ -1,13 +1,13 @@
 <div class="card border border-primary p-5 my-2">
   <label class="text-lg">
-    <span class="text-primary"><%= representative.name.upcase %> </span> -
+    <span class="text-primary"><%= representative_name.upcase %> </span> -
     <span><%= current_closing.end_date.strftime("%d/%m/%Y") %></span>
     <span class="text-primary ml-12"><%= closing %></span>
   </label>
 
-  <% representative.monthly_reports.each do |monthly_report| %>
+  <% monthly_reports.each do |monthly_report| %>
     <label class="text-lg my-5">
-      <%= monthly_report.envelope_number.to_s.rjust(5, "0") %>
+      <%= monthly_report.number_envelope %>
       <span class="text-red-500"><%= "- (ESP)" unless monthly_report.prescriber.current_accounts.present? %>
     </label>
 

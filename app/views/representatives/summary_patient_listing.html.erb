@@ -13,6 +13,8 @@
       </div>
     </div>
 
-    <%= render "shared/patient_listing", monthly_reports: @monthly_reports, closing: @closing, representative: representative %>
+    <%= render "shared/patient_listing", monthly_reports: @monthly_reports[representative.id],
+        closing: @closing, representative_name: representative.name
+    %>
   <% end %>
 </section>

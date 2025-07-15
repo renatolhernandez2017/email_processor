@@ -1,7 +1,6 @@
 class ClosingsController < ApplicationController
   include Pagy::Backend
   include SharedData
-  include RepresentativeSummaries
 
   before_action :set_closing, only: %i[update perform_closing modify_for_this_closure]
 

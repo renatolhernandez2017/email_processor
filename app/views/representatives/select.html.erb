@@ -3,33 +3,33 @@
 <section class="flex flex-col mb-20 my-5">
   <% @representatives.each do |representative| %>
     <% if @select_action == "save_patient_listing" %>
-      <%= render "shared/patient/listing", representative: representative,
+      <%= render "shared/patient/listing", representative_name: representative.name,
           closing: @closing, monthly_reports: @monthly_reports[representative.id]
       %>
     <% elsif @select_action == "saves_summary_patient_listing" %>
-      <%#= render "shared/patient_listing", representative: representative,
+      <%= render "shared/patient_listing", representative_name: representative.name,
           closing: @closing, monthly_reports: @monthly_reports[representative.id]
       %>
     <% elsif @select_action == "monthly_summary" %>
-      <%= render "monthly_summary", monthly_reports: @summary[representative.id],
-          accumulated: @accumulated[representative.id],
-          totals_by_bank: @totals_by_bank[representative.id],
-          totals_by_store: @totals_by_store[representative.id],
-          total_in_cash: @total_in_cash[representative.id],
-          representative: representative, current_closing: @current_closing,
-          closing: @closing, title: "Resumo de"
-      %>
+      <div class="card shadow-lg border border-primary p-5 my-5">
+        <%= render "shared/label_of", representative_name: representative.name, closing: @closing, title: "Resumo de" %>
+        <%= render "summary", representative: representative %>
+        <%= render "totals_by_bank", banks: @totals_by_bank[representative.id] %>
+        <%= render "totals_by_store", stores: @totals_by_store[representative.id] %>
+        <%= render "note_division", cashes: @total_in_cash[representative.id] %>
+      </div>
     <% elsif @select_action == "tags" %>
-      <%#= render "tags", representative: representative,
-          current_closing: @current_closing, closing: @closing
+      <%= render "tags", representative_name: representative.name,
+          current_closing: @current_closing, closing: @closing,
+          monthly_reports: @monthly_reports[representative.id]
       %>
     <% elsif @select_action == "address_report" %>
       <div class="card border border-primary p-5 my-2">
-        <%#= render "shared/label_of", representative: representative,
+        <%= render "shared/label_of", representative_name: representative.name,
             closing: @closing, title: "Clientes de"
         %>
 
-        <%#= render "shared/address", monthly_reports: representative.monthly_reports %>
+        <%= render "shared/address", monthly_reports: @monthly_reports[representative.id] %>
       </div>
     <% end %>
   <% end %>

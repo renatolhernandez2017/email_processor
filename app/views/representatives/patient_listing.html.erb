@@ -13,8 +13,8 @@
       </div>
     </div>
 
-    <%= render "shared/patient/listing", closing: @closing, representative: representative,
-        monthly_reports: @monthly_reports
+    <%= render "shared/patient/listing", closing: @closing, representative_name: representative.name,
+        monthly_reports: @monthly_reports[representative.id]
     %>
   <% end %>
 </section>

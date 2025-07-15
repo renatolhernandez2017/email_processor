@@ -2,12 +2,11 @@ class RepresentativesController < ApplicationController
   include Pagy::Backend
   include Roundable
   include SharedData
-  # include RepresentativeSummaries
   include PdfClassMapper
 
   before_action :set_selects_label
   before_action :set_closing_date, except: %i[index update change_active]
-  before_action :set_representative, except: %i[index monthly_report patient_listing]
+  before_action :set_representative, except: %i[index monthly_report patient_listing select]
 
   def index
     @pagy, @representatives = pagy(Representative.all.order(:number))
@@ -33,85 +32,65 @@ class RepresentativesController < ApplicationController
   end
 
   def monthly_report
-    @representatives = [
-      Representative.get_representatives(@current_closing.id, params[:id], monthly_reports: {prescriber: {current_accounts: :bank}})
-    ]
+    @totals_by_bank = []
+    @totals_by_store = []
+    @total_in_cash = []
+    @representatives = Representative.with_totals(@current_closing.id).where(id: params[:id])
 
     @representatives.each do |representative|
-      monthly_reports = representative.monthly_reports
-      @monthly_reports = monthly_reports.sort_by { |r| r.prescriber.name }
-      accumulated = monthly_reports.where(accumulated: true).sort_by { |r| r.prescriber.name }
-
-      @totals = {
-        grand_total: representative.calculate_totals(@monthly_reports),
-        accumulated: representative.calculate_totals(accumulated),
-        real_sale: representative.real_sale(@monthly_reports, accumulated)
-      }
-
-      @totals_by_bank = representative.totals_by_bank(@current_closing.id)
-      @totals_by_store = representative.monthly_reports
-        .with_adjusted_billings(closing_id: @current_closing.id)
-
-      @total_in_cash = representative.total_cash(@current_closing.id)
+      @totals_by_bank[representative.id] = Representative.totals_by_bank_for_representatives(@current_closing.id, representative.id)
+      @totals_by_store[representative.id] = Representative.totals_by_store_for_representatives(@current_closing.id, representative.id)
+      total_cash = Representative.total_cash_for_representatives(@current_closing.id, representative.id)
+      @total_in_cash[representative.id] = divide_into_notes(total_cash.sum(&:total_available_value).to_f)
     end
   end
 
   def patient_listing
-    @representatives = [
-      Representative.get_representatives(@current_closing.id, params[:id], monthly_reports: {prescriber: {current_accounts: :bank}})
-    ]
+    @monthly_reports = []
+    @representatives = Representative.with_totals(@current_closing.id).where(id: params[:id])
 
     @representatives.each do |representative|
-      @monthly_reports = representative.monthly_reports.with_monthly_reports
+      @monthly_reports[representative.id] = Representative.monthly_reports_for_representatives(@current_closing.id, representative.id)
     end
   end
 
   def summary_patient_listing
-    @representatives = [
-      Representative.get_representatives(@current_closing.id, params[:id], monthly_reports: {prescriber: {current_accounts: :bank}})
-    ]
+    @monthly_reports = []
+    @representatives = Representative.with_totals(@current_closing.id).where(id: params[:id])
 
     @representatives.each do |representative|
-      @monthly_reports = representative.monthly_reports.with_monthly_reports
+      @monthly_reports[representative.id] = Representative.monthly_reports_for_representatives(@current_closing.id, representative.id)
     end
   end
 
   def select
+    @totals_by_bank = []
+    @totals_by_store = []
+    @total_in_cash = []
+    @monthly_reports = []
     @select_action = params[:select_action]
 
     @title = @select.select { |action| action.is_a?(Array) && @select_action.include?(action[1]) }
       .map { |action| action[0] }.first
 
-    @summary = {}
-    @accumulated = {}
-    @totals_by_bank = {}
-    @totals_by_store = {}
-    @total_in_cash = {}
-    @monthly_reports = {}
-
-    @representatives = Representative.joins(:monthly_reports).where(active: true).order("name ASC").distinct
+    @representatives = Representative.with_totals(@current_closing.id)
 
     @representatives.each do |representative|
-      monthly_reports = representative.monthly_reports.joins(:prescriber)
-        .where(closing_id: @current_closing.id)
-
-      @summary[representative.id] = monthly_reports.order("prescribers.name ASC")
-      @accumulated[representative.id] = monthly_reports.where(accumulated: true)
-      @monthly_reports[representative.id] = representative.set_monthly_reports(@current_closing.id)
-
-      @totals_by_bank[representative.id] = representative.totals_by_bank(monthly_reports)
-      @totals_by_store[representative.id] = representative.totals_by_store(monthly_reports)
-      @total_in_cash[representative.id] = representative.total_cash(monthly_reports)
+      @totals_by_bank[representative.id] = Representative.totals_by_bank_for_representatives(@current_closing.id, representative.id)
+      @totals_by_store[representative.id] = Representative.totals_by_store_for_representatives(@current_closing.id, representative.id)
+      total_cash = Representative.total_cash_for_representatives(@current_closing.id, representative.id)
+      @total_in_cash[representative.id] = divide_into_notes(total_cash.sum(&:total_available_value).to_f)
+      @monthly_reports[representative.id] = Representative.monthly_reports_for_representatives(@current_closing.id, representative.id)
     end
   end
 
   def unaccumulated_addresses
-    @representatives = [
-      Representative.get_representatives(@current_closing.id, params[:id], monthly_reports: :prescriber)
-    ]
+    @monthly_reports = []
+
+    @representatives = Representative.with_totals(@current_closing.id).where(id: params[:id])
 
     @representatives.each do |representative|
-      @monthly_reports = representative.monthly_reports.with_monthly_reports
+      @monthly_reports[representative.id] = Representative.monthly_reports_for_representatives(@current_closing.id, representative.id)
     end
   end
 
