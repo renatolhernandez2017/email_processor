@@ -6,7 +6,7 @@ class RepresentativesController < ApplicationController
 
   before_action :set_selects_label
   before_action :set_closing_date, except: %i[index update change_active]
-  before_action :set_representative, except: %i[index monthly_report patient_listing select]
+  before_action :set_representative, only: %i[update change_active]
 
   def index
     @pagy, @representatives = pagy(Representative.all.order(:number))
@@ -32,66 +32,33 @@ class RepresentativesController < ApplicationController
   end
 
   def monthly_report
-    @totals_by_bank = []
-    @totals_by_store = []
-    @total_in_cash = []
     @representatives = Representative.with_totals(@current_closing.id).where(id: params[:id])
-
-    @representatives.each do |representative|
-      @totals_by_bank[representative.id] = Representative.totals_by_bank_for_representatives(@current_closing.id, representative.id)
-      @totals_by_store[representative.id] = Representative.totals_by_store_for_representatives(@current_closing.id, representative.id)
-      total_cash = Representative.total_cash_for_representatives(@current_closing.id, representative.id)
-      @total_in_cash[representative.id] = divide_into_notes(total_cash.sum(&:total_available_value).to_f)
-    end
+    load_totals_for_representatives
   end
 
   def patient_listing
-    @monthly_reports = []
     @representatives = Representative.with_totals(@current_closing.id).where(id: params[:id])
-
-    @representatives.each do |representative|
-      @monthly_reports[representative.id] = Representative.monthly_reports_for_representatives(@current_closing.id, representative.id)
-    end
+    load_totals_for_representatives
   end
 
   def summary_patient_listing
-    @monthly_reports = []
     @representatives = Representative.with_totals(@current_closing.id).where(id: params[:id])
-
-    @representatives.each do |representative|
-      @monthly_reports[representative.id] = Representative.monthly_reports_for_representatives(@current_closing.id, representative.id)
-    end
+    load_totals_for_representatives
   end
 
   def select
-    @totals_by_bank = []
-    @totals_by_store = []
-    @total_in_cash = []
-    @monthly_reports = []
     @select_action = params[:select_action]
 
     @title = @select.select { |action| action.is_a?(Array) && @select_action.include?(action[1]) }
       .map { |action| action[0] }.first
 
     @representatives = Representative.with_totals(@current_closing.id)
-
-    @representatives.each do |representative|
-      @totals_by_bank[representative.id] = Representative.totals_by_bank_for_representatives(@current_closing.id, representative.id)
-      @totals_by_store[representative.id] = Representative.totals_by_store_for_representatives(@current_closing.id, representative.id)
-      total_cash = Representative.total_cash_for_representatives(@current_closing.id, representative.id)
-      @total_in_cash[representative.id] = divide_into_notes(total_cash.sum(&:total_available_value).to_f)
-      @monthly_reports[representative.id] = Representative.monthly_reports_for_representatives(@current_closing.id, representative.id)
-    end
+    load_totals_for_representatives
   end
 
   def unaccumulated_addresses
-    @monthly_reports = []
-
     @representatives = Representative.with_totals(@current_closing.id).where(id: params[:id])
-
-    @representatives.each do |representative|
-      @monthly_reports[representative.id] = Representative.monthly_reports_for_representatives(@current_closing.id, representative.id)
-    end
+    load_totals_for_representatives
   end
 
   def change_active
@@ -110,16 +77,18 @@ class RepresentativesController < ApplicationController
   end
 
   def download_pdf
+    @representatives = Representative.with_totals(@current_closing.id).where(id: params[:id])
     pdf_class = PDF_CLASSES[params[:kind]]
-    pdf = pdf_class.new([@representative], @closing, @current_closing).render
+    pdf = pdf_class.new(@representatives, @closing, @current_closing).render
 
     send_data pdf,
-      filename: "#{pdf_class}_#{@representative.name.parameterize}_#{@closing.downcase}.pdf",
+      filename: "#{pdf_class}_#{@representatives[0].name.parameterize}_#{@closing.downcase}.pdf",
       type: "application/pdf",
       disposition: "inline" # ou "attachment" se quiser forçar download
   end
 
   def download_select_pdf
+    @representatives = Representative.with_totals(@current_closing.id)
     selected_key = @select.find { |action| action[0] == params[:kind] }&.last
     pdf_class = PDF_CLASSES[selected_key]
     pdf = pdf_class.new(@representatives, @closing, @current_closing).render
@@ -160,5 +129,20 @@ class RepresentativesController < ApplicationController
       ["Etiquetas", "tags"],
       ["Relatório de Endereços", "address_report"]
     ]
+  end
+
+  def load_totals_for_representatives
+    @totals_by_bank = []
+    @totals_by_store = []
+    @total_in_cash = []
+    @monthly_reports = []
+
+    @representatives.each do |representative|
+      @totals_by_bank[representative.id] = Representative.totals_by_bank_for_representatives(@current_closing.id, representative.id)
+      @totals_by_store[representative.id] = Representative.totals_by_store_for_representatives(@current_closing.id, representative.id)
+      total_cash = Representative.total_cash_for_representatives(@current_closing.id, representative.id)
+      @total_in_cash[representative.id] = divide_into_notes(total_cash.sum(&:total_available_value).to_f)
+      @monthly_reports[representative.id] = Representative.monthly_reports_for_representatives(@current_closing.id, representative.id)
+    end
   end
 end

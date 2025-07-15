@@ -1,7 +1,6 @@
 class Representative < ApplicationRecord
   audited
 
-  include ActionView::Helpers::NumberHelper 
   include PgSearch::Model
   include Roundable
 
@@ -182,41 +181,4 @@ class Representative < ApplicationRecord
         SQL
       )
   }
-
-  def self.get_representatives(closing_id, id = nil, joins_associations)
-    scope = joins(joins_associations).where("monthly_reports.closing_id = ? AND active = ?", closing_id, true)
-
-    if id.present?
-      [scope.find(id)]
-    else
-      scope.all
-    end
-  end
-
-  # def totals_by_bank(closing_id)
-  #   monthly_reports.joins(prescriber: {current_accounts: :bank})
-  #     .where(closing_id: closing_id, accumulated: false)
-  #     .group("banks.name")
-  #     .select("banks.name AS name, COUNT(monthly_reports.id) AS count, SUM(monthly_reports.partnership - monthly_reports.discounts) AS total")
-  # end
-
-  # def totals_by_store(closing_id)
-  #   monthly_reports
-  #     .joins(:requests, prescriber: {representative: :branch})
-  #     .where(closing_id: closing_id, accumulated: false)
-  #     .group("branches.name")
-  #     .select("branches.name AS name", "COUNT(requests.id) AS count", "SUM(requests.amount_received) AS total")
-  # end
-
-  # def total_cash(closing_id)
-  #   monthly_reports.joins(prescriber: {current_accounts: :bank})
-  #     .where(closing_id: closing_id, accumulated: false)
-  #     .map { |mr| divide_into_notes(mr.available_value.to_f) }
-  #     .each_with_object(Hash.new(0)) { |hash, sums|
-  #     hash.each { |key, value| sums[key] += value }
-  #   }
-  # end
-
-  # def set_monthly_reports(closing_id)
-  # end
 end

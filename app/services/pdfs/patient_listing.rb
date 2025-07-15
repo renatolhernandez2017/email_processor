@@ -1,22 +1,22 @@
 module Pdfs
   class PatientListing < BaseMonthlyPdf
     def generate_content
-      @representatives.each do |representative|
+      @representatives.each_with_index do |representative, index|
+        start_new_page unless index.zero?
+        @representative = representative
         first_page = true
-        monthly_reports = representative.set_monthly_reports(@current_closing.id)
 
-        monthly_reports.each do |reports|
-          if !first_page && reports[:situation].present?
+        @monthly_reports[@representative.id].each do |monthly_report|
+          if !first_page && monthly_report.situation.present?
             start_new_page
           end
 
           first_page = false
-          @representative = representative
 
           header
           move_down 10
 
-          @monthly_reports = reports
+          @monthly_report = monthly_report
           content
         end
       end
@@ -39,52 +39,48 @@ module Pdfs
     end
 
     def content
-      @monthly_reports[:monthly_reports].each do |monthly_report|
-        move_down 10
-        table([
-          [
-            { content: "Prescritor:", font_style: :bold },
-            { content: monthly_report.prescriber.name },
-            { content: "Situação:", font_style: :bold },
-            { content: @monthly_reports[:situation] },
-            { content: "Envelope:", font_style: :bold },
-            { content: @monthly_reports[:envelope_number] }
-          ]
-        ], cell_style: { borders: [], size: 10 }, position: :center) do
-          [1, 3, 5].each { |i| cells[0, i].text_color = "00008b" }
-        end
-        move_down 20
-
-        headers = [
-          "Pacientes", "Repetida", "Data de Entrada",
-          "Data de Pagamento", "Valor Recebido", "Filial"
+      move_down 20
+      table([
+        [
+          {content: "Situação:", font_style: :bold},
+          {content: @monthly_report.situation},
+          {content: "Envelope:", font_style: :bold},
+          {content: @monthly_report.number_envelope}
         ]
-
-        rows = monthly_report.requests.map do |request|
-          [
-            request&.patient_name || "Sem Nome",
-            request.repeat ? "-R" : "",
-            request.entry_date.strftime("%d/%m/%y"),
-            request.set_payment_date(request),
-            request.set_price(request),
-            request&.branch&.name || "Sem Filial"
-          ]
-        end
-
-        footer = [
-          ["Quantidade", "", "", "", "", "Valor Disponível"],
-          [
-            monthly_report.quantity,
-            "", "", "", "",
-            number_to_currency(monthly_report.available_value)
-          ]
-        ]
-
-        data = build_table_data(headers: headers, rows: rows, footer: footer)
-        render_table(data)
-
-        move_down 20
+      ], cell_style: {borders: [], size: 10}, position: :center) do
+        [1, 3].each { |i| cells[0, i].text_color = "00008b" }
       end
+      move_down 20
+
+      headers = [
+        "Pacientes", "Repetida", "Data de Entrada",
+        "Data de Pagamento", "Valor Recebido", "Filial"
+      ]
+
+      rows = @monthly_report.prescriber.requests.map do |request|
+        [
+          request.patient_name || "Sem Nome",
+          request.repeat ? "-R" : "",
+          request.entry_date.strftime("%d/%m/%y"),
+          request.set_payment_date(request),
+          request.set_price(request),
+          request&.branch&.name || "Sem Filial"
+        ]
+      end
+
+      footer = [
+        ["Quantidade", "", "", "", "", "Valor Disponível"],
+        [
+          @monthly_report.quantity,
+          "", "", "", "",
+          number_to_currency(@monthly_report.with_available_value)
+        ]
+      ]
+
+      data = build_table_data(headers: headers, rows: rows, footer: footer)
+      render_table(data)
+
+      move_down 20
     end
 
     def build_table_data(headers:, rows:, footer: [])

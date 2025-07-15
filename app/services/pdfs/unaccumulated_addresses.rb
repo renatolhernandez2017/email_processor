@@ -5,12 +5,10 @@ module Pdfs
         start_new_page unless index == 0
         @representative = representative
 
-        monthly_reports = @representative.get_monthly_reports(@current_closing.id)
-
         header
         move_down 5
 
-        monthly_reports.each do |monthly_report|
+        @monthly_reports[@representative.id].each do |monthly_report|
           @monthly_report = monthly_report
 
           content
@@ -39,7 +37,7 @@ module Pdfs
 
       rows = [
         [
-          @monthly_report.envelope_number.to_s.rjust(5, "0"),
+          @monthly_report.number_envelope,
           [
             "<b>Nome:</b> <color rgb='00008b'>#{@monthly_report&.prescriber&.name || "Sem Nome"}</color>",
             "<b>Endereço:</b> #{@monthly_report&.prescriber&.full_address || "Sem Endereço"}",
@@ -48,7 +46,7 @@ module Pdfs
             "<b>OBS:</b> #{truncate(@monthly_report&.prescriber&.note, length: 50) || "Sem Observação"}"
           ].compact.join("\n"),
           @monthly_report.quantity,
-          number_to_currency(@monthly_report.available_value)
+          number_to_currency(@monthly_report.with_available_value)
         ]
       ]
 

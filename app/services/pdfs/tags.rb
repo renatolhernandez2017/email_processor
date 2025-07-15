@@ -4,14 +4,11 @@ module Pdfs
       @representatives.each_with_index do |representative, index|
         start_new_page unless index == 0
         @representative = representative
-        @monthly_reports = @representative.monthly_reports
-          .joins(prescriber: {current_accounts: :bank})
-          .where(closing_id: @current_closing.id)
 
         header
         move_down 5
 
-        @monthly_reports.each do |monthly_report|
+        @monthly_reports[@representative.id].each do |monthly_report|
           @monthly_report = monthly_report
 
           other_header
@@ -39,7 +36,7 @@ module Pdfs
     def other_header
       table([
         [
-          {content: @monthly_report.envelope_number.to_s.rjust(5, "0")},
+          {content: @monthly_report.number_envelope},
           {content: @monthly_report&.prescriber&.current_accounts.present? ? "" : "- (ESP)"}
         ]
       ], cell_style: {borders: [], size: 12}) do
@@ -50,17 +47,19 @@ module Pdfs
     def content
       headers = ["ID", "Nome", "Env.", "Informações", "Observação"]
 
+      prescriber = @monthly_report.prescriber
+
       rows = [
         [
-          @monthly_report.prescriber.id,
-          @monthly_report.prescriber.name,
-          @monthly_report.envelope_number.to_s.rjust(5, "0"),
+          prescriber.id,
+          prescriber.name,
+          number_envelope,
           [
-            @monthly_report&.prescriber&.full_address,
-            @monthly_report&.prescriber&.full_contact,
-            @monthly_report&.prescriber&.secretary
+            prescriber&.full_address,
+            prescriber&.full_contact,
+            prescriber&.secretary
           ].compact.join("\n"),
-          "OBS: #{truncate(@monthly_report&.prescriber&.note, length: 50)}"
+          "OBS: #{truncate(prescriber&.note, length: 50)}"
         ]
       ]
 

@@ -4,15 +4,6 @@ module Pdfs
       @representatives.each_with_index do |representative, index|
         start_new_page unless index == 0
         @representative = representative
-        monthly_reports = @representative.monthly_reports.joins(:prescriber)
-          .where(closing_id: @current_closing.id)
-
-        @monthly_reports = monthly_reports.order("prescribers.name ASC")
-        @accumulated = monthly_reports.where(accumulated: true)
-
-        @totals_by_bank = @representative.totals_by_bank(monthly_reports)
-        @totals_by_store = @representative.totals_by_store(monthly_reports)
-        @total_in_cash = @representative.total_cash(monthly_reports)
 
         header
         content
@@ -56,7 +47,7 @@ module Pdfs
         "Descontos", "Valor Disp.", "Tipo", "N. Envelope"
       ]
 
-      rows = @monthly_reports.map do |monthly_report|
+      rows = @representative.monthly_reports.includes(:prescriber).order("prescribers.name ASC").map do |monthly_report|
         [
           monthly_report&.prescriber&.id || "N/A",
           monthly_report&.prescriber&.name || "N/A",
@@ -80,8 +71,8 @@ module Pdfs
       build_generic_table(
         title: "Total por Banco",
         headers: ["Quantidade", "Banco", "Valor"],
-        rows: @totals_by_bank.map { |b| [b.count || 0, b.name || "N/A", number_to_currency(b.total || 0)] },
-        footer: [["Total de Bancos", "", "Total"], [@totals_by_bank.sum(&:count) || 0, "", number_to_currency(@totals_by_bank.sum(&:total) || 0)]],
+        rows: @totals_by_bank[@representative.id].map { |bank| [bank.count || 0, bank.bank_name || "N/A", number_to_currency(bank.total || 0)] },
+        footer: [["Total de Bancos", "", "Total"], [@totals_by_bank[@representative.id].sum(&:count) || 0, "", number_to_currency(@totals_by_bank[@representative.id].sum(&:total) || 0)]],
         type: "banks"
       )
     end
@@ -90,8 +81,8 @@ module Pdfs
       build_generic_table(
         title: "Total por Loja",
         headers: ["Quantidade", "Loja", "Valor"],
-        rows: @totals_by_store.map { |b| [b.count || 0, b.name || "N/A", number_to_currency(b.total || 0)] },
-        footer: [["Total de Lojas", "", "Total"], [@totals_by_store.sum(&:count) || 0, "", number_to_currency(@totals_by_store.sum(&:total) || 0)]],
+        rows: @totals_by_store[@representative.id].map { |branch| [branch.count || 0, branch.branch_name || "N/A", number_to_currency(branch.total || 0)] },
+        footer: [["Total de Lojas", "", "Total"], [@totals_by_store[@representative.id].sum(&:count) || 0, "", number_to_currency(@totals_by_store[@representative.id].sum(&:total) || 0)]],
         type: "stores"
       )
     end
@@ -100,47 +91,43 @@ module Pdfs
       build_generic_table(
         title: "Divisão de Notas",
         headers: ["Quantidade", "Notas", "Valor"],
-        rows: @total_in_cash.map { |item, cash| [cash || 0, item || "N/A", number_to_currency(cash * item || 0)] },
-        footer: [["Total de Notas", "", "Total"], [@total_in_cash.values.sum || 0, "", number_to_currency(@total_in_cash.sum { |key, value| key * value } || 0)]],
+        rows: @total_in_cash[@representative.id].map { |item, cash| [cash || 0, item || "N/A", number_to_currency(cash * item || 0)] },
+        footer: [["Total de Notas", "", "Total"], [@total_in_cash[@representative.id].values.sum || 0, "", number_to_currency(@total_in_cash[@representative.id].sum { |key, value| key * value } || 0)]],
         type: "notes"
       )
     end
 
     def build_monthly_reports_footer
-      totals = total_or_accumulated(@monthly_reports)
-      accumulated = total_or_accumulated(@accumulated)
-      real_sale = real_sale(@monthly_reports, @accumulated)
-
       [
         ["Quantidade", "", "", "", "", "", "", "", ""],
         [
-          totals[:count] || 0,
+          @representative.reports_count || 0,
           "Total Geral",
-          totals[:quantity] || 0,
-          totals[:total_price] || 0,
-          totals[:partnership] || 0,
-          totals[:discounts] || 0,
-          totals[:available_value] || 0,
+          @representative.total_quantity || 0,
+          @representative.total_price || 0,
+          @representative.total_partnership || 0,
+          @representative.total_discounts || 0,
+          @representative.with_available_value || 0,
           "", ""
         ],
         [
-          accumulated[:count] || 0,
+          @representative.accumulated_reports_count || 0,
           "Acumulados",
-          accumulated[:quantity] || 0,
-          accumulated[:total_price] || 0,
-          accumulated[:partnership] || 0,
-          accumulated[:discounts] || 0,
-          accumulated[:available_value] || 0,
+          @representative.accumulated_quantity || 0,
+          @representative.accumulated_price || 0,
+          @representative.accumulated_partnership || 0,
+          @representative.accumulated_discounts || 0,
+          @representative.available_value_accumulated || 0,
           "", ""
         ],
         [
-          real_sale[:count] || 0,
+          @representative.real_sale_reports_count || 0,
           "Venda Real",
-          real_sale[:quantity] || 0,
-          real_sale[:total_price] || 0,
-          real_sale[:partnership] || 0,
-          real_sale[:discounts] || 0,
-          real_sale[:available_value] || 0,
+          @representative.real_sale_quantity || 0,
+          @representative.real_sale_total_price || 0,
+          @representative.real_sale_partnership || 0,
+          @representative.real_sale_discounts || 0,
+          @representative.available_value_real_sale || 0,
           "", ""
         ]
       ]

@@ -1,8 +1,5 @@
 module Pdfs
   class SummaryPatientListing < BaseMonthlyPdf
-    include Prawn::View
-    include ActionView::Helpers::NumberHelper
-
     def generate_content
       @representatives.each_with_index do |representative, index|
         start_new_page unless index == 0
@@ -11,10 +8,8 @@ module Pdfs
         header
         move_down 10
 
-        monthly_reports = representative.set_monthly_reports(@current_closing.id)
-
-        monthly_reports.each do |reports|
-          @monthly_reports = reports
+        @monthly_reports[@representative.id].each do |monthly_report|
+          @monthly_report = monthly_report
           content
 
           stroke_color "00008b"
@@ -46,37 +41,33 @@ module Pdfs
     end
 
     def content
-      @monthly_reports[:monthly_reports].each do |monthly_report|
-        move_down 10
-        table([
-          [
-            { content: "Prescritor:", font_style: :bold },
-            { content: monthly_report.prescriber.name },
-            { content: "Situação:", font_style: :bold },
-            { content: @monthly_reports[:situation] },
-            { content: "Envelope:", font_style: :bold },
-            { content: @monthly_reports[:envelope_number] }
-          ]
-        ], cell_style: { borders: [], size: 10 }, position: :center) do
-          [1, 3, 5].each { |i| cells[0, i].text_color = "00008b" }
-        end
-        move_down 20
-
-        headers = ["Quantidade", "", "", "Valor Disponível"]
-
-        rows = [
-          [
-            @monthly_reports[:quantity],
-            "", "",
-            number_to_currency(@monthly_reports[:available_value])
-          ]
+      move_down 10
+      table([
+        [
+          {content: "Situação:", font_style: :bold},
+          {content: @monthly_report.situation},
+          {content: "Envelope:", font_style: :bold},
+          {content: @monthly_report.number_envelope}
         ]
-
-        data = build_table_data(headers: headers, rows: rows)
-
-        render_table(data)
-        move_down 20
+      ], cell_style: {borders: [], size: 10}, position: :center) do
+        [1, 3].each { |i| cells[0, i].text_color = "00008b" }
       end
+      move_down 20
+
+      headers = ["Quantidade", "", "", "Valor Disponível"]
+
+      rows = [
+        [
+          @monthly_report.quantity,
+          "", "",
+          number_to_currency(@monthly_report.with_available_value)
+        ]
+      ]
+
+      data = build_table_data(headers: headers, rows: rows)
+
+      render_table(data)
+      move_down 20
     end
 
     def build_table_data(headers:, rows:)
