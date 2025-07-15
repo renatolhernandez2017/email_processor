@@ -10,6 +10,7 @@ module Pdfs
 
         @monthly_reports[@representative.id].each do |monthly_report|
           @monthly_report = monthly_report
+          @prescriber = @monthly_report.prescriber
 
           other_header
           content
@@ -34,32 +35,31 @@ module Pdfs
     end
 
     def other_header
+      current_accounts = @prescriber.current_accounts
       table([
         [
           {content: @monthly_report.number_envelope},
-          {content: @monthly_report&.prescriber&.current_accounts.present? ? "" : "- (ESP)"}
+          {content: current_accounts.present? ? "" : "- (ESP)"}
         ]
       ], cell_style: {borders: [], size: 12}) do
-        row(0).columns(1).text_color = "FF0000" unless @monthly_report&.prescriber&.current_accounts.present?
+        row(0).columns(1).text_color = "FF0000" unless current_accounts.present?
       end
     end
 
     def content
       headers = ["ID", "Nome", "Env.", "Informações", "Observação"]
 
-      prescriber = @monthly_report.prescriber
-
       rows = [
         [
-          prescriber.id,
-          prescriber.name,
-          number_envelope,
+          @prescriber.id,
+          @prescriber.name,
+          @monthly_report.number_envelope,
           [
-            prescriber&.full_address,
-            prescriber&.full_contact,
-            prescriber&.secretary
+            @prescriber&.full_address,
+            @prescriber&.full_contact,
+            @prescriber&.secretary
           ].compact.join("\n"),
-          "OBS: #{truncate(prescriber&.note, length: 50)}"
+          "OBS: #{truncate(@prescriber&.note, length: 50)}"
         ]
       ]
 

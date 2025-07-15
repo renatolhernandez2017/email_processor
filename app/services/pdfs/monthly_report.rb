@@ -4,6 +4,7 @@ module Pdfs
       @representatives.each_with_index do |representative, index|
         start_new_page unless index == 0
         @representative = representative
+        @monthly_reports = @representative.monthly_reports.includes(:prescriber).order("prescribers.name ASC")
 
         header
         content
@@ -47,7 +48,7 @@ module Pdfs
         "Descontos", "Valor Disp.", "Tipo", "N. Envelope"
       ]
 
-      rows = @representative.monthly_reports.includes(:prescriber).order("prescribers.name ASC").map do |monthly_report|
+      rows = @monthly_reports.map do |monthly_report|
         [
           monthly_report&.prescriber&.id || "N/A",
           monthly_report&.prescriber&.name || "N/A",

@@ -17,6 +17,7 @@ module Pdfs
           move_down 10
 
           @monthly_report = monthly_report
+          @requests = @monthly_report.prescriber.requests
           content
         end
       end
@@ -57,7 +58,7 @@ module Pdfs
         "Data de Pagamento", "Valor Recebido", "Filial"
       ]
 
-      rows = @monthly_report.prescriber.requests.map do |request|
+      rows = @requests.map do |request|
         [
           request.patient_name || "Sem Nome",
           request.repeat ? "-R" : "",

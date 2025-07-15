@@ -10,6 +10,7 @@ module Pdfs
 
         @monthly_reports[@representative.id].each do |monthly_report|
           @monthly_report = monthly_report
+          @prescriber = @monthly_report.prescriber
 
           content
         end
@@ -39,11 +40,11 @@ module Pdfs
         [
           @monthly_report.number_envelope,
           [
-            "<b>Nome:</b> <color rgb='00008b'>#{@monthly_report&.prescriber&.name || "Sem Nome"}</color>",
-            "<b>Endereço:</b> #{@monthly_report&.prescriber&.full_address || "Sem Endereço"}",
-            "<b>Fones:</b> #{@monthly_report&.prescriber&.full_contact || "Sem Telefones"}",
-            "<b>Contatos:</b> #{@monthly_report&.prescriber&.secretary || "Sem Contatos"}",
-            "<b>OBS:</b> #{truncate(@monthly_report&.prescriber&.note, length: 50) || "Sem Observação"}"
+            "<b>Nome:</b> <color rgb='00008b'>#{@prescriber.name || "Sem Nome"}</color>",
+            "<b>Endereço:</b> #{@prescriber&.full_address || "Sem Endereço"}",
+            "<b>Fones:</b> #{@prescriber&.full_contact || "Sem Telefones"}",
+            "<b>Contatos:</b> #{@prescriber.secretary || "Sem Contatos"}",
+            "<b>OBS:</b> #{truncate(@prescriber.note, length: 50) || "Sem Observação"}"
           ].compact.join("\n"),
           @monthly_report.quantity,
           number_to_currency(@monthly_report.with_available_value)
