@@ -8,7 +8,7 @@ module SharedData
   private
 
   def load_shared_data
-    @branches = Branch.pluck(:name, :id)
+    @branches = Branch.pluck(:name, :id, :branch_number)
     @representatives = Representative.all
   end
 end

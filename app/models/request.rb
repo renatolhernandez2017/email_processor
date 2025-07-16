@@ -14,18 +14,18 @@ class Request < ApplicationRecord
       .select(<<~SQL.squish)
         branch_id,
         SUM(total_price) AS total_price,
-        COUNT(requests.id) AS quantity,
+        COUNT(DISTINCT requests.id) AS quantity,
         SUM(amount_received) AS amount_received,
         SUM(total_discounts) AS total_discounts,
         SUM(total_fees) AS total_fees,
         CASE
-          WHEN branches.branch_number != 13 THEN SUM(total_price) / COUNT(requests.id)
-          ELSE (SUM(total_price) / 0.85) / COUNT(requests.id)
+          WHEN branches.branch_number != 13 THEN SUM(total_price) / COUNT(DISTINCT requests.id)
+          ELSE (SUM(total_price) / 0.85) / COUNT(DISTINCT requests.id)
         END AS adjusted_revenue_value,
         CASE
           WHEN branches.branch_number != 13 THEN SUM(total_price)
           ELSE SUM(total_price) / 0.85
-        END AS adjusted_total_orders
+        END AS total_orders
       SQL
       .where(entry_date: start_date..end_date)
       .group(:branch_id, "branches.branch_number")

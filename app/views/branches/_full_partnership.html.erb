@@ -12,8 +12,8 @@
 
           <tbody>
             <tr class="bg-gray-200 border-t border-b border-black">
-              <td><%= number_to_currency(@cash_partnership) %></td>
-              <td><%= number_to_currency(@full_partnership - @cash_partnership) %></td>
+              <td><%= number_to_currency(with_partnership.sum(&:branch_partnership)) %></td>
+              <td><%= number_to_currency(with_partnership.sum(&:total_discounts)) %></td>
             </tr>
           </tbody>
 
@@ -29,7 +29,10 @@
               <tr class="bg-gray-200 border-t border-b border-black h-10">
                 <td class="font-semibold text-base">Parceria total</td>
 
-                <td><%= number_to_currency(@full_partnership) %> (-)</td>
+                <td>
+                  <%= number_to_currency(with_partnership.sum(&:branch_partnership) + with_partnership.sum(&:total_discounts)) %>
+                  (-)
+                </td>
               </tr>
             </tbody>
           </tfoot>

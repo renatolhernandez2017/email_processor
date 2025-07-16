@@ -25,17 +25,9 @@ class BranchesController < ApplicationController
   end
 
   def print_all_stores
-    @total_orders = Request.with_adjusted_totals(
-      start_date: @current_closing&.start_date,
-      end_date: @current_closing&.end_date
-    )
-
-    @total_billings = Request.with_adjusted_totals_billings(
-      start_date: @current_closing&.start_date,
-      end_date: @current_closing&.end_date
-    )
-
-    @billings = MonthlyReport.with_adjusted_billings(closing_id: @current_closing&.id)
+    @loose = Request.with_adjusted_totals(@current_closing.start_date, @current_closing.end_date)
+    @total_revenue = Request.with_adjusted_totals_billings(@current_closing.start_date, @current_closing.end_date)
+    @with_partnership = MonthlyReport.with_adjusted_billings(@current_closing.id)
   end
 
   private

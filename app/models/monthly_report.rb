@@ -18,14 +18,20 @@ class MonthlyReport < ApplicationRecord
         monthly_reports.representative_id,
         representatives.name AS representative_name,
         branches.name AS branch_name,
-        SUM(representatives.partnership) AS commission,
-        SUM(requests.amount_received) AS total_requests,
-        GREATEST((SUM(requests.amount_received) / NULLIF(monthly_reports.total_price, 0)) * (monthly_reports.partnership - monthly_reports.discounts), 0) AS branch_partnership,
-        GREATEST((SUM(requests.amount_received) * SUM(representatives.partnership) / 100.0), 0) AS commission_payments_transfers,
-        COUNT(requests.id) AS number_of_requests
+        SUM(monthly_reports.discounts) AS total_discounts,
+        MAX(representatives.partnership) AS commission,
+        SUM(DISTINCT requests.amount_received) AS total_requests,
+        GREATEST(
+          (SUM(DISTINCT requests.amount_received) / NULLIF(MAX(monthly_reports.total_price), 0)) * 
+          (MAX(monthly_reports.partnership) - SUM(monthly_reports.discounts)), 0
+        ) AS branch_partnership,
+        GREATEST(
+          SUM(DISTINCT requests.amount_received) * MAX(representatives.partnership) / 100.0, 0
+        ) AS commission_payments_transfers,
+        COUNT(DISTINCT requests.id) AS number_of_requests
       SQL
       .where(closing_id: closing_id, accumulated: false)
-      .group("monthly_reports.id, representatives.name, branches.name")
+      .group("monthly_reports.representative_id, representatives.name, branches.name")
       .group_by(&:branch_name)
   }
 

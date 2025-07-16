@@ -14,10 +14,10 @@
 
           <tbody>
             <tr class="bg-gray-200 border-t border-b border-black">
-              <td><%= total_orders&.quantity_revenue || 0 %></td>
-              <td><%= number_to_currency(total_orders&.adjusted_revenue_value || 0) %></td>
-              <td><%= number_to_currency(total_orders&.total_discounts || 0) %></td>
-              <td><%= number_to_currency(total_orders&.total_fees || 0) %></td>
+              <td><%= loose.quantity || 0 %></td>
+              <td><%= number_to_currency(loose.adjusted_revenue_value || 0) %></td>
+              <td><%= number_to_currency(loose.total_discounts || 0) %></td>
+              <td><%= number_to_currency(loose.total_fees || 0) %></td>
             </tr>
           </tbody>
 
@@ -33,7 +33,7 @@
               <tr class="bg-gray-200 border-t border-b border-black h-10">
                 <td colspan="3" class="font-semibold text-base">Total de Pedidos</td>
 
-                <td><%= number_to_currency(total_orders&.adjusted_total_orders || 0) %></td>
+                <td><%= number_to_currency(loose.total_orders || 0) %></td>
               </tr>
             </tbody>
           </tfoot>

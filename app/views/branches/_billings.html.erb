@@ -12,8 +12,15 @@
 
           <tbody>
             <tr class="bg-gray-200 border-t border-b border-black">
-              <td><%= number_to_currency([@total_amount_received - @total_with_partnership, 0].max) %></td>
-              <td><%= number_to_currency(@total_with_partnership) %></td>
+              <td>
+                <% if branch_number != 13 %>
+                  <%= number_to_currency((total_revenue.amount_received - with_partnership.sum(&:total_requests)) || 0) %>
+                <% else %>
+                  <%= number_to_currency(((total_revenue.amount_received / 0.85) - with_partnership.sum(&:total_requests)) || 0) %>
+                <% end %>
+              </td>
+
+              <td><%= number_to_currency(with_partnership.sum(&:total_requests) || 0) %></td>
             </tr>
           </tbody>
 
@@ -29,7 +36,7 @@
               <tr class="bg-gray-200 border-t border-b border-black h-10">
                 <td class="font-semibold text-base">Faturamento</td>
 
-                <td><%= number_to_currency(@billing) %> (=)</td>
+                <td><%= number_to_currency(total_revenue.billing || 0) %></td>
               </tr>
             </tbody>
           </tfoot>

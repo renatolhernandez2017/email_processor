@@ -4,36 +4,32 @@
       <div class="overflow-auto my-2">
         <table class="table w-full">
           <thead class="text-base">
-            <tr>
-              <th></th>
-            </tr>
+            <tr><th></th></tr>
           </thead>
 
           <tbody>
             <tr class="bg-gray-200 border-t border-b border-black h-10">
               <td class="font-semibold text-base">Parceria adiantada pela loja</td>
 
-              <td><%= number_to_currency(@total_discounts) %> (+)</td>
+              <td><%= number_to_currency(with_partnership.sum(&:total_discounts)) %> (+)</td>
             </tr>
 
             <tr class="bg-gray-200 border-t border-b border-black h-10">
               <td class="font-semibold text-base">Pagamento de comissão para representantes</td>
 
-              <td><%= number_to_currency(@commission_payments_transfers) %> (-) ver tabela abaixo</td>
+              <td><%= number_to_currency(with_partnership.sum(&:commission_payments_transfers)) %> (-) ver tabela abaixo</td>
             </tr>
 
             <tr class="bg-gray-200 border-t border-b border-black h-10">
               <td class="font-semibold text-base">Repasse de comissão para representantes</td>
 
-              <td><%= number_to_currency(@commission_payments_transfers) %> (+) ver tabela abaixo</td>
+              <td><%= number_to_currency(with_partnership.sum(&:commission_payments_transfers)) %> (+) ver tabela abaixo</td>
             </tr>
 
             <tr class="bg-gray-200 border-t border-b border-black h-10">
               <td class="font-semibold text-base">Total devido</td>
 
-              <td>
-                <%= number_to_currency([(@full_partnership - @total_discounts) + (@commission_payments_transfers - @commission_payments_transfers), 0].max) %> (=)
-              </td>
+              <td><%= number_to_currency(with_partnership.sum(&:branch_partnership)) %> (=)</td>
             </tr>
           </tbody>
         </table>

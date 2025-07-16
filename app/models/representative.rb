@@ -82,8 +82,8 @@ class Representative < ApplicationRecord
       .select(
         "representatives.id AS representative_id",
         "banks.name AS bank_name",
-        "COUNT(monthly_reports.id) AS count",
-        "SUM(monthly_reports.partnership - monthly_reports.discounts) AS total"
+        "COUNT(DISTINCT monthly_reports.id) AS count",
+        "SUM(DISTINCT monthly_reports.partnership - monthly_reports.discounts) AS total"
       )
   }
 
@@ -96,7 +96,7 @@ class Representative < ApplicationRecord
         "representatives.id AS representative_id",
         "branches.name AS branch_name",
         "COUNT(DISTINCT requests.id) AS count",
-        "SUM(requests.amount_received) AS total"
+        "SUM(DISTINCT requests.amount_received) AS total"
       )
   }
 
@@ -111,7 +111,7 @@ class Representative < ApplicationRecord
       .select(<<~SQL.squish)
         CASE
           WHEN SUM(monthly_reports.partnership) <= 0 THEN 0
-          WHEN COUNT(ca_standard.id) > 0 THEN
+          WHEN COUNT(DISTINCT ca_standard.id) > 0 THEN
             GREATEST(SUM(monthly_reports.partnership) - SUM(monthly_reports.discounts), 0)
           ELSE
             GREATEST(ROUND((SUM(monthly_reports.partnership) - SUM(monthly_reports.discounts)) / 10.0) * 10, 0)
