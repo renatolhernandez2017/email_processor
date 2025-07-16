@@ -23,7 +23,7 @@
 
     <script type="module">
       document.addEventListener("DOMContentLoaded", () => {
-        window.subscribeToClosing(<%= @current_closing.id %>);
+        window.subscribeToClosing(<%= @current_closing&.id %>);
       });
     </script>
   </head>
