@@ -2,7 +2,6 @@ class Closing < ApplicationRecord
   audited
 
   include PgSearch::Model
-  include LoadMonthlyReports
 
   has_many :monthly_reports, dependent: :destroy
   has_many :requests, through: :monthly_reports
@@ -11,7 +10,9 @@ class Closing < ApplicationRecord
   validates :closing, presence: {message: " deve estar preenchido!"}, uniqueness: {message: " já está cadastrado!"}
 
   def monthly_reports_false(closing_id, eager_load = [])
-    scoped_monthly_reports(closing_id, eager_load).where(accumulated: false)
+    monthly_reports.includes(*eager_load)
+      .where(closing_id: closing_id, accumulated: false)
+      .order("prescribers.name ASC")
   end
 
   def set_current_accounts(closing_id)

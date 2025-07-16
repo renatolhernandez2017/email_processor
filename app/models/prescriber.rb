@@ -2,7 +2,6 @@ class Prescriber < ApplicationRecord
   audited
 
   include PgSearch::Model
-  include LoadMonthlyReports
 
   belongs_to :representative, optional: true
 
@@ -20,7 +19,9 @@ class Prescriber < ApplicationRecord
                         "CRN" => 9}
 
   def monthly_reports_false(closing_id, eager_load = [])
-    scoped_monthly_reports(closing_id, eager_load).where(accumulated: false)
+    monthly_reports.includes(*eager_load)
+      .where(closing_id: closing_id, accumulated: false)
+      .order("prescribers.name ASC")
   end
 
   def full_address
