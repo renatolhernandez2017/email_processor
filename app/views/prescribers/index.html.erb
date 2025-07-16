@@ -28,10 +28,10 @@
             <td><%= prescriber.full_concil %></td>
 
             <td class="flex justify-center items-center gap-2">
-              <%= link_to patient_listing_prescriber_path(prescriber),
-                  title: "Listagem de Pacientes" do %>
-                <span class="material-symbols-outlined text-primary">personal_injury</span>
-              <% end %>
+              <%= link_to_if prescriber.representative.present?,
+                  "<span class='material-symbols-outlined text-primary'>personal_injury</span>".html_safe,
+                  patient_listing_prescriber_path(prescriber), title: "Listagem de Pacientes"
+              %>
 
               <button onclick="document.getElementById('edit_prescriber<%= prescriber.id %>').showModal();" title="Editar">
                 <span class="material-symbols-outlined text-primary">edit</span>
@@ -55,13 +55,13 @@
                 <span class="material-symbols-outlined text-primary">add</span>
               <% end %>
 
-              <button onclick="document.getElementById('account_balance_prescriber<%= prescriber.id %>').showModal();" title="Adicionar nova Conta Corrente">
+              <!---<button onclick="document.getElementById('account_balance_prescriber<%#= prescriber.id %>').showModal();" title="Adicionar nova Conta Corrente">
                 <span class="material-symbols-outlined text-primary">account_balance</span>
               </button>
 
               <dialog id="account_balance_prescriber<%= prescriber.id %>" class="modal place-items-center">
                 <%#= render ModalComponent.new(form: render("current_accounts/form", representative: prescriber, current_account: @current_account, representatives: @prescribers_map, title: "Criar Nova Conta Corrente", btn_save: "Salvar", route: "prescriber")) %>
-              </dialog>
+              </dialog>--->
             </td>
           </tr>
         <% end %>

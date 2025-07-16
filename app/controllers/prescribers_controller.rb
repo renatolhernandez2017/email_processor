@@ -67,16 +67,9 @@ class PrescribersController < ApplicationController
   end
 
   def patient_listing
-    @representative = @prescriber.representative
-
-    @monthly_reports = @prescriber.monthly_reports_false(@current_closing.id, [:prescriber])
-      .group_by { |report| [report.envelope_number, report.situation] }
-      .map do |info, reports|
-        {
-          info: info,
-          reports: reports
-        }
-      end
+    representative = @prescriber.representative
+    @representative = Representative.with_totals(@current_closing.id).find(representative.id)
+    @monthly_reports = Representative.monthly_reports_for_representatives(@current_closing.id, representative.id).where(prescriber_id: @prescriber.id)
   end
 
   private

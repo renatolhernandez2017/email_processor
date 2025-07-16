@@ -18,12 +18,6 @@ class Prescriber < ApplicationRecord
                         "CRO" => 2,
                         "CRN" => 9}
 
-  def monthly_reports_false(closing_id, eager_load = [])
-    monthly_reports.includes(*eager_load)
-      .where(closing_id: closing_id, accumulated: false)
-      .order("prescribers.name ASC")
-  end
-
   def full_address
     return "Endereço não cadastrado" unless address.present?
 

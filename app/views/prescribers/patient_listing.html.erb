@@ -1,3 +1,5 @@
 <section class="flex flex-col p-5 mb-20">
-  <%= render "shared/patient/listing", closing: @closing, monthly_reports: @monthly_reports, representative: @representative %>
+  <%= render "shared/patient/listing", closing: @closing, monthly_reports: @monthly_reports,
+      representative_name: @representative.name
+  %>
 </section>
