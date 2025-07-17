@@ -30,6 +30,7 @@ Rails.application.routes.draw do
     post :modify_for_this_closure, on: :collection
     get :note_divisions, on: :collection
     post :perform_closing, on: :member
+    get :download_pdf, on: :collection
   end
 
   resources :current_accounts, only: %i[index create update destroy] do
@@ -38,6 +39,7 @@ Rails.application.routes.draw do
 
   resources :branches, only: %i[index create update destroy] do
     get :print_all_stores, on: :collection
+    get :download_pdf, on: :collection
   end
 
   resources :prescribers, only: %i[index create update show destroy] do

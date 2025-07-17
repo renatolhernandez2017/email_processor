@@ -16,7 +16,7 @@ class Closing < ApplicationRecord
   end
 
   def set_current_accounts(closing_id)
-    CurrentAccount.includes(:bank, prescriber: [:representative, :monthly_reports])
+    CurrentAccount.joins(:bank, prescriber: [:representative, :monthly_reports])
       .where(monthly_reports: {closing_id: closing_id, accumulated: false}, standard: true)
       .order("banks.name ASC")
       .group_by { |current_account| current_account.bank.name }

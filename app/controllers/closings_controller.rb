@@ -1,6 +1,7 @@
 class ClosingsController < ApplicationController
   include Pagy::Backend
   include SharedData
+  include PdfClassMapper
 
   before_action :set_closing, only: %i[update perform_closing modify_for_this_closure]
 
@@ -89,6 +90,19 @@ class ClosingsController < ApplicationController
     @as_follow_value = @as_follows&.sum { |store| store[:value] }
   end
 
+  def download_pdf
+    kind = params[:kind]
+    current_month = closing_date(@current_closing)
+    @banks = @current_closing&.set_current_accounts(@current_closing&.id)
+    pdf_class = PDF_CLASSES[kind]
+    pdf = pdf_class.new(@banks, current_month, @current_closing).render
+
+    send_data pdf,
+      filename: "#{kind}_#{current_month.downcase}.pdf",
+      type: "application/pdf",
+      disposition: "inline" # ou "attachment" se quiser forçar download
+  end
+
   private
 
   def closing_params
@@ -102,5 +116,10 @@ class ClosingsController < ApplicationController
 
   def set_closing
     @closing = Closing.find_by(id: params[:id])
+  end
+
+  def closing_date(closing)
+    month_abbr = closing.closing.split("/")
+    "#{t("view.months.#{month_abbr[0]}")}/#{month_abbr[1]}"
   end
 end

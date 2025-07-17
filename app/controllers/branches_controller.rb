@@ -1,9 +1,10 @@
 class BranchesController < ApplicationController
   include Pagy::Backend
   include SharedData
+  include PdfClassMapper
 
   before_action :set_branch, only: %i[update]
-  before_action :set_closing_date, only: %i[print_all_stores]
+  before_action :set_closing_date, only: %i[print_all_stores download_pdf]
 
   def index
     @pagy, @branches = pagy(Branch.all.order(:branch_number))
@@ -28,6 +29,17 @@ class BranchesController < ApplicationController
     @loose = Request.with_adjusted_totals(@current_closing.start_date, @current_closing.end_date)
     @total_revenue = Request.with_adjusted_totals_billings(@current_closing.start_date, @current_closing.end_date)
     @with_partnership = MonthlyReport.with_adjusted_billings(@current_closing.id)
+  end
+
+  def download_pdf
+    kind = params[:kind]
+    pdf_class = PDF_CLASSES[kind]
+    pdf = pdf_class.new(@branches, @closing, @current_closing).render
+
+    send_data pdf,
+      filename: "#{kind}_#{@closing.downcase}.pdf",
+      type: "application/pdf",
+      disposition: "inline" # ou "attachment" se quiser forçar download
   end
 
   private
