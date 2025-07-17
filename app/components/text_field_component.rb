@@ -18,11 +18,4 @@ class TextFieldComponent < ViewComponent::Base
 
     @form.object.send(:"#{@field_name}=", @form.object.send(@field_name).strftime("%Y-%m-%d"))
   end
-
-  # def human_attribute_name_for_string(attribute_string)
-  #   return unless attribute_string.present?
-
-  #   model, attribute = attribute_string.split(".")
-  #   I18n.t("activerecord.attributes.#{model}.#{attribute}", default: attribute.humanize)
-  # end
 end

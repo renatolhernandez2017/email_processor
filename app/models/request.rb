@@ -5,11 +5,12 @@ class Request < ApplicationRecord
   include PgSearch::Model
 
   belongs_to :branch, optional: true
+  belongs_to :closing, optional: true
   belongs_to :monthly_report, optional: true
   belongs_to :prescriber, optional: true
   belongs_to :representative, optional: true
 
-  scope :with_adjusted_totals, ->(start_date, end_date) {
+  scope :with_adjusted_totals, ->(start_date, end_date, closing_id) {
     joins(:branch)
       .select(<<~SQL.squish)
         branch_id,
@@ -27,12 +28,12 @@ class Request < ApplicationRecord
           ELSE SUM(total_price) / 0.85
         END AS total_orders
       SQL
-      .where(entry_date: start_date..end_date)
+      .where(closing_id: closing_id, entry_date: start_date..end_date)
       .group(:branch_id, "branches.branch_number")
       .index_by(&:branch_id)
   }
 
-  scope :with_adjusted_totals_billings, ->(start_date, end_date) {
+  scope :with_adjusted_totals_billings, ->(start_date, end_date, closing_id) {
     joins(:branch)
       .select(<<~SQL.squish)
         branch_id,
@@ -42,7 +43,7 @@ class Request < ApplicationRecord
           ELSE SUM(amount_received) / 0.85
         END AS billing
       SQL
-      .where(payment_date: start_date..end_date)
+      .where(closing_id: closing_id, payment_date: start_date..end_date)
       .group(:branch_id, "branches.branch_number")
       .index_by(&:branch_id)
   }

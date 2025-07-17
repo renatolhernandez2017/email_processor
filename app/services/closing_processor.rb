@@ -80,7 +80,9 @@ class ClosingProcessor
         representative: representative
       )
 
-      requests_all.map { |r| r.update(monthly_report: monthly_report) }
+      requests_all.map { |r|
+        r.update(monthly_report: monthly_report, closing_id: @closing.id)
+      }
     end
 
     envelope_number = MonthlyReport.where(accumulated: false).maximum(:envelope_number).to_i

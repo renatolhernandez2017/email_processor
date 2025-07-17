@@ -89,8 +89,8 @@ class Representative < ApplicationRecord
 
   scope :totals_by_store_for_representatives, ->(closing_id, representative_ids) {
     Request.joins(:monthly_report, :prescriber, :representative, :branch)
-      .where("monthly_reports.closing_id = ? AND monthly_reports.accumulated = ?", closing_id, false)
-      .where(representative_id: representative_ids)
+      .where("monthly_reports.accumulated = ?", false)
+      .where(closing_id: closing_id, representative_id: representative_ids)
       .group("representatives.id, branches.name")
       .select(
         "representatives.id AS representative_id",

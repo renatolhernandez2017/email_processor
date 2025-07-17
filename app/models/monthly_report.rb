@@ -44,14 +44,4 @@ class MonthlyReport < ApplicationRecord
       [round_to_ten((partnership - discounts).to_f), 0].max
     end
   end
-
-  # def situation
-  #   if accumulated
-  #     "A"
-  #   elsif !accumulated && prescriber&.current_accounts&.find_by(standard: true)
-  #     "D"
-  #   else
-  #     "E"
-  #   end
-  # end
 end

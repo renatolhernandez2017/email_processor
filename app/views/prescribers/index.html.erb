@@ -37,7 +37,7 @@
                 <span class="material-symbols-outlined text-primary">edit</span>
               </button>
 
-              <dialog id="edit_prescriber<%= prescriber.id %>" class="modal place-items-center">
+              <dialog id="edit_prescriber<%= prescriber.id %>" class="modal modal-bottom w-5/12 justify-self-center">
                 <%= render ModalComponent.new(form: render("form", prescriber: prescriber, representatives: @representatives, title: "Editar Prescritor : #{prescriber.id}", btn_save: "Atualizar")) %>
               </dialog>
 

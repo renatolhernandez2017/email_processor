@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_05_19_135851) do
+ActiveRecord::Schema[7.1].define(version: 2025_07_17_180459) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
   enable_extension "unaccent"
@@ -57,7 +57,7 @@ ActiveRecord::Schema[7.1].define(version: 2025_05_19_135851) do
 
   create_table "banks", force: :cascade do |t|
     t.string "name"
-    t.boolean "rounding", default: true
+    t.boolean "rounding", default: false
     t.string "agency_number"
     t.string "account_number"
     t.datetime "created_at", null: false
@@ -70,8 +70,6 @@ ActiveRecord::Schema[7.1].define(version: 2025_05_19_135851) do
     t.decimal "discount_request", default: "0.0"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.bigint "representative_id"
-    t.index ["representative_id"], name: "index_branches_on_representative_id"
   end
 
   create_table "closings", force: :cascade do |t|
@@ -79,9 +77,9 @@ ActiveRecord::Schema[7.1].define(version: 2025_05_19_135851) do
     t.datetime "end_date"
     t.string "closing", limit: 20
     t.integer "last_envelope"
+    t.boolean "active", default: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.boolean "active", default: false
   end
 
   create_table "current_accounts", force: :cascade do |t|
@@ -97,22 +95,6 @@ ActiveRecord::Schema[7.1].define(version: 2025_05_19_135851) do
     t.index ["branch_id"], name: "index_current_accounts_on_branch_id"
     t.index ["prescriber_id"], name: "index_current_accounts_on_prescriber_id"
     t.index ["representative_id"], name: "index_current_accounts_on_representative_id"
-  end
-
-  create_table "discounts", force: :cascade do |t|
-    t.boolean "visible", default: false
-    t.decimal "price", default: "0.0"
-    t.string "description"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.bigint "branch_id", null: false
-    t.bigint "prescriber_id", null: false
-    t.bigint "monthly_report_id"
-    t.bigint "request_id"
-    t.index ["branch_id"], name: "index_discounts_on_branch_id"
-    t.index ["monthly_report_id"], name: "index_discounts_on_monthly_report_id"
-    t.index ["prescriber_id"], name: "index_discounts_on_prescriber_id"
-    t.index ["request_id"], name: "index_discounts_on_request_id"
   end
 
   create_table "monthly_reports", force: :cascade do |t|
@@ -144,14 +126,14 @@ ActiveRecord::Schema[7.1].define(version: 2025_05_19_135851) do
     t.decimal "repetitions", default: "0.0"
     t.boolean "allows_changes_values", default: false
     t.decimal "discount_value", default: "0.0"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.bigint "representative_id"
+    t.integer "representative_number"
     t.string "class_council", limit: 1
     t.string "number_council"
     t.string "uf_council", limit: 2
     t.date "birthdate"
-    t.integer "representative_number"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.bigint "representative_id"
     t.index ["representative_id"], name: "index_prescribers_on_representative_id"
   end
 
@@ -159,11 +141,11 @@ ActiveRecord::Schema[7.1].define(version: 2025_05_19_135851) do
     t.string "name"
     t.decimal "partnership", default: "0.0"
     t.boolean "performs_closing", default: false
+    t.boolean "active", default: false
+    t.integer "number"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.bigint "branch_id"
-    t.boolean "active", default: false
-    t.integer "number"
     t.index ["branch_id"], name: "index_representatives_on_branch_id"
   end
 
@@ -185,7 +167,9 @@ ActiveRecord::Schema[7.1].define(version: 2025_05_19_135851) do
     t.bigint "prescriber_id"
     t.bigint "representative_id"
     t.bigint "monthly_report_id"
+    t.bigint "closing_id"
     t.index ["branch_id"], name: "index_requests_on_branch_id"
+    t.index ["closing_id"], name: "index_requests_on_closing_id"
     t.index ["monthly_report_id"], name: "index_requests_on_monthly_report_id"
     t.index ["prescriber_id"], name: "index_requests_on_prescriber_id"
     t.index ["representative_id"], name: "index_requests_on_representative_id"
@@ -202,14 +186,12 @@ ActiveRecord::Schema[7.1].define(version: 2025_05_19_135851) do
     t.string "name"
     t.string "role"
     t.string "image"
-    t.string "salt"
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
 
   add_foreign_key "addresses", "prescribers"
   add_foreign_key "addresses", "representatives"
-  add_foreign_key "branches", "representatives"
   add_foreign_key "current_accounts", "banks"
   add_foreign_key "current_accounts", "branches"
   add_foreign_key "current_accounts", "prescribers"
@@ -220,6 +202,7 @@ ActiveRecord::Schema[7.1].define(version: 2025_05_19_135851) do
   add_foreign_key "prescribers", "representatives"
   add_foreign_key "representatives", "branches"
   add_foreign_key "requests", "branches"
+  add_foreign_key "requests", "closings"
   add_foreign_key "requests", "monthly_reports"
   add_foreign_key "requests", "prescribers"
   add_foreign_key "requests", "representatives"

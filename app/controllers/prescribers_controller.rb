@@ -7,12 +7,7 @@ class PrescribersController < ApplicationController
   before_action :set_prescriber, except: %i[index]
 
   def index
-    @pagy, @prescribers = pagy(
-      @prescribers_map
-        .includes(:representative, :address)
-        .select(:id, :name, :created_at, :representative_id, :class_council, :uf_council, :number_council)
-        .order(:name)
-    )
+    @pagy, @prescribers = pagy(@prescribers_map.order(:name))
 
     @current_account = CurrentAccount.new
     @current_account.build_bank
