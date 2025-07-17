@@ -65,7 +65,7 @@ module Pdfs
           request.entry_date.strftime("%d/%m/%y"),
           request.set_payment_date(request),
           request.set_price(request),
-          request&.branch&.name || "Sem Filial"
+          request.branch.name || "Sem Filial"
         ]
       end
 

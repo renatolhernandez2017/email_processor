@@ -57,9 +57,9 @@ module Pdfs
           [
             @prescriber&.full_address,
             @prescriber&.full_contact,
-            @prescriber&.secretary
+            @prescriber.secretary
           ].compact.join("\n"),
-          "OBS: #{truncate(@prescriber&.note, length: 50)}"
+          "OBS: #{truncate(@prescriber.note, length: 50)}"
         ]
       ]
 

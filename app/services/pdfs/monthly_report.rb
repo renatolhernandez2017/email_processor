@@ -50,8 +50,8 @@ module Pdfs
 
       rows = @monthly_reports.map do |monthly_report|
         [
-          monthly_report&.prescriber&.id || "N/A",
-          monthly_report&.prescriber&.name || "N/A",
+          monthly_report.prescriber.id || "N/A",
+          monthly_report.prescriber.name || "N/A",
           monthly_report.quantity || "N/A",
           number_to_currency(monthly_report.total_price || 0),
           number_to_currency(monthly_report.partnership || 0),

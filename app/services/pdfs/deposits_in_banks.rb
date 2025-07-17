@@ -41,7 +41,7 @@ module Pdfs
           current_account.bank.account_number,
           current_account.favored,
           set_total_value(current_account),
-          current_account.prescriber&.representative&.name || "Unipharmus"
+          current_account.prescriber.representative.name || "Unipharmus"
         ]
       end
 
