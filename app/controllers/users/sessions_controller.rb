@@ -9,7 +9,7 @@ class Users::SessionsController < Devise::SessionsController
         if user.valid_password?(params[:user][:password])
           sign_in(user)
           flash[:success] = "Logado com sucesso!"
-          redirect_to root_path
+          render turbo_stream: turbo_stream.action(:redirect, root_path)
         else
           flash[:error] = "Senha inválida."
           redirect_to user_session_path
@@ -24,12 +24,18 @@ class Users::SessionsController < Devise::SessionsController
   end
 
   def create
-    super
+    super do |resource|
+      return render turbo_stream: turbo_stream.redirect(after_sign_in_path_for(resource)) if turbo_frame_request?
+
+      # Para forçar renderização HTML completa
+      response.set_header("Turbo-Frame", "false")
+    end
   end
 
   def destroy
     sign_out current_user
     flash[:success] = "Deslogado com sucesso."
-    redirect_to user_session_path
+
+    redirect_to user_session_path(status: "Deslogado")
   end
 end

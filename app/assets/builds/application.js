@@ -8360,11 +8360,15 @@ var change_controller_default = class extends Controller {
 
 // app/javascript/controllers/home_controller.js
 var home_controller_default = class extends Controller {
+  static values = { status: String, redirectPath: String };
   connect() {
     setTimeout(() => {
       this.element.classList.add("hidden");
     }, this.element.dataset.homeTimeoutValue || 8e3);
     setTimeout(() => this.close(), this.element.dataset.homeTimeoutValue || 8e3);
+    if (this.statusValue === "Deslogado") {
+      window.location.href = this.redirectPathValue;
+    }
   }
   close() {
     this.element.classList.add("opacity-0", "transition-opacity", "duration-500");
@@ -12424,10 +12428,22 @@ function getConfig2(name) {
 var consumer_default = createConsumer3();
 
 // app/javascript/channels/closing_channel.js
+var closingSubscription;
 window.subscribeToClosing = function(closingId) {
-  consumer_default.subscriptions.create(
+  if (!closingId)
+    return;
+  if (closingSubscription) {
+    consumer_default.subscriptions.remove(closingSubscription);
+  }
+  closingSubscription = consumer_default.subscriptions.create(
     { channel: "ClosingChannel", closing_id: closingId },
     {
+      connected() {
+        console.log("\u2705 Conectado ao NotificationChannel");
+      },
+      disconnected() {
+        console.log("\u274C Desconectado do NotificationChannel");
+      },
       received(data) {
         if (window.showFlash) {
           window.showFlash(data.message);

@@ -19,6 +19,7 @@ class ClosingsController < ApplicationController
 
   def create
     @closing = Closing.new(closing_params)
+    @current_closing.update(active: false)
 
     if @closing.save
       flash[:success] = "Fechamento criado com sucesso!"
@@ -107,6 +108,7 @@ class ClosingsController < ApplicationController
 
   def closing_params
     params.require(:closing).permit(
+      :active,
       :start_date,
       :end_date,
       :closing,

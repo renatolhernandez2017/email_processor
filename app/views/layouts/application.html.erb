@@ -22,8 +22,11 @@
     <%= javascript_include_tag "application", "data-turbo-track": "reload", type: "module" %>
 
     <script type="module">
-      document.addEventListener("DOMContentLoaded", () => {
-        window.subscribeToClosing(<%= @current_closing&.id %>);
+      document.addEventListener("turbo:load", () => {
+        const closingId = <%= @current_closing&.id || 'null' %>;
+        if (closingId) {
+          window.subscribeToClosing(closingId);
+        }
       });
     </script>
   </head>
