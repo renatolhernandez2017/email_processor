@@ -1,9 +1,15 @@
 :concurrency: 5
 :timeout: 120
 :verbose: true
+
 :queues:
   - [closings, 5]
   - [default, 4]
   - [mailers, 3]
   - [active_storage_analysis, 2]
   - [active_storage_purge, 1]
+
+:unique_jobs:
+  :enabled: true
+  :lock_info: true
+  :default_lock_timeout: 10m

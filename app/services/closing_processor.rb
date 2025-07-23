@@ -9,26 +9,26 @@ class ClosingProcessor
   end
 
   def call
-    broadcast("Iniciando fechamento...")
-    # execute_script
+    broadcast("Fechamento iniciado...", false, 1)
+    execute_script
 
-    # Importers::GroupDuplicates.new("#{Rails.root}/tmp/all.csv").import!
+    Importers::GroupDuplicates.new("#{Rails.root}/tmp/all.csv").import!
 
-    # ["fc01000", "fc08000"].each do |file|
-    #   ImportCsvService.new("#{Rails.root}/tmp/#{file}.csv").import!
-    #   sleep 3
-    # end
+    ["fc01000", "fc08000"].each do |file|
+      ImportCsvService.new("#{Rails.root}/tmp/#{file}.csv").import!
+      sleep 3
+    end
 
-    broadcast("Gerando requisições dos prescritores...")
+    broadcast("Gerando requisições dos prescritores...", false, 2)
     ImportCsvService.new("#{Rails.root}/tmp/group_duplicates.csv").import!
 
-    broadcast("Gerando relatórios mensais...")
+    broadcast("Gerando relatórios mensais...", false, 3)
     create_monthly_reports
-    # cleanup_temp_files
+    cleanup_temp_files
 
-    broadcast("Fechamento concluído com sucesso.")
+    broadcast("Fechamento concluído com sucesso.", true, 4)
   rescue => e
-    broadcast("Erro no fechamento: #{e.message}")
+    broadcast("Erro no fechamento: #{e.message}", true, 4)
   end
 
   def execute_script
@@ -37,8 +37,8 @@ class ClosingProcessor
     raise "Erro ao executar script" unless success
   end
 
-  def broadcast(message)
-    ClosingChannel.broadcast_to("closing_#{@closing.id}", {message: message})
+  def broadcast(message, status, step)
+    ClosingChannel.broadcast_to("closing_#{@closing.id}", {message: message, status: status, step: step})
   end
 
   def create_monthly_reports

@@ -13,14 +13,15 @@ window.subscribeToClosing = function(closingId) {
     { channel: "ClosingChannel", closing_id: closingId },
     {
       connected() {
-        console.log("✅ Conectado ao NotificationChannel")
+        console.log("✅ Conectado ao ClosingChannel")
       },
       disconnected() {
-        console.log("❌ Desconectado do NotificationChannel")
+        console.log("❌ Desconectado do ClosingChannel")
       },
       received(data) {
-        if (window.showFlash) {
-          window.showFlash(data.message);
+        const element = document.querySelector('[data-controller="notification"]');
+        if (element) {
+          element.dispatchEvent(new CustomEvent("notification:show", { detail: data }));
         }
       }
     }

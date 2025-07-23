@@ -45,7 +45,7 @@ class ClosingsController < ApplicationController
   end
 
   def perform_closing
-    PerformClosingJob.perform_later(@closing.id)
+    PerformClosingJob.perform_async(@closing.id)
   end
 
   def modify_for_this_closure

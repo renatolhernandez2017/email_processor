@@ -395,6 +395,10 @@ GEM
       sidekiq (>= 6)
     sidekiq-failures (1.0.4)
       sidekiq (>= 4.0.0)
+    sidekiq-unique-jobs (8.0.11)
+      concurrent-ruby (~> 1.0, >= 1.0.5)
+      sidekiq (>= 7.0.0, < 9.0.0)
+      thor (>= 1.0, < 3.0)
     sorbet-runtime (0.5.11504)
     standard (1.35.1)
       language_server-protocol (~> 3.17.0.2)
@@ -501,6 +505,7 @@ DEPENDENCIES
   sidekiq
   sidekiq-cron
   sidekiq-failures
+  sidekiq-unique-jobs
   standard
   state_machines-activerecord
   stimulus-rails

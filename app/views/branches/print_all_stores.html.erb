@@ -11,7 +11,7 @@
     </div>
   </div>
 
-  <% @branches.each do |name, id, branch_number| %>  
+  <% @branches.each do |name, branch_number, id| %>  
     <section class="flex flex-col p-5">
       <div class="card shadow-lg border border-primary p-5">
         <label class="text-lg">
@@ -21,9 +21,9 @@
 
         <%= render "total_orders", loose: @loose[id] if @loose.present? %>
         <%= render "billings", branch_number: branch_number, total_revenue: @total_revenue[id], with_partnership: @with_partnership[name] if @with_partnership.present? %>
-        <%= render "full_partnership", with_partnership: @with_partnership[name] %>
-        <%= render "other_informations", with_partnership: @with_partnership[name] %>
-        <%= render "commission_payments", with_partnership: @with_partnership[name] %>
+        <%= render "full_partnership", with_partnership: @with_partnership[name] if @with_partnership[name].present? %>
+        <%= render "other_informations", with_partnership: @with_partnership[name] if @with_partnership[name].present? %>
+        <%= render "commission_payments", with_partnership: @with_partnership[name] if @with_partnership[name].present? %>
       </div>
     </section>
   <% end %>

@@ -871,8 +871,8 @@ function getRequestURL(url) {
 function toCacheKey(url) {
   return getRequestURL(url);
 }
-function urlsAreEqual(left, right) {
-  return expandURL(left).href == expandURL(right).href;
+function urlsAreEqual(left2, right) {
+  return expandURL(left2).href == expandURL(right).href;
 }
 function getPathComponents(url) {
   return url.pathname.split("/").slice(1);
@@ -5874,8 +5874,8 @@ var EventListener = class {
     return this.unorderedBindings.size > 0;
   }
   get bindings() {
-    return Array.from(this.unorderedBindings).sort((left, right) => {
-      const leftIndex = left.index, rightIndex = right.index;
+    return Array.from(this.unorderedBindings).sort((left2, right) => {
+      const leftIndex = left2.index, rightIndex = right.index;
       return leftIndex < rightIndex ? -1 : leftIndex > rightIndex ? 1 : 0;
     });
   }
@@ -6730,12 +6730,12 @@ var TokenListObserver = class {
 function parseTokenString(tokenString, element, attributeName) {
   return tokenString.trim().split(/\s+/).filter((content) => content.length).map((content, index) => ({ element, attributeName, content, index }));
 }
-function zip(left, right) {
-  const length = Math.max(left.length, right.length);
-  return Array.from({ length }, (_, index) => [left[index], right[index]]);
+function zip(left2, right) {
+  const length = Math.max(left2.length, right.length);
+  return Array.from({ length }, (_, index) => [left2[index], right[index]]);
 }
-function tokensAreEqual(left, right) {
-  return left && right && left.index == right.index && left.content == right.content;
+function tokensAreEqual(left2, right) {
+  return left2 && right && left2.index == right.index && left2.content == right.content;
 }
 var ValueListObserver = class {
   constructor(element, attributeName, delegate) {
@@ -8355,6 +8355,60 @@ var change_controller_default = class extends Controller {
         input.dispatchEvent(new Event("input"));
       }
     });
+  }
+};
+
+// app/javascript/controllers/draggable_controller.js
+var draggable_controller_default = class extends Controller {
+  static targets = [];
+  connect() {
+    this.isDragging = false;
+    this.offsetX = 0;
+    this.offsetY = 0;
+    this.element.style.position = "fixed";
+    this.element.style.cursor = "move";
+    const savedPosition = JSON.parse(sessionStorage.getItem(this.storageKey()));
+    if (savedPosition) {
+      this.element.style.left = savedPosition.left;
+      this.element.style.top = savedPosition.top;
+    }
+    this.element.addEventListener("mousedown", this.onMouseDown);
+    document.addEventListener("mousemove", this.onMouseMove);
+    document.addEventListener("mouseup", this.onMouseUp);
+  }
+  disconnect() {
+    this.element.removeEventListener("mousedown", this.onMouseDown);
+    document.removeEventListener("mousemove", this.onMouseMove);
+    document.removeEventListener("mouseup", this.onMouseUp);
+  }
+  onMouseDown = (event) => {
+    this.isDragging = true;
+    this.offsetX = event.clientX - this.element.getBoundingClientRect().left;
+    this.offsetY = event.clientY - this.element.getBoundingClientRect().top;
+    this.element.style.transition = "none";
+  };
+  onMouseMove = (event) => {
+    if (!this.isDragging)
+      return;
+    const cardWidth = this.element.offsetWidth;
+    const cardHeight = this.element.offsetHeight;
+    const maxLeft = window.innerWidth - cardWidth;
+    const maxTop = window.innerHeight - cardHeight;
+    let newLeft = event.clientX - this.offsetX;
+    let newTop = event.clientY - this.offsetY;
+    newLeft = Math.max(0, Math.min(newLeft, maxLeft));
+    newTop = Math.max(0, Math.min(newTop, maxTop));
+    this.element.style.left = `${newLeft}px`;
+    this.element.style.top = `${newTop}px`;
+    this.element.style.right = "auto";
+    sessionStorage.setItem(this.storageKey(), JSON.stringify({ left, top }));
+  };
+  onMouseUp = () => {
+    this.isDragging = false;
+    this.element.style.transition = "";
+  };
+  storageKey() {
+    return `draggable-position-${this.element.id || this.element.dataset.identifier || "default"}`;
   }
 };
 
@@ -11882,6 +11936,51 @@ var mask_controller_default = class extends Controller {
   }
 };
 
+// app/javascript/controllers/notification_controller.js
+var notification_controller_default = class extends Controller {
+  static targets = ["card", "message", "closeButton", "steps"];
+  connect() {
+    this.element.addEventListener("notification:show", this.handleShow.bind(this));
+    const savedNotification = sessionStorage.getItem("lastNotification");
+    if (savedNotification) {
+      this.show(JSON.parse(savedNotification));
+    }
+  }
+  handleShow(event) {
+    this.show(event.detail);
+  }
+  show(data) {
+    this.messageTarget.textContent = data.message;
+    this.cardTarget.classList.remove("hidden");
+    this.updateSteps(data.step);
+    if (data.status == true) {
+      this.closeButtonTarget.classList.remove("hidden");
+    } else {
+      this.closeButtonTarget.classList.add("hidden");
+    }
+    sessionStorage.setItem("lastNotification", JSON.stringify(data));
+  }
+  updateSteps(step) {
+    if (!this.hasStepsTarget)
+      return;
+    const steps = this.stepsTarget.querySelectorAll("li.step");
+    steps.forEach((el, index) => {
+      el.classList.remove("step-primary", "step-success");
+      if (step >= steps.length) {
+        el.classList.add("step-success");
+      } else if (index < step) {
+        el.classList.add("step-primary");
+      } else {
+        el.classList.add("step-neutral");
+      }
+    });
+  }
+  close() {
+    this.cardTarget.classList.add("hidden");
+    sessionStorage.removeItem("lastNotification");
+  }
+};
+
 // app/javascript/controllers/toggle_controller.js
 var toggle_controller_default = class extends Controller {
   connect() {
@@ -11932,8 +12031,10 @@ var upload_controller_default = class extends Controller {
 application.register("auto-expand-textarea", auto_expand_textarea_controller_default);
 application.register("autosubmitselect", autosubmitselect_controller_default);
 application.register("change", change_controller_default);
+application.register("draggable", draggable_controller_default);
 application.register("home", home_controller_default);
 application.register("mask", mask_controller_default);
+application.register("notification", notification_controller_default);
 application.register("toggle", toggle_controller_default);
 application.register("upload", upload_controller_default);
 
@@ -12439,34 +12540,19 @@ window.subscribeToClosing = function(closingId) {
     { channel: "ClosingChannel", closing_id: closingId },
     {
       connected() {
-        console.log("\u2705 Conectado ao NotificationChannel");
+        console.log("\u2705 Conectado ao ClosingChannel");
       },
       disconnected() {
-        console.log("\u274C Desconectado do NotificationChannel");
+        console.log("\u274C Desconectado do ClosingChannel");
       },
       received(data) {
-        if (window.showFlash) {
-          window.showFlash(data.message);
+        const element = document.querySelector('[data-controller="notification"]');
+        if (element) {
+          element.dispatchEvent(new CustomEvent("notification:show", { detail: data }));
         }
       }
     }
   );
-};
-
-// app/javascript/custom/flash.js
-window.showFlash = function(message, type = "info") {
-  const container = document.querySelector('[data-controller="notifications"]');
-  if (!container)
-    return;
-  const el = document.createElement("div");
-  el.className = `alert alert-${type} shadow-lg p-4 gap-2 w-[98%] text-black mx-auto mt-4 transition-opacity duration-500`;
-  el.innerHTML = `
-    <span>${message}</span>
-    <div class="flex justify-end w-full">
-      <button type="button" onclick="this.parentElement.remove()" class="btn btn-ghost">\u2715</button>
-    </div>
-  `;
-  container.appendChild(el);
 };
 
 // app/javascript/application.js

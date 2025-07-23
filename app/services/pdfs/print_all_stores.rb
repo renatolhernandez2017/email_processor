@@ -4,15 +4,18 @@ module Pdfs
       @branches.each_with_index do |branch, index|
         start_new_page unless index == 0
         @branch_name = branch[0]
-        @branch_id = branch[1]
-        @branch_number = branch[2]
+        @branch_number = branch[1]
+        @branch_id = branch[2]
+
         @new_loose = @loose[@branch_id]
         @new_total_revenue = @total_revenue[@branch_id]
         @new_with_partnership = @with_partnership[@branch_name]
-        @with_partnership_by_representative = @new_with_partnership.group_by(&:representative_name)
+        @with_partnership_by_representative = @new_with_partnership&.group_by(&:representative_name)
 
-        header
-        content
+        if @new_with_partnership
+          header
+          content
+        end
       end
     end
 

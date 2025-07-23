@@ -46,7 +46,7 @@
       <% end %>
     </div>
 
-    <div data-controller="notifications" data-notifications-target="container" class="w-full fixed z-50"></div>
+    <%= render "shared/notification_card" %>
 
     <%= render 'layouts/header' unless params[:controller].include?('users/sessions') %>
 

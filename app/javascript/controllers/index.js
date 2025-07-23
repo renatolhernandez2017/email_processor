@@ -13,11 +13,17 @@ application.register("autosubmitselect", AutosubmitselectController)
 import ChangeController from "./change_controller"
 application.register("change", ChangeController)
 
+import DraggableController from "./draggable_controller"
+application.register("draggable", DraggableController)
+
 import HomeController from "./home_controller"
 application.register("home", HomeController)
 
 import MaskController from "./mask_controller"
 application.register("mask", MaskController)
+
+import NotificationController from "./notification_controller"
+application.register("notification", NotificationController)
 
 import ToggleController from "./toggle_controller"
 application.register("toggle", ToggleController)
