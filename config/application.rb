@@ -1,4 +1,5 @@
 require_relative "boot"
+require_relative "../lib/middleware/ignore_chrome_devtools_request"
 
 require "rails/all"
 
@@ -16,6 +17,7 @@ module Pharmus
     # not contain `.rb` files, or that should not be reloaded or eager loaded.
     # Common ones are `templates`, `generators`, or `middleware`, for example.
     config.autoload_lib(ignore: %w[assets tasks])
+    config.middleware.insert_before 0, IgnoreChromeDevtoolsRequest
 
     config.active_job.queue_adapter = :sidekiq
 
