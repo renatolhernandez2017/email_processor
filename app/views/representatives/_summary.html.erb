@@ -50,7 +50,7 @@
               <tr>
                 <td><%= representative.reports_count %></td>
                 <td class="font-semibold text-base">Total Geral</td>
-                <td class="text-center"><%= representative.total_quantity %></td>
+                <td class="text-center"><%= representative.total_quantity || 0 %></td>
                 <td><%= number_to_currency(representative.total_price) %></td>
                 <td><%= number_to_currency(representative.total_partnership) %></td>
                 <td><%= number_to_currency(representative.total_discounts) %></td>

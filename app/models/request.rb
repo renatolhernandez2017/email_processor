@@ -3,6 +3,7 @@ class Request < ApplicationRecord
 
   include ActionView::Helpers::NumberHelper
   include PgSearch::Model
+  include Roundable
 
   belongs_to :branch, optional: true
   belongs_to :closing, optional: true
@@ -64,9 +65,9 @@ class Request < ApplicationRecord
 
   def set_price(request)
     if request.payment_date?
-      number_to_currency(request.total_amount_for_report)
+      number_to_currency(request.total_amount_for_report.round)
     else
-      number_to_currency(request.total_price)
+      number_to_currency(request.total_price.round)
     end
   end
 end

@@ -35,7 +35,7 @@
                   </div>
                 </div>
 
-                <% monthly_report.prescriber.requests.each do |request| %>
+                <% monthly_report.prescriber.requests.order("patient_name ASC").each do |request| %>
                   <tr class="bg-gray-200 border-t border-b border-black h-10">
                     <td><%= request.patient_name || "Sem Nome" %></td>
                     <td><%= request.repeat ? "-R" : "" %></td>

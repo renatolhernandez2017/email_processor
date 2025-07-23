@@ -3,14 +3,10 @@
     <%= link_to "UniPharmus", root_path, class: "btn btn-ghost lg:text-xl md:text-base" %>
   </div>
 
-  <div class="navbar-center gap-5">
+  <div class="navbar-center">
     <span class="lg:text-base md:text-xs">
       <%= link_to "Fechamento - #{set_closing_date if @current_closing.present? }", closings_path %>
     </span>
-
-    <div class="form-control text-black">
-      <input type="text" placeholder="Search" class="input input-bordered w-80" />
-    </div>
   </div>
 
   <div class="navbar-end gap-2 px-5">

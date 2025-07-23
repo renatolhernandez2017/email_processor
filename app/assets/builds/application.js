@@ -12451,10 +12451,6 @@ window.showFlash = function(message, type = "info") {
     </div>
   `;
   container.appendChild(el);
-  setTimeout(() => {
-    el.classList.add("opacity-0");
-    setTimeout(() => el.remove(), 500);
-  }, 5e3);
 };
 
 // app/javascript/application.js

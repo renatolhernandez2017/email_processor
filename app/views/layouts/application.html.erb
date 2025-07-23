@@ -33,7 +33,7 @@
       <% flash.each do |type, message| %>
         <% daisy_class = { notice: "alert-info", success: "alert-success", error: "alert-error", alert: "alert-warning" }[type.to_sym] || "alert-info" %>
 
-        <div role="alert" class="alert <%= daisy_class %> shadow-lg p-4 gap-2 w-[98%] text-black mx-auto mt-4">
+        <div role="alert" class="alert <%= daisy_class %> shadow-lg p-4 gap-2 w-[98%] text-black mx-auto mt-5">
           <span><%= message %></span>
 
           <div class="flex justify-end w-full">

@@ -6,7 +6,7 @@ File.open("#{Rails.root}/public/branches.csv", "rb") do |file|
 
   csv_enum.each do |row|
     branch_number = row[0]&.strip.to_i
-    name = row[1]&.strip.upcase.split.map(&:capitalize).join(" ")
+    name = row[1]&.strip&.upcase&.split&.map(&:capitalize)&.join(" ")
     bank_name = row[2]&.strip
     agency_number = row[3]&.strip
     account_number = row[4]&.strip

@@ -28,7 +28,7 @@ File.open("#{Rails.root}/public/prescribers_update.csv", "rb") do |file|
       )
 
       unless bank_name == "N/A"
-        new_favored = favored == "N/A" ? prescriber.name : favored
+        new_favored = (favored == "N/A") ? prescriber.name : favored
 
         bank = Bank.create!(
           name: bank_name, agency_number: agency_number, account_number: account_number

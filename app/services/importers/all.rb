@@ -15,11 +15,12 @@ module Importers
           @patient_name = row[2]&.strip
           @entry_date = row[3]&.strip
           @repeat = row[4]&.strip
-          @total_price = row[5]&.strip.to_f - row[7]&.strip&.to_f
+          total_price = row[5]&.strip.to_f - row[7]&.strip&.to_f
+          @total_price = total_price.to_f - (total_price.to_f * 0.10)
           @total_discounts = row[6]&.strip.to_f
           @total_fees = row[7]&.strip&.to_f
           @payment_date = row[8]&.strip
-          @amount_received = row[9]&.strip.to_f
+          @amount_received = row[9]&.strip.to_f - (row[9]&.strip.to_f * 0.10)
           @class_council = row[10]&.strip
           @uf_council = row[11]&.strip
           @number_council = row[12]&.strip
@@ -73,7 +74,6 @@ module Importers
 
     def create_request(branch_number)
       branch = Branch.find_by(branch_number: branch_number)
-      total_price = branch.present? ? (@total_price * ((100.0 - branch.discount_request) / 100.0)) : @total_price
 
       Request.create!(
         cdfil_id: branch_number,
@@ -83,10 +83,10 @@ module Importers
         repeat: @repeat == "S",
         total_fees: @total_fees,
         amount_received: @amount_received,
-        total_price: total_price,
+        total_price: @amount_received,
         total_discounts: @total_discounts,
         payment_date: @payment_date,
-        value_for_report: total_price,
+        value_for_report: @amount_received,
         prescriber: @prescriber,
         branch: branch,
         representative: @representative

@@ -23,15 +23,20 @@ File.open("#{Rails.root}/public/prescribers.csv", "rb") do |file|
 
     representative = Representative.find_by(number: representative_number)
 
-    prescriber =  Prescriber.create!(
-      class_council: class_council, uf_council: uf_council, number_council: number_council,
-      name: prescriber_name, note: note, representative_number: representative_number,
-      representative: representative
-    )
+    prescriber = Prescriber.find_or_create_by(class_council: class_council, uf_council: uf_council, number_council: number_council) do |p|
+      p.name = prescriber_name
+      p.note = note
+      p.representative_number = representative_number
+      p.representative = representative
+    end
 
-    Address.create!(
-      street: street, number: number, zip_code: zip_code, district: district, complement: complement,
-      city: city, uf: uf, phone: phone, cellphone: cellphone, prescriber: prescriber
-    )
+    Address.find_or_create_by(street: street, number: number, zip_code: zip_code, prescriber_id: prescriber.id) do |address|
+      address.district = district
+      address.complement = complement
+      address.city = city
+      address.uf = uf
+      address.phone = phone
+      address.cellphone = cellphone
+    end
   end
 end

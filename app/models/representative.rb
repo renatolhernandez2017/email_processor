@@ -7,15 +7,15 @@ class Representative < ApplicationRecord
   belongs_to :branch, optional: true
 
   has_one :address, dependent: :destroy
-  has_one :prescriber, dependent: :destroy
 
+  has_many :prescribers, dependent: :destroy
   has_many :current_accounts, dependent: :destroy
   has_many :monthly_reports, dependent: :destroy
   has_many :requests, dependent: :destroy
 
   scope :with_totals, ->(closing_id) {
     left_joins(monthly_reports: :prescriber)
-      .includes(:prescriber)
+      .includes(:prescribers)
       .joins(<<~SQL.squish)
         LEFT JOIN current_accounts ca_standard
           ON ca_standard.prescriber_id = monthly_reports.prescriber_id
