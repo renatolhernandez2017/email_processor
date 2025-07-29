@@ -8,6 +8,7 @@ File.open("#{Rails.root}/public/prescribers_update.csv", "rb") do |file|
     class_council = row[0]&.strip
     uf_council = row[1]&.strip
     number_council = row[2]&.strip
+    prescriber_name = row[3]&.strip
     partnership = row[4]&.strip
     repetitions = row[5]&.strip
     percentage_discount = row[6]&.strip
@@ -21,6 +22,7 @@ File.open("#{Rails.root}/public/prescribers_update.csv", "rb") do |file|
 
     if prescriber.present?
       prescriber.update(
+        name: prescriber_name,
         partnership: partnership,
         repetitions: repetitions,
         percentage_discount: percentage_discount,
