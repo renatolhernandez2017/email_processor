@@ -18,7 +18,7 @@ File.open("#{Rails.root}/public/prescribers_update.csv", "rb") do |file|
     account_number = row[10]&.strip
     favored = row[11]&.strip
 
-    prescriber = Prescriber.find_by(class_council: class_council, uf_council: uf_council, number_council: number_council)
+    prescriber = Prescriber.find_or_create_by(class_council: class_council, uf_council: uf_council, number_council: number_council)
 
     if prescriber.present?
       prescriber.update(

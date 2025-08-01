@@ -74,12 +74,14 @@ module Importers
 
     def create_request(branch_number)
       branch = Branch.find_by(branch_number: branch_number)
+      @amount_received = (@amount_received == 0) ? @total_price : @amount_received
 
-      Request.create!(
-        cdfil_id: branch_number,
-        nrreq_id: @nrreq_id,
-        patient_name: @patient_name,
-        entry_date: @entry_date,
+      request = Request.find_or_create_by(
+        cdfil_id: branch_number, nrreq_id: @nrreq_id, patient_name: @patient_name,
+        entry_date: @entry_date, prescriber: @prescriber, branch: branch
+      )
+
+      request.update!(
         repeat: @repeat == "S",
         total_fees: @total_fees,
         amount_received: @amount_received,
@@ -87,8 +89,6 @@ module Importers
         total_discounts: @total_discounts,
         payment_date: @payment_date,
         value_for_report: @amount_received,
-        prescriber: @prescriber,
-        branch: branch,
         representative: @representative
       )
     end

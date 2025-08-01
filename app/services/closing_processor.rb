@@ -1,4 +1,6 @@
 class ClosingProcessor
+  include Roundable
+
   def initialize(closing)
     @closing = closing
     @start_date = Date.parse(@closing.start_date.strftime("%Y-%m-%d"))
@@ -19,16 +21,25 @@ class ClosingProcessor
       sleep 3
     end
 
-    broadcast("Gerando requisições dos prescritores...", false, 2)
+    broadcast("Criando requisições dos prescritores...", false, 2)
     ImportCsvService.new("#{Rails.root}/tmp/group_duplicates.csv").import!
 
-    broadcast("Gerando relatórios mensais...", false, 3)
+    broadcast("Criando relatórios mensais...", false, 3)
+    update_requests
     create_monthly_reports
+
+    broadcast("Atualizando relatórios mensais...", false, 4)
+    adjust_monthly_reports
+    update_monthly_reports
+
     cleanup_temp_files
 
-    broadcast("Fechamento concluído com sucesso.", true, 4)
+    broadcast("Enumerando envelopes...", false, 5)
+    enumerates_envelopes
+
+    broadcast("Fechamento concluído com sucesso.", true, 6)
   rescue => e
-    broadcast("Erro no fechamento: #{e.message}", true, 4)
+    broadcast("Erro no fechamento: #{e.message}", true, 7)
   end
 
   def execute_script
@@ -42,163 +53,97 @@ class ClosingProcessor
   end
 
   def create_monthly_reports
-    Request.where("value_for_report < amount_received")
-      .where("value_for_report >= ?", 25.0)
-      .where.not(payment_date: nil)
-      .update_all("amount_received = value_for_report")
-
     requests = Request.where(entry_date: @start_date..@end_date).group_by(&:prescriber_id)
 
     requests.each_with_index do |(prescriber_id, requests_all), index|
       prescriber = Prescriber.find(prescriber_id)
       representative = requests_all.last.representative
-      total_price = requests_all.sum(&:total_price)
-      quantity = requests_all.count
-
-      accumulated = if quantity >= @minimo_de_de_vendas_para_desacumular && total_price >= @valor_de_vendas_para_desacumular
-        0
-      else
-        1
-      end
-
-      monthly_report = MonthlyReport.create!(
-        accumulated: accumulated,
-        closing_id: @closing.id,
-        prescriber: prescriber,
-        representative: representative
-      )
+      monthly_report = MonthlyReport.find_or_create_by(closing_id: @closing.id, prescriber: prescriber, representative: representative)
 
       requests_all.map { |r| r.update(monthly_report_id: monthly_report.id, closing_id: @closing.id) }
     end
+  end
 
-    calculate_commission_on_sales
+  def update_requests
+    Request.where("value_for_report < amount_received")
+      .where("value_for_report >= ?", 25.0)
+      .where.not(payment_date: nil)
+      .update_all("amount_received = value_for_report")
+  end
 
-    # monthly_reports = MonthlyReport.includes(:prescriber)
-    #   .where(closing_id: @closing.id).where.not(representative_id: nil)
-
-    # monthly_reports.each do |monthly_report|
-    #   prescriber = monthly_report.prescriber
-    #   discount_percentage = prescriber.consider_discount_of_up_to.to_f / 100.0
-
-    #   suitable_requisitions = Request.where(prescriber_id: prescriber.id, repeat: false)
-    #     .where(payment_date: @start_date..@end_date, entry_date: @start_date..@end_date)
-    #     .where("requests.total_discounts <= requests.total_price * ?", discount_percentage)
-    #     .left_joins(:monthly_report)
-    #     .where("monthly_reports.accumulated = ? OR requests.monthly_report_id IS NULL", true)
-
-    #   suitable_requisitions.update_all(monthly_report_id: monthly_report.id)
-    # end
-
-    envelope_number = MonthlyReport.where(accumulated: false).maximum(:envelope_number).to_i
-
-    Request.where(entry_date: @start_date..@end_date)
-      .where.not(monthly_report_id: nil).includes(:monthly_report).each do |request|
-      next if request.monthly_report.accumulated
-
-      envelope_number += 1
-      request.monthly_report.update(envelope_number: envelope_number)
-    end
-
+  def adjust_monthly_reports
     monthly_reports = MonthlyReport.joins(:prescriber).where(closing_id: @closing.id)
 
-    monthly_reports.each do |monthly_report|
-      requests = monthly_report.requests
+    monthly_reports.where("prescribers.repetitions = 0.0").each do |monthly_report|
       prescriber = monthly_report.prescriber
-      standard_account = prescriber.current_accounts.find_by(standard: true)
-      total = ((prescriber.partnership.to_f / 100.0) * requests.sum(&:amount_received)).round(2)
-      partnership = standard_account ? total : total.round(-1)
-      discounts = requests.sum(&:total_discounts) * ([prescriber.discount_of_up_to, 1].max / 100.0)
+      available_requests = prescriber.requests.where(repeat: true)
 
-      monthly_report.update!(
-        quantity: requests.count,
-        total_price: requests.sum(&:total_price),
-        partnership: partnership,
-        discounts: discounts
-      )
+      available_requests.destroy_all
     end
 
-    monthly_reports.where("prescribers.repetitions > 0").each do |monthly_report|
+    monthly_reports.where("prescribers.repetitions > 0.0").each do |monthly_report|
       prescriber = monthly_report.prescriber
       repetitions = prescriber.repetitions.to_f / 100.0
       discount_percentage = prescriber.consider_discount_of_up_to.to_f / 100.0
 
       available_requests = prescriber.requests.where(repeat: true)
-        .where(entry_date: @start_date..@end_date)
-        .where(payment_date: @start_date..@end_date)
+        .where.not(payment_date: nil)
         .where("total_discounts <= total_price * ?", discount_percentage)
         .order(:total_price)
 
-      limite = (available_requests.count * repetitions).to_i
+      limite = (repetitions * available_requests.count).to_i
+      accepted_requests = available_requests.limit(limite)
+      not_accepted_requests = available_requests.where.not(id: accepted_requests.ids)
 
-      if limite > 0
-        accepted_requests = available_requests.limit(limite)
-        not_accepted_requests = available_requests.where.not(id: accepted_requests.ids)
-        standard_account = prescriber.current_accounts.find_by(standard: true)
-        total = ((prescriber.partnership.to_f / 100.0) * not_accepted_requests.sum(&:amount_received)).round(2)
-        partnership = standard_account ? total : total.round(-1)
-
-        attributes = {
-          total_price: monthly_report.total_price.to_f - not_accepted_requests.sum(&:total_price).to_f,
-          quantity: monthly_report.quantity - not_accepted_requests.count,
-          discounts: [monthly_report.discounts.to_f - not_accepted_requests.sum(&:total_discounts).to_f, 0].max,
-          partnership: [monthly_report.partnership.to_f - partnership.to_f, 0].max
-        }
-
-        monthly_report.update!(attributes)
-        not_accepted_requests.destroy_all
-      end
-
-      if limite <= 0
-        standard_account = prescriber.current_accounts.find_by(standard: true)
-        total = ((prescriber.partnership.to_f / 100.0) * available_requests.sum(&:amount_received)).round(2)
-        partnership = standard_account ? total : total.round(-1)
-
-        attributes = {
-          total_price: monthly_report.total_price.to_f - available_requests.sum(&:total_price).to_f,
-          quantity: monthly_report.quantity - available_requests.count,
-          discounts: monthly_report.discounts.to_f - available_requests.sum(&:total_discounts).to_f,
-          partnership: monthly_report.partnership.to_f - partnership.to_f
-        }
-
-        monthly_report.update!(attributes)
-        available_requests.destroy_all
-      end
+      not_accepted_requests.destroy_all
     end
   end
 
-  def calculate_commission_on_sales
-    monthly_reports = MonthlyReport
-      .joins("LEFT JOIN representatives ON representatives.id = monthly_reports.representative_id")
-      .joins("LEFT JOIN current_accounts ON current_accounts.representative_id = representatives.id AND current_accounts.standard = true")
-      .where(closing_id: @closing.id, accumulated: false)
-      .where("representatives.branch_id IS NULL")
-      .where.not("current_accounts.id" => nil)
-      .group("monthly_reports.representative_id, representatives.partnership")
-      .pluck(
-        "monthly_reports.representative_id",
-        "SUM(monthly_reports.total_price)",
-        "SUM(monthly_reports.quantity)",
-        "representatives.partnership"
-      )
+  def update_monthly_reports
+    monthly_reports = MonthlyReport.joins(:prescriber).where(closing_id: @closing.id)
 
-    if monthly_reports.present?
-      monthly_reports.each do |representative_id, sum_total_price, sum_quantity, partnership|
-        comission = sum_total_price.to_f * (partnership.to_f / 100)
+    monthly_reports.each do |monthly_report|
+      prescriber = monthly_report.prescriber
+      requests = prescriber.requests
+      standard_account = prescriber.current_accounts.find_by(standard: true)
+      amount_received = requests.sum(&:amount_received)
+      total = ((prescriber.partnership.to_f / 100.0) * amount_received).round(2)
+      partnership = standard_account.present? ? total : total.round(-1)
+      discounts = requests.sum(&:total_discounts) * ([prescriber.discount_of_up_to, 1].max / 100.0)
+      quantity = requests.where.not(payment_date: nil).count
 
-        monthly_report = MonthlyReport.find_by(
-          closing_id: @closing.id,
-          representative_id: representative_id
-        )
-
-        if monthly_report.present?
-          monthly_report.update!(
-            valor_total: sum_total_price,
-            partnership: comission,
-            quantity: sum_quantity,
-            accumulated: false
-          )
-        end
+      accumulated = if quantity >= @minimo_de_de_vendas_para_desacumular && amount_received >= @valor_de_vendas_para_desacumular
+        0
+      else
+        1
       end
+
+      if standard_account.blank?
+        partnership = partnership.round
+      end
+
+      discounts = (discounts.to_f >= 25.0) ? discounts.round : 0.0
+      accumulated = standard_account.present? ? 0 : accumulated
+
+      monthly_report.update!(
+        quantity: quantity,
+        total_price: requests.sum(&:total_price).round,
+        partnership: partnership,
+        discounts: discounts,
+        accumulated: accumulated
+      )
+    end
+  end
+
+  def enumerates_envelopes
+    envelope_number = MonthlyReport.where(accumulated: false).maximum(:envelope_number).to_i
+
+    Request.includes(:prescriber, :monthly_report).where(entry_date: @start_date..@end_date)
+      .where.not(monthly_report_id: nil).order("prescribers.name ASC").each do |request|
+      next if request.monthly_report.accumulated
+
+      envelope_number += 1
+      request.monthly_report.update(envelope_number: envelope_number)
     end
   end
 
