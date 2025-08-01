@@ -9,6 +9,7 @@ class MonthlyReport < ApplicationRecord
   belongs_to :prescriber
 
   has_many :requests, dependent: :destroy
+  has_many :current_accounts, through: :prescriber
 
   validates :closing_id, :prescriber_id, presence: {message: " devem ser preenchidos!"}
 
@@ -35,13 +36,41 @@ class MonthlyReport < ApplicationRecord
       .group_by(&:branch_name)
   }
 
-  def available_value
-    return 0.00 if partnership <= 0.0
+  # def situation
+  #   if accumulated
+  #     "A"
+  #   elsif !accumulated && !prescriber.current_accounts.nil?
+  #     "D"
+  #   else
+  #     "E"
+  #   end
+  # end
 
-    if prescriber.current_accounts.find_by(standard: true)
-      [partnership - discounts, 0].max
+  def available_value
+    current_account = prescriber.current_accounts.find_by(standard: true)
+
+    # quebrar
+
+    if current_account.present?
+      if partnership > 0.0
+        [partnership - discounts, 0].max
+      else
+        0.0
+      end
     else
-      [round_to_ten((partnership - discounts).to_f), 0].max
+      if partnership > 0.0
+        [round_to_ten((partnership - discounts).to_f), 0].max
+      else
+        0.0
+      end
     end
+
+    # return 0.00 if partnership <= 0.0
+
+    # if prescriber.current_accounts.find_by(standard: true)
+    #   [partnership - discounts, 0].max
+    # else
+    #   [round_to_ten((partnership - discounts).to_f), 0].max
+    # end
   end
 end

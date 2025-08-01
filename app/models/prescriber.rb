@@ -2,6 +2,7 @@ class Prescriber < ApplicationRecord
   audited
 
   include PgSearch::Model
+  include Roundable
 
   belongs_to :representative, optional: true
 
@@ -17,6 +18,13 @@ class Prescriber < ApplicationRecord
   PROFESSIONAL_TYPES = {"CRM" => 1,
                         "CRO" => 2,
                         "CRN" => 9}
+
+  scope :monthly_reports, ->(closing_id, representative_ids) {
+    MonthlyReport.joins(:prescriber)
+      .where(closing_id: closing_id, representative_id: representative_ids)
+      .group(custom_group_sql)
+      .select(custom_select_sql)
+  }
 
   def full_address
     return "Endereço não cadastrado" unless address.present?
@@ -50,7 +58,7 @@ class Prescriber < ApplicationRecord
 
   def discount_of_up_to
     if consider_discount_of_up_to == 0.0 || consider_discount_of_up_to.nil?
-      15.0
+      12.0
     else
       consider_discount_of_up_to
     end

@@ -25,7 +25,7 @@ class Representative < ApplicationRecord
       .group("representatives.id, representatives.name")
       .select(
         "representatives.*",
-        "COUNT(DISTINCT monthly_reports.id) AS reports_count",
+        "COUNT(monthly_reports.id) AS reports_count",
         "SUM(monthly_reports.quantity) AS total_quantity",
         "SUM(monthly_reports.total_price) AS total_price",
         "SUM(monthly_reports.partnership) AS total_partnership",
@@ -76,27 +76,27 @@ class Representative < ApplicationRecord
   }
 
   scope :totals_by_bank_for_representatives, ->(closing_id, representative_ids) {
-    MonthlyReport.joins(prescriber: [:representative, {current_accounts: :bank}])
-      .where(closing_id: closing_id, accumulated: false, representative_id: representative_ids)
+    MonthlyReport.joins(:representative, current_accounts: :bank)
+      .where(closing_id: closing_id, representative_id: representative_ids)
       .group("representatives.id, banks.name")
       .select(
         "representatives.id AS representative_id",
         "banks.name AS bank_name",
-        "COUNT(DISTINCT monthly_reports.id) AS count",
-        "SUM(DISTINCT monthly_reports.partnership - monthly_reports.discounts) AS total"
+        "COUNT(monthly_reports.id) AS count",
+        "SUM(monthly_reports.partnership - monthly_reports.discounts) AS total"
       )
   }
 
   scope :totals_by_store_for_representatives, ->(closing_id, representative_ids) {
-    Request.joins(:monthly_report, :prescriber, :representative, :branch)
+    Request.joins(:monthly_report, :representative, :branch)
       .where("monthly_reports.accumulated = ?", false)
       .where(closing_id: closing_id, representative_id: representative_ids)
       .group("representatives.id, branches.name")
       .select(
         "representatives.id AS representative_id",
         "branches.name AS branch_name",
-        "COUNT(DISTINCT requests.id) AS count",
-        "SUM(DISTINCT requests.amount_received) AS total"
+        "COUNT(requests.id) AS count",
+        "SUM(requests.amount_received) AS total"
       )
   }
 
@@ -122,63 +122,7 @@ class Representative < ApplicationRecord
   scope :monthly_reports_for_representatives, ->(closing_id, representative_ids) {
     MonthlyReport.joins(:prescriber)
       .where(closing_id: closing_id, accumulated: false, representative_id: representative_ids)
-      .group(
-        <<~SQL.squish
-          monthly_reports.prescriber_id,
-          CASE
-            WHEN monthly_reports.accumulated = true THEN 'A'
-            WHEN EXISTS (
-              SELECT 1 FROM current_accounts
-              WHERE current_accounts.prescriber_id = monthly_reports.prescriber_id
-                AND current_accounts.standard = TRUE
-            ) THEN 'D'
-            ELSE 'E'
-          END,
-          CASE
-            WHEN monthly_reports.partnership <= 0 THEN 0
-            WHEN EXISTS (
-              SELECT 1 FROM current_accounts
-              WHERE current_accounts.prescriber_id = monthly_reports.prescriber_id
-                AND current_accounts.standard = TRUE
-            ) THEN GREATEST(monthly_reports.partnership - monthly_reports.discounts, 0)
-            ELSE GREATEST(
-              CASE 
-                WHEN MOD((monthly_reports.partnership - monthly_reports.discounts), 10.0) > 5.0
-                  THEN (monthly_reports.partnership - monthly_reports.discounts) - MOD((monthly_reports.partnership - monthly_reports.discounts), 10.0) + 10
-                ELSE (monthly_reports.partnership - monthly_reports.discounts) - MOD((monthly_reports.partnership - monthly_reports.discounts), 10.0)
-              END, 0)
-          END
-        SQL
-      )
-      .select(
-        <<~SQL.squish
-          monthly_reports.prescriber_id,
-          MIN(LPAD(CAST(monthly_reports.envelope_number AS TEXT), 6, '0')) AS number_envelope,
-          SUM(monthly_reports.quantity) AS quantity,
-          CASE
-            WHEN monthly_reports.accumulated = true THEN 'A'
-            WHEN EXISTS (
-              SELECT 1 FROM current_accounts
-              WHERE current_accounts.prescriber_id = monthly_reports.prescriber_id
-                AND current_accounts.standard = TRUE
-            ) THEN 'D'
-            ELSE 'E'
-          END AS situation,
-          CASE 
-            WHEN monthly_reports.partnership <= 0 THEN 0
-            WHEN EXISTS (
-              SELECT 1 FROM current_accounts 
-              WHERE current_accounts.prescriber_id = monthly_reports.prescriber_id 
-                AND current_accounts.standard = TRUE
-            ) THEN GREATEST(monthly_reports.partnership - monthly_reports.discounts, 0)
-            ELSE GREATEST(
-              CASE 
-                WHEN MOD((monthly_reports.partnership - monthly_reports.discounts), 10.0) > 5.0
-                  THEN (monthly_reports.partnership - monthly_reports.discounts) - MOD((monthly_reports.partnership - monthly_reports.discounts), 10.0) + 10
-                ELSE (monthly_reports.partnership - monthly_reports.discounts) - MOD((monthly_reports.partnership - monthly_reports.discounts), 10.0)
-              END, 0)
-          END AS with_available_value
-        SQL
-      )
+      .group(custom_group_sql)
+      .select(custom_select_sql)
   }
 end
