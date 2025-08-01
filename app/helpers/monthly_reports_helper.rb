@@ -1,8 +1,17 @@
 module MonthlyReportsHelper
-  def payment_method_display(monthly_report)
-    return "Acumulado" if monthly_report.accumulated?
-    return monthly_report.prescriber&.current_accounts&.find_by(standard: true)&.bank&.name if monthly_report.prescriber&.current_accounts&.find_by(standard: true).present?
+  include ActionView::Helpers::NumberHelper
+  include Roundable
 
-    "Dinheiro"
+  def payment_method_display(monthly_report)
+    prescriber = monthly_report.prescriber
+    current_account = prescriber.current_accounts.find_by(standard: true)
+
+    if monthly_report.accumulated?
+      "Acumulado"
+    elsif !monthly_report.accumulated? && current_account.present?
+      current_account.bank.name
+    else
+      "Dinheiro"
+    end
   end
 end

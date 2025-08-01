@@ -1,12 +1,13 @@
 import { Controller } from "@hotwired/stimulus"
 
 export default class extends Controller {
-  static targets = ["card", "message", "closeButton", "steps"]
+  static targets = ["card", "message", "closeButton", "steps", "waiting", "error", "success"]
 
   connect() {
+    close();
     this.element.addEventListener("notification:show", this.handleShow.bind(this));
 
-    // Restaura se havouver notificação salva
+    // Restaura se houver notificação salva
     const savedNotification = sessionStorage.getItem("lastNotification")
     if (savedNotification) {
       this.show(JSON.parse(savedNotification))
@@ -20,6 +21,11 @@ export default class extends Controller {
   show(data) {
     this.messageTarget.textContent = data.message
     this.cardTarget.classList.remove("hidden")
+
+    if (data.step < 7) {
+      sessionStorage.setItem("lastStep", data.step)
+    }
+
     this.updateSteps(data.step)
 
     if (data.status == true) {
@@ -37,14 +43,28 @@ export default class extends Controller {
     const steps = this.stepsTarget.querySelectorAll("li.step")
 
     steps.forEach((el, index) => {
-      el.classList.remove("step-primary", "step-success")
+      const lastStep = sessionStorage.getItem("lastStep")
+      el.classList.remove("step-primary", "step-success", "step-error")
 
-      if (step >= steps.length) {
-        el.classList.add("step-success") // Tudo concluído
+      if (step === steps.length) {
+        el.classList.add("step-success") // Todas concluídas
+        this.waitingTarget.classList.add("hidden")
+        this.errorTarget.classList.add("hidden")
+        this.successTarget.classList.remove("hidden")
+      } else if (step === 7) {
+        if (lastStep > index + 1) {
+          el.classList.add("step-primary") // Concluídas
+        } else if (index === lastStep - 1) {
+          el.classList.add("step-error") // Etapa com erro
+          this.waitingTarget.classList.add("hidden")
+          this.errorTarget.classList.remove("hidden")
+          this.successTarget.classList.add("hidden")
+        }
       } else if (index < step) {
         el.classList.add("step-primary") // Etapas concluídas
-      } else {
-        el.classList.add("step-neutral") // Etapas futuras
+        this.waitingTarget.classList.remove("hidden")
+        this.errorTarget.classList.add("hidden")
+        this.successTarget.classList.add("hidden")
       }
     })
   }
@@ -52,5 +72,10 @@ export default class extends Controller {
   close() {
     this.cardTarget.classList.add("hidden")
     sessionStorage.removeItem("lastNotification")
+    sessionStorage.removeItem("lastStep")
+    this.waitingTarget.classList.remove("hidden")
+    this.errorTarget.classList.add("hidden")
+    this.successTarget.classList.add("hidden")
+    window.location.reload()
   }
 }

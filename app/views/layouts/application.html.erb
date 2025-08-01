@@ -28,6 +28,13 @@
           window.subscribeToClosing(closingId);
         }
       });
+
+      document.addEventListener("DOMContentLoaded", () => {
+        const closingId = <%= @current_closing&.id || 'null' %>;
+        if (closingId) {
+          window.subscribeToClosing(closingId);
+        }
+      });
     </script>
   </head>
 

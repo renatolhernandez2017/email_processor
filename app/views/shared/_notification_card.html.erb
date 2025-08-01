@@ -8,13 +8,19 @@
         <div class="flex justify-center">
           <ul class="steps steps-vertical" data-notification-target="steps">
             <li class="step step-neutral">Iniciado</li>
-            <li class="step step-neutral">Requisições</li>
-            <li class="step step-neutral">Relatórios</li>
+            <li class="step step-neutral">Criar Requisições</li>
+            <li class="step step-neutral">Criar Relatórios</li>
+            <li class="step step-neutral">Atualizar Relatórios</li>
+            <li class="step step-neutral">Enumerar Envelopes</li>
             <li class="step step-neutral">Concluído</li>
           </ul>
         </div>
 
-        <div class="flex my-3">
+        <div class="flex my-3 items-center">
+          <span class="loading loading-spinner text-primary h-8 w-8" data-notification-target="waiting"></span>
+          <span class="material-symbols-outlined text-red-600 text-4xl hidden" data-notification-target="error">dangerous</span>
+          <span class="material-symbols-outlined text-success text-4xl hidden" data-notification-target="success">check_circle</span>
+
           <span class="mx-2 text-center" data-notification-target="message"></span>
         </div>
 

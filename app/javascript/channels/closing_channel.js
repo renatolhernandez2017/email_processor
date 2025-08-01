@@ -17,6 +17,7 @@ window.subscribeToClosing = function(closingId) {
       },
       disconnected() {
         console.log("❌ Desconectado do ClosingChannel")
+        window.subscribeToClosing()
       },
       received(data) {
         const element = document.querySelector('[data-controller="notification"]');

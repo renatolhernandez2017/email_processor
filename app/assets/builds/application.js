@@ -11938,8 +11938,9 @@ var mask_controller_default = class extends Controller {
 
 // app/javascript/controllers/notification_controller.js
 var notification_controller_default = class extends Controller {
-  static targets = ["card", "message", "closeButton", "steps"];
+  static targets = ["card", "message", "closeButton", "steps", "waiting", "error", "success"];
   connect() {
+    close();
     this.element.addEventListener("notification:show", this.handleShow.bind(this));
     const savedNotification = sessionStorage.getItem("lastNotification");
     if (savedNotification) {
@@ -11952,6 +11953,9 @@ var notification_controller_default = class extends Controller {
   show(data) {
     this.messageTarget.textContent = data.message;
     this.cardTarget.classList.remove("hidden");
+    if (data.step < 7) {
+      sessionStorage.setItem("lastStep", data.step);
+    }
     this.updateSteps(data.step);
     if (data.status == true) {
       this.closeButtonTarget.classList.remove("hidden");
@@ -11965,19 +11969,38 @@ var notification_controller_default = class extends Controller {
       return;
     const steps = this.stepsTarget.querySelectorAll("li.step");
     steps.forEach((el, index) => {
-      el.classList.remove("step-primary", "step-success");
-      if (step >= steps.length) {
+      const lastStep = sessionStorage.getItem("lastStep");
+      el.classList.remove("step-primary", "step-success", "step-error");
+      if (step === steps.length) {
         el.classList.add("step-success");
+        this.waitingTarget.classList.add("hidden");
+        this.errorTarget.classList.add("hidden");
+        this.successTarget.classList.remove("hidden");
+      } else if (step === 7) {
+        if (lastStep > index + 1) {
+          el.classList.add("step-primary");
+        } else if (index === lastStep - 1) {
+          el.classList.add("step-error");
+          this.waitingTarget.classList.add("hidden");
+          this.errorTarget.classList.remove("hidden");
+          this.successTarget.classList.add("hidden");
+        }
       } else if (index < step) {
         el.classList.add("step-primary");
-      } else {
-        el.classList.add("step-neutral");
+        this.waitingTarget.classList.remove("hidden");
+        this.errorTarget.classList.add("hidden");
+        this.successTarget.classList.add("hidden");
       }
     });
   }
   close() {
     this.cardTarget.classList.add("hidden");
     sessionStorage.removeItem("lastNotification");
+    sessionStorage.removeItem("lastStep");
+    this.waitingTarget.classList.remove("hidden");
+    this.errorTarget.classList.add("hidden");
+    this.successTarget.classList.add("hidden");
+    window.location.reload();
   }
 };
 
@@ -12544,6 +12567,7 @@ window.subscribeToClosing = function(closingId) {
       },
       disconnected() {
         console.log("\u274C Desconectado do ClosingChannel");
+        window.subscribeToClosing();
       },
       received(data) {
         const element = document.querySelector('[data-controller="notification"]');
