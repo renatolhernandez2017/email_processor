@@ -8,7 +8,7 @@
       %>
     <% elsif @select_action == "summary_patient_listing" %>
       <%= render "shared/patient_listing", representative_name: representative.name,
-          closing: @closing, monthly_reports: @monthly_reports[representative.id]
+          closing: @closing, prescribers: @prescribers[representative.id]
       %>
     <% elsif @select_action == "monthly_summary" %>
       <div class="card shadow-lg border border-primary p-5 my-5">

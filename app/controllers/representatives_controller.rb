@@ -48,9 +48,7 @@ class RepresentativesController < ApplicationController
 
   def select
     @select_action = params[:select_action]
-
-    @title = @select.select { |action| action.is_a?(Array) && @select_action.include?(action[1]) }
-      .map { |action| action[0] }.first
+    @title = @select.find { |select| select if select.include?(@select_action) }.first
 
     @representatives = Representative.with_totals(@current_closing.id)
     load_totals_for_representatives

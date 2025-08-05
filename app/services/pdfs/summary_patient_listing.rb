@@ -8,16 +8,18 @@ module Pdfs
         header
         move_down 10
 
-        @monthly_reports[@representative.id].each do |monthly_report|
-          @monthly_report = monthly_report
-          content
+        @prescribers[@representative.id].each do |prescriber|
+          if prescriber.requests.present? && prescriber.envelope_number.to_s != "000000"
+            @prescriber = prescriber
+            content
 
-          stroke_color "00008b"
-          line_width 0.5
-          stroke_horizontal_rule
-          stroke_color "00008b"
+            stroke_color "00008b"
+            line_width 0.5
+            stroke_horizontal_rule
+            stroke_color "00008b"
 
-          move_down 30
+            move_down 30
+          end
         end
       end
     end
@@ -27,7 +29,7 @@ module Pdfs
     def header
       table([
         [
-          {content: "Listagem Resumida de Pacientes de"},
+          {content: "Representante: "},
           {content: @representative.name.upcase},
           {content: "em"},
           {content: @closing.to_s}
@@ -44,10 +46,12 @@ module Pdfs
       move_down 10
       table([
         [
+          {content: "Prescritor:", font_style: :bold},
+          {content: @prescriber.name},
           {content: "Situação:", font_style: :bold},
-          {content: @monthly_report.situation},
+          {content: @prescriber.situation},
           {content: "Envelope:", font_style: :bold},
-          {content: @monthly_report.number_envelope}
+          {content: @prescriber.envelope_number}
         ]
       ], cell_style: {borders: [], size: 10}, position: :center) do
         [1, 3].each { |i| cells[0, i].text_color = "00008b" }
@@ -58,9 +62,9 @@ module Pdfs
 
       rows = [
         [
-          @monthly_report.quantity,
+          @prescriber.quantity,
           "", "",
-          number_to_currency(@monthly_report.with_available_value)
+          number_to_currency(@prescriber.available_value)
         ]
       ]
 

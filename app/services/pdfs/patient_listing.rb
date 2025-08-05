@@ -7,7 +7,7 @@ module Pdfs
         first_page = true
 
         @prescribers[@representative.id].each do |prescriber|
-          if prescriber.requests.present?
+          if prescriber.requests.present? && prescriber.envelope_number.to_s != "000000"
             if !first_page && prescriber.situation.present?
               start_new_page
             end
@@ -59,7 +59,7 @@ module Pdfs
 
       headers = [
         "Pacientes", "Repetida", "Data de Entrada",
-        "Data de Pagamento", "Valor Recebido", "Filial"
+        "Data de Pagamento", "Valor", "Filial"
       ]
 
       rows = @requests.map do |request|
