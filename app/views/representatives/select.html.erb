@@ -21,7 +21,7 @@
     <% elsif @select_action == "tags" %>
       <%= render "tags", representative_name: representative.name,
           current_closing: @current_closing, closing: @closing,
-          monthly_reports: @monthly_reports[representative.id]
+          prescribers: @prescribers[representative.id]
       %>
     <% elsif @select_action == "address_report" %>
       <div class="card border border-primary p-5 my-2">

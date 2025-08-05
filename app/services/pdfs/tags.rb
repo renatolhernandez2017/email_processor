@@ -8,9 +8,8 @@ module Pdfs
         header
         move_down 5
 
-        @monthly_reports[@representative.id].each do |monthly_report|
-          @monthly_report = monthly_report
-          @prescriber = @monthly_report.prescriber
+        @prescribers[@representative.id].each do |prescriber|
+          @prescriber = prescriber
 
           other_header
           content
@@ -38,7 +37,7 @@ module Pdfs
       current_accounts = @prescriber.current_accounts
       table([
         [
-          {content: @monthly_report.number_envelope},
+          {content: @prescriber.envelope_number},
           {content: current_accounts.present? ? "" : "- (ESP)"}
         ]
       ], cell_style: {borders: [], size: 12}) do
@@ -53,7 +52,7 @@ module Pdfs
         [
           @prescriber.id,
           @prescriber.name,
-          @monthly_report.number_envelope,
+          @prescriber.envelope_number,
           [
             @prescriber&.full_address,
             @prescriber&.full_contact,

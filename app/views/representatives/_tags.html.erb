@@ -5,10 +5,10 @@
     <span class="text-primary ml-12"><%= closing %></span>
   </label>
 
-  <% monthly_reports.each do |monthly_report| %>
+  <% prescribers.each do |prescriber| %>
     <label class="text-lg my-5">
-      <%= monthly_report.number_envelope %>
-      <span class="text-red-500"><%= "- (ESP)" unless monthly_report.prescriber.current_accounts.present? %>
+      <%= prescriber.envelope_number %>
+      <span class="text-red-500"><%= "- (ESP)" unless prescriber.current_accounts.present? %>
     </label>
 
     <ul class="menu rounded-box">
@@ -27,16 +27,16 @@
 
               <tbody>
                 <tr>
-                  <td><%= monthly_report.prescriber.id %></td>
-                  <td><%= monthly_report.prescriber.name %></td>
+                  <td><%= prescriber.id %></td>
+                  <td><%= prescriber.name %></td>
 
                   <td>
-                    <p><%= monthly_report.prescriber&.full_address %></p>
-                    <p><%= monthly_report.prescriber.full_contact %></p>
-                    <p><%= monthly_report.prescriber.secretary %></p>
+                    <p><%= prescriber&.full_address %></p>
+                    <p><%= prescriber.full_contact %></p>
+                    <p><%= prescriber.secretary %></p>
                   </td>
 
-                  <td>OBS: <%= truncate(monthly_report.prescriber.note, length: 50) %></td>
+                  <td>OBS: <%= truncate(prescriber.note, length: 50) %></td>
                 </tr>
               </tbody>
             </table>
