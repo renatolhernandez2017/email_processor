@@ -1,7 +1,6 @@
 class Request < ApplicationRecord
   audited
 
-  include ActionView::Helpers::NumberHelper
   include PgSearch::Model
   include Roundable
 
@@ -53,21 +52,5 @@ class Request < ApplicationRecord
     return value_for_report if value_for_report > 24.0
 
     (total_discounts <= 0.0) ? total_price : amount_received
-  end
-
-  def set_payment_date(request)
-    if request.payment_date?
-      request.payment_date.strftime("%d/%m/%y")
-    else
-      "  /  /  "
-    end
-  end
-
-  def set_price(request)
-    if request.payment_date?
-      number_to_currency(request.total_amount_for_report.round)
-    else
-      number_to_currency(request.total_price.round)
-    end
   end
 end

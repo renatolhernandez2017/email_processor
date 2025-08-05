@@ -2,7 +2,7 @@ class BaseMonthlyPdf < Prawn::Document
   include Prawn::View
   include ActionView::Helpers::NumberHelper
   include ActionView::Helpers::TextHelper
-  include MonthlyReportsHelper
+  include RequestsHelper
   include Roundable
 
   def initialize(representatives, closing, current_closing)

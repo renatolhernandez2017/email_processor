@@ -123,8 +123,8 @@ class RepresentativesController < ApplicationController
 
   def set_selects_label
     @select = [
-      ["Salva Listagem de Pacientes", "save_patient_listing"],
-      ["Salva Listagem de Pacientes Resumida", "saves_summary_patient_listing"],
+      ["Listagem de Pacientes", "patient_listing"],
+      ["Listagem de Pacientes Resumida", "summary_patient_listing"],
       ["Resumido Mensal", "monthly_summary"],
       ["Etiquetas", "tags"],
       ["Relatório de Endereços", "address_report"]

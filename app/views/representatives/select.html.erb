@@ -2,18 +2,18 @@
 
 <section class="flex flex-col mb-20 my-5">
   <% @representatives.each do |representative| %>
-    <% if @select_action == "save_patient_listing" %>
+    <% if @select_action == "patient_listing" %>
       <%= render "shared/patient/listing", representative_name: representative.name,
-          closing: @closing, monthly_reports: @monthly_reports[representative.id]
+          closing: @closing, prescribers: @prescribers[representative.id]
       %>
-    <% elsif @select_action == "saves_summary_patient_listing" %>
+    <% elsif @select_action == "summary_patient_listing" %>
       <%= render "shared/patient_listing", representative_name: representative.name,
           closing: @closing, monthly_reports: @monthly_reports[representative.id]
       %>
     <% elsif @select_action == "monthly_summary" %>
       <div class="card shadow-lg border border-primary p-5 my-5">
         <%= render "shared/label_of", representative_name: representative.name, closing: @closing, title: "Resumo de" %>
-        <%= render "summary", representative: representative, prescribers: @prescribers[representative.id], totals: @totals[representative.id] %>
+        <%= render "summary", prescribers: @prescribers[representative.id], totals: @totals[representative.id] %>
         <%= render "totals_by_bank", banks: @totals_by_bank[representative.id], totals_from_banks: @totals_from_banks[representative.id] %>
         <%= render "totals_by_store", stores: @totals_by_store[representative.id], totals_from_stores: @totals_from_stores[representative.id] %>
         <%= render "note_division", cashes: @total_in_cash[representative.id] %>

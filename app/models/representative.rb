@@ -15,7 +15,6 @@ class Representative < ApplicationRecord
 
   scope :with_totals, ->(closing_id) {
     left_joins(monthly_reports: :prescriber)
-      .includes(:prescribers)
       .joins(<<~SQL.squish)
         LEFT JOIN current_accounts ca_standard
           ON ca_standard.prescriber_id = monthly_reports.prescriber_id

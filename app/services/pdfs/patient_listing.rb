@@ -6,19 +6,21 @@ module Pdfs
         @representative = representative
         first_page = true
 
-        @monthly_reports[@representative.id].each do |monthly_report|
-          if !first_page && monthly_report.situation.present?
-            start_new_page
+        @prescribers[@representative.id].each do |prescriber|
+          if prescriber.requests.present?
+            if !first_page && prescriber.situation.present?
+              start_new_page
+            end
+
+            @prescriber = prescriber
+            first_page = false
+
+            header
+            move_down 10
+
+            @requests = @prescriber.requests
+            content
           end
-
-          first_page = false
-
-          header
-          move_down 10
-
-          @monthly_report = monthly_report
-          @requests = @monthly_report.prescriber.requests
-          content
         end
       end
     end
@@ -28,7 +30,7 @@ module Pdfs
     def header
       table([
         [
-          {content: "Listagem de Pacientes de"},
+          {content: "Representante: "},
           {content: @representative.name.upcase},
           {content: "em"},
           {content: @closing.to_s}
@@ -43,10 +45,12 @@ module Pdfs
       move_down 20
       table([
         [
+          {content: "Prescritor:", font_style: :bold},
+          {content: @prescriber.name},
           {content: "Situação:", font_style: :bold},
-          {content: @monthly_report.situation},
+          {content: @prescriber.situation},
           {content: "Envelope:", font_style: :bold},
-          {content: @monthly_report.number_envelope}
+          {content: @prescriber.envelope_number}
         ]
       ], cell_style: {borders: [], size: 10}, position: :center) do
         [1, 3].each { |i| cells[0, i].text_color = "00008b" }
@@ -63,18 +67,18 @@ module Pdfs
           request.patient_name || "Sem Nome",
           request.repeat ? "-R" : "",
           request.entry_date.strftime("%d/%m/%y"),
-          request.set_payment_date(request),
-          request.set_price(request),
-          request.branch.name || "Sem Filial"
+          set_payment_date(request),
+          set_price(request),
+          request.branch&.name || "Sem Filial"
         ]
       end
 
       footer = [
         ["Quantidade", "", "", "", "", "Valor Disponível"],
         [
-          @monthly_report.quantity,
+          @prescriber.quantity,
           "", "", "", "",
-          number_to_currency(@monthly_report.with_available_value)
+          number_to_currency(@prescriber.available_value)
         ]
       ]
 
