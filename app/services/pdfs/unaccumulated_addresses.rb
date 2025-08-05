@@ -8,9 +8,8 @@ module Pdfs
         header
         move_down 5
 
-        @monthly_reports[@representative.id].each do |monthly_report|
-          @monthly_report = monthly_report
-          @prescriber = @monthly_report.prescriber
+        @prescribers[@representative.id].each do |prescriber|
+          @prescriber = prescriber
 
           content
         end
@@ -38,16 +37,16 @@ module Pdfs
 
       rows = [
         [
-          @monthly_report.number_envelope,
+          @prescriber.envelope_number,
           [
-            "<b>Nome:</b> <color rgb='00008b'>#{@prescriber.name || "Sem Nome"}</color>",
-            "<b>Endereço:</b> #{@prescriber&.full_address || "Sem Endereço"}",
-            "<b>Fones:</b> #{@prescriber&.full_contact || "Sem Telefones"}",
-            "<b>Contatos:</b> #{@prescriber.secretary || "Sem Contatos"}",
-            "<b>OBS:</b> #{truncate(@prescriber.note, length: 50) || "Sem Observação"}"
+            "<b>Nome:</b> <color rgb='00008b'>#{@prescriber.name}</color>",
+            "<b>Endereço:</b> #{@prescriber&.full_address}",
+            "<b>Fones:</b> #{@prescriber&.full_contact}",
+            "<b>Contatos:</b> #{@prescriber.secretary}",
+            "<b>OBS:</b> #{truncate(@prescriber.note, length: 50)}"
           ].compact.join("\n"),
-          @monthly_report.quantity,
-          number_to_currency(@monthly_report.with_available_value)
+          @prescriber.quantity,
+          number_to_currency(@prescriber.available_value)
         ]
       ]
 
