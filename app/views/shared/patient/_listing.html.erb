@@ -1,10 +1,13 @@
 <div class="card border border-primary p-5 my-2">
   <div class="flex mb-5 gap-3 font-bold">
-    <span class="text-primary"><%= representative_name&.upcase || "Sem Representante" %></span>
+    Representante: <span class="text-primary">
+      <%= representative_name&.upcase || "Sem Representante" %>
+    </span>
+
     em <span class="text-primary"><%= closing %></span>
   </div>
 
-  <% monthly_reports.each do |monthly_report| %>
+  <% prescribers.each do |prescriber| %>
     <ul class="menu rounded-box mb-4">
       <li>
         <ul class="border-l-2 border-b-2 border-primary">
@@ -24,18 +27,20 @@
 
               <tbody>
                 <div class="grid grid-rows-2 mb-7 gap-2 text-center border-b border-primary">
-                  <div class="grid grid-cols-2">
+                  <div class="grid grid-cols-3">
+                    <span class="font-semibold text-base">Prescritor</span>
                     <span class="font-semibold text-base">Situação</span>
                     <span class="font-semibold text-base">Envelope</span>
                   </div>
 
-                  <div class="grid grid-cols-2 text-primary">
-                    <span><%= monthly_report.situation %></span>
-                    <span><%= monthly_report.number_envelope %></span>
+                  <div class="grid grid-cols-3 text-primary">
+                    <span><%= prescriber.name %></span>
+                    <span><%= prescriber.situation %></span>
+                    <span><%= prescriber.envelope_number %></span>
                   </div>
                 </div>
 
-                <% monthly_report.prescriber.requests.order("patient_name ASC").each do |request| %>
+                <% prescriber.requests.each do |request| %>
                   <tr class="bg-gray-200 border-t border-b border-black h-10">
                     <td><%= request.patient_name || "Sem Nome" %></td>
                     <td><%= request.repeat ? "-R" : "" %></td>
@@ -48,7 +53,7 @@
                 <% end %>
               </tbody>
 
-              <%= render "shared/patient/foot", monthly_report: monthly_report %>
+              <%= render "shared/patient/foot", prescriber: prescriber %>
             </table>
           </div>
         </ul>

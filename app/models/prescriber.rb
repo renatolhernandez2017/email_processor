@@ -22,13 +22,6 @@ class Prescriber < ApplicationRecord
                         "CRO" => 2,
                         "CRN" => 9}
 
-  scope :monthly_reports, ->(closing_id, representative_ids) {
-    MonthlyReport.joins(:prescriber)
-      .where(closing_id: closing_id, representative_id: representative_ids)
-      .group(custom_group_sql)
-      .select(custom_select_sql)
-  }
-
   scope :with_totals, ->(closing_id, representative_ids) {
     where(representative_id: representative_ids)
       .joins(<<~SQL)
@@ -78,6 +71,23 @@ class Prescriber < ApplicationRecord
       )
       .group_by(&:branch_name)
   }
+
+  def situation
+    current_account = current_accounts.find_by(standard: true)
+    monthly_report = monthly_reports.last
+
+    if monthly_report.present?
+      if monthly_report.accumulated?
+        "A"
+      elsif !monthly_report.accumulated? && !current_account.nil?
+        "D"
+      else
+        "E"
+      end
+    else
+      "E"
+    end
+  end
 
   def full_address
     return "Endereço não cadastrado" unless address.present?

@@ -64,7 +64,7 @@ class PrescribersController < ApplicationController
   def patient_listing
     representative = @prescriber.representative
     @representative = Representative.with_totals(@current_closing.id).find(representative.id)
-    @monthly_reports = Prescriber.monthly_reports(@current_closing.id, representative.id).where(prescriber_id: @prescriber.id)
+    @prescribers = Prescriber.with_totals(@current_closing.id, representative.id).where(id: @prescriber.id)
   end
 
   private

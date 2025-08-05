@@ -37,9 +37,11 @@ class MonthlyReport < ApplicationRecord
   }
 
   # def situation
+  #   current_account = prescriber.current_accounts.find_by(standard: true)
+
   #   if accumulated
   #     "A"
-  #   elsif !accumulated && !prescriber.current_accounts.nil?
+  #   elsif !accumulated && !current_account.nil?
   #     "D"
   #   else
   #     "E"
