@@ -14,11 +14,11 @@
           </thead>
 
           <tbody>
-            <% banks.each do |bank| %>
+            <% banks.each do |bank_name, bank| %>
               <tr class="bg-gray-200 border-t border-b border-black h-8">
-                <td><%= bank.count %></td>
-                <td><%= bank.bank_name %></td>
-                <td><%= number_to_currency(bank.total) %></td>
+                <td><%= bank.sum(&:count) %></td>
+                <td><%= bank_name %></td>
+                <td><%= number_to_currency(bank.sum(&:total)) %></td>
               </tr>
             <% end %>
           </tbody>
@@ -33,8 +33,8 @@
 
             <tbody>
               <tr class="bg-gray-200 border-t border-b border-black h-8">
-                <th colspan="2"><%= banks.sum(&:count) %></th>
-                <th><%= number_to_currency(banks.sum(&:total)) %></th>
+                <th colspan="2"><%= totals_from_banks[:total_count] %></th>
+                <th><%= number_to_currency(totals_from_banks[:total_price]) %></th>
               </tr>
             </tbody>
           </tfoot>

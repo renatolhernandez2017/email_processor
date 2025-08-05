@@ -15,9 +15,9 @@
 
     <div class="card shadow-lg border border-primary p-5">
       <%= render "shared/label_of", representative_name: representative.name, closing: @closing, title: "Resumo de" %>
-      <%= render "summary", representative: representative %>
-      <%= render "totals_by_bank", banks: @totals_by_bank[representative.id] %>
-      <%= render "totals_by_store", stores: @totals_by_store[representative.id] %>
+      <%= render "summary", representative: representative, prescribers: @prescribers[representative.id], totals: @totals[representative.id] %>
+      <%= render "totals_by_bank", banks: @totals_by_bank[representative.id], totals_from_banks: @totals_from_banks[representative.id] %>
+      <%= render "totals_by_store", stores: @totals_by_store[representative.id], totals_from_stores: @totals_from_stores[representative.id] %>
       <%= render "note_division", cashes: @total_in_cash[representative.id] %>
     </div>
   <% end %>

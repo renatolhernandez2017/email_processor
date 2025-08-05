@@ -18,23 +18,23 @@
           </thead>
 
           <tbody>
-            <% representative.monthly_reports.includes(:prescriber).order("prescribers.name ASC").each do |monthly_report| %>
+            <% prescribers.each do |prescriber| %>
               <tr class="bg-gray-200 border-t border-b border-black h-8">
-                <td><%= monthly_report.prescriber.id %></td>
+                <td><%= prescriber.id %></td>
 
                 <td>
-                  <%= link_to monthly_report.prescriber.name,
-                      patient_listing_prescriber_path(monthly_report.prescriber), class: "text-primary"
+                  <%= link_to prescriber.name,
+                      patient_listing_prescriber_path(prescriber), class: "text-primary"
                   %>
                 </td>
 
-                <td class="text-center"><%= monthly_report.quantity %></td>
-                <td><%= number_to_currency(monthly_report.total_price) %></td>
-                <td><%= number_to_currency(monthly_report.partnership) %></td>
-                <td><%= number_to_currency(monthly_report.discounts) %></td>
-                <td><%= number_to_currency(monthly_report.available_value) %></td>
-                <td><%= payment_method_display(monthly_report) %></td>
-                <td><%= monthly_report.envelope_number.to_s.rjust(6, "0") %></td>
+                <td class="text-center"><%= prescriber.quantity %></td>
+                <td><%= number_to_currency(prescriber.price) %></td>
+                <td><%= number_to_currency(prescriber.partnership) %></td>
+                <td><%= number_to_currency(prescriber.discounts) %></td>
+                <td><%= number_to_currency(prescriber.available_value) %></td>
+                <td><%= prescriber.kind %></td>
+                <td><%= prescriber.envelope_number %></td>
               </tr>
             <% end %>
           </tbody>
@@ -48,33 +48,33 @@
 
             <tbody>
               <tr>
-                <td><%= representative.reports_count %></td>
+                <td><%= totals[:count] %></td>
                 <td class="font-semibold text-base">Total Geral</td>
-                <td class="text-center"><%= representative.total_quantity || 0 %></td>
-                <td><%= number_to_currency(representative.total_price) %></td>
-                <td><%= number_to_currency(representative.total_partnership) %></td>
-                <td><%= number_to_currency(representative.total_discounts) %></td>
-                <td><%= number_to_currency(representative.with_available_value) %></td>
+                <td class="text-center"><%= totals[:quantity] %></td>
+                <td><%= number_to_currency(totals[:price]) %></td>
+                <td><%= number_to_currency(totals[:partnership]) %></td>
+                <td><%= number_to_currency(totals[:discounts]) %></td>
+                <td><%= number_to_currency(totals[:available_value]) %></td>
               </tr>
 
               <tr>
-                <td><%= representative.accumulated_reports_count %></td>
+                <td><%= totals[:accumulated][:count] %></td>
                 <td class="font-semibold text-base">Acumulados</td>
-                <td class="text-center"><%= representative.accumulated_quantity %></td>
-                <td><%= number_to_currency(representative.accumulated_price) %></td>
-                <td><%= number_to_currency(representative.accumulated_partnership) %></td>
-                <td><%= number_to_currency(representative.accumulated_discounts) %></td>
-                <td><%= number_to_currency(representative.available_value_accumulated) %></td>
+                <td class="text-center"><%= totals[:accumulated][:quantity] %></td>
+                <td><%= number_to_currency(totals[:accumulated][:price]) %></td>
+                <td><%= number_to_currency(totals[:accumulated][:partnership]) %></td>
+                <td><%= number_to_currency(totals[:accumulated][:discounts]) %></td>
+                <td><%= number_to_currency(totals[:accumulated][:available_value]) %></td>
               </tr>
 
               <tr>
-                <td><%= representative.real_sale_reports_count %></td>
+                <td><%= totals[:real_sale][:count] %></td>
                 <td class="font-semibold text-base">Venda Real</td>
-                <td class="text-center"><%= representative.real_sale_quantity %></td>
-                <td><%= number_to_currency(representative.real_sale_total_price) %></td>
-                <td><%= number_to_currency(representative.real_sale_partnership) %></td>
-                <td><%= number_to_currency(representative.real_sale_discounts) %></td>
-                <td><%= number_to_currency(representative.available_value_real_sale) %></td>
+                <td class="text-center"><%= totals[:real_sale][:quantity] %></td>
+                <td><%= number_to_currency(totals[:real_sale][:price]) %></td>
+                <td><%= number_to_currency(totals[:real_sale][:partnership]) %></td>
+                <td><%= number_to_currency(totals[:real_sale][:discounts]) %></td>
+                <td><%= number_to_currency(totals[:real_sale][:available_value]) %></td>
               </tr>
             </tbody>
           </tfoot>

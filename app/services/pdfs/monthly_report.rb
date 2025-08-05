@@ -4,7 +4,6 @@ module Pdfs
       @representatives.each_with_index do |representative, index|
         start_new_page unless index == 0
         @representative = representative
-        @monthly_reports = @representative.monthly_reports.includes(:prescriber).order("prescribers.name ASC")
 
         header
         content
@@ -28,9 +27,9 @@ module Pdfs
     end
 
     def content
-      move_down 20
+      move_down 25
       table_monthly_reports
-      move_down 20
+      move_down 25
 
       table_by_bank
       move_down 20
@@ -45,20 +44,20 @@ module Pdfs
     def table_monthly_reports
       headers = [
         "Id", "Prescritor", "Qt.", "Total", "Parceria",
-        "Descontos", "Valor Disp.", "Tipo", "N. Envelope"
+        "Desc.", "Valor Disp.", "Tipo", "Envelope"
       ]
 
-      rows = @monthly_reports.map do |monthly_report|
+      rows = @prescribers[@representative.id].map do |prescriber|
         [
-          monthly_report.prescriber.id || "N/A",
-          monthly_report.prescriber.name || "N/A",
-          monthly_report.quantity || "N/A",
-          number_to_currency(monthly_report.total_price || 0),
-          number_to_currency(monthly_report.partnership || 0),
-          number_to_currency(monthly_report.discounts || 0),
-          number_to_currency(monthly_report.available_value || 0),
-          payment_method_display(monthly_report).to_s || "N/A",
-          monthly_report.envelope_number.to_s.rjust(6, "0")
+          prescriber.id || "N/A",
+          prescriber.name || "N/A",
+          prescriber.quantity || "N/A",
+          number_to_currency(prescriber.price || 0),
+          number_to_currency(prescriber.partnership || 0),
+          number_to_currency(prescriber.discounts || 0),
+          number_to_currency(prescriber.available_value || 0),
+          prescriber.kind || "N/A",
+          prescriber.envelope_number
         ]
       end
 
@@ -72,8 +71,8 @@ module Pdfs
       build_generic_table(
         title: "Total por Banco",
         headers: ["Quantidade", "Banco", "Valor"],
-        rows: @totals_by_bank[@representative.id].map { |bank| [bank.count || 0, bank.bank_name || "N/A", number_to_currency(bank.total || 0)] },
-        footer: [["Total de Bancos", "", "Total"], [@totals_by_bank[@representative.id].sum(&:count) || 0, "", number_to_currency(@totals_by_bank[@representative.id].sum(&:total) || 0)]],
+        rows: @totals_by_bank[@representative.id].map { |bank_name, bank| [bank.sum(&:count), bank_name || "N/A", number_to_currency(bank.sum(&:total))] },
+        footer: [["Total de Bancos", "", "Total"], [@totals_from_banks[@representative.id][:total_count], "", number_to_currency(@totals_from_banks[@representative.id][:total_price])]],
         type: "banks"
       )
     end
@@ -82,8 +81,8 @@ module Pdfs
       build_generic_table(
         title: "Total por Loja",
         headers: ["Quantidade", "Loja", "Valor"],
-        rows: @totals_by_store[@representative.id].map { |branch| [branch.count || 0, branch.branch_name || "N/A", number_to_currency(branch.total || 0)] },
-        footer: [["Total de Lojas", "", "Total"], [@totals_by_store[@representative.id].sum(&:count) || 0, "", number_to_currency(@totals_by_store[@representative.id].sum(&:total) || 0)]],
+        rows: @totals_by_store[@representative.id].map { |branch_name, store| [store.sum(&:count), branch_name || "N/A", number_to_currency(store.sum(&:total))] },
+        footer: [["Total de Lojas", "", "Total"], [@totals_from_stores[@representative.id][:total_count], "", number_to_currency(@totals_from_stores[@representative.id][:total_price])]],
         type: "stores"
       )
     end
@@ -100,35 +99,35 @@ module Pdfs
 
     def build_monthly_reports_footer
       [
-        ["Quantidade", "", "", "", "", "", "", "", ""],
+        ["Quant.", "", "", "", "", "", "", "", ""],
         [
-          @representative.reports_count || 0,
+          @totals[@representative.id][:count],
           "Total Geral",
-          @representative.total_quantity || 0,
-          @representative.total_price || 0,
-          @representative.total_partnership || 0,
-          @representative.total_discounts || 0,
-          @representative.with_available_value || 0,
+          @totals[@representative.id][:quantity],
+          number_to_currency(@totals[@representative.id][:price]),
+          number_to_currency(@totals[@representative.id][:partnership]),
+          number_to_currency(@totals[@representative.id][:discounts]),
+          number_to_currency(@totals[@representative.id][:available_value]),
           "", ""
         ],
         [
-          @representative.accumulated_reports_count || 0,
+          @totals[@representative.id][:accumulated][:count],
           "Acumulados",
-          @representative.accumulated_quantity || 0,
-          @representative.accumulated_price || 0,
-          @representative.accumulated_partnership || 0,
-          @representative.accumulated_discounts || 0,
-          @representative.available_value_accumulated || 0,
+          @totals[@representative.id][:accumulated][:quantity],
+          number_to_currency(@totals[@representative.id][:accumulated][:price]),
+          number_to_currency(@totals[@representative.id][:accumulated][:partnership]),
+          number_to_currency(@totals[@representative.id][:accumulated][:discounts]),
+          number_to_currency(@totals[@representative.id][:accumulated][:available_value]),
           "", ""
         ],
         [
-          @representative.real_sale_reports_count || 0,
+          @totals[@representative.id][:real_sale][:count],
           "Venda Real",
-          @representative.real_sale_quantity || 0,
-          @representative.real_sale_total_price || 0,
-          @representative.real_sale_partnership || 0,
-          @representative.real_sale_discounts || 0,
-          @representative.available_value_real_sale || 0,
+          @totals[@representative.id][:real_sale][:quantity],
+          number_to_currency(@totals[@representative.id][:real_sale][:price]),
+          number_to_currency(@totals[@representative.id][:real_sale][:partnership]),
+          number_to_currency(@totals[@representative.id][:real_sale][:discounts]),
+          number_to_currency(@totals[@representative.id][:real_sale][:available_value]),
           "", ""
         ]
       ]
@@ -172,7 +171,7 @@ module Pdfs
             if data.size <= 5
               row(data.size - 2).font_style = :bold
             else
-              (4...data.size - 1).each { |row_index| row(row_index).font_style = :bold }
+              (6...data.size - 1).each { |row_index| row(row_index).font_style = :bold }
             end
           end
         end

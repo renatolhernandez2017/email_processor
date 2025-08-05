@@ -29,13 +29,28 @@ class BaseMonthlyPdf < Prawn::Document
     @totals_by_store = []
     @total_in_cash = []
     @monthly_reports = []
+    @prescribers = []
+    @totals = []
+    @totals_from_banks = []
+    @totals_from_stores = []
 
     @representatives.each do |representative|
-      @totals_by_bank[representative.id] = Representative.totals_by_bank_for_representatives(@current_closing.id, representative.id)
-      @totals_by_store[representative.id] = Representative.totals_by_store_for_representatives(@current_closing.id, representative.id)
-      total_cash = Representative.total_cash_for_representatives(@current_closing.id, representative.id)
-      @total_in_cash[representative.id] = divide_into_notes(total_cash.sum(&:total_available_value).to_f)
-      @monthly_reports[representative.id] = Representative.monthly_reports_for_representatives(@current_closing.id, representative.id)
+      @monthly_reports[representative.id] = Representative.monthly_reports(@current_closing.id, representative.id)
+      @prescribers[representative.id] = Prescriber.with_totals(@current_closing.id, representative.id)
+
+      prescriber = @prescribers[representative.id].first
+      @totals[representative.id] = Prescriber.get_totals(prescriber)
+
+      @totals_by_bank[representative.id] = Prescriber.totals_by_bank_for_representatives(@current_closing.id, representative.id)
+      totals_from_banks = @totals_by_bank[representative.id].first
+      @totals_from_banks[representative.id] = Prescriber.totals_by_bank_store(totals_from_banks)
+
+      @totals_by_store[representative.id] = Prescriber.totals_by_store_for_representatives(@current_closing.id, representative.id)
+      totals_from_stores = @totals_by_store[representative.id].first
+      @totals_from_stores[representative.id] = Prescriber.totals_by_bank_store(totals_from_stores)
+
+      available_value = @totals[representative.id][:real_sale][:available_value].to_f
+      @total_in_cash[representative.id] = divide_into_notes(available_value)
     end
   end
 end
