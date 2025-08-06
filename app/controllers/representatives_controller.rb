@@ -7,6 +7,7 @@ class RepresentativesController < ApplicationController
   before_action :set_selects_label
   before_action :set_closing_date, except: %i[index update change_active]
   before_action :set_representative, only: %i[update change_active]
+  before_action :load_totals_for_representatives, only: %i[monthly_report patient_listing summary_patient_listing select unaccumulated_addresses]
 
   def index
     @pagy, @representatives = pagy(Representative.all.order(:number))
@@ -33,17 +34,14 @@ class RepresentativesController < ApplicationController
 
   def monthly_report
     @representatives = Representative.with_totals(@current_closing.id).where(id: params[:id])
-    load_totals_for_representatives
   end
 
   def patient_listing
     @representatives = Representative.with_totals(@current_closing.id).where(id: params[:id])
-    load_totals_for_representatives
   end
 
   def summary_patient_listing
     @representatives = Representative.with_totals(@current_closing.id).where(id: params[:id])
-    load_totals_for_representatives
   end
 
   def select
@@ -51,12 +49,10 @@ class RepresentativesController < ApplicationController
     @title = @select.find { |select| select if select.include?(@select_action) }.first
 
     @representatives = Representative.with_totals(@current_closing.id)
-    load_totals_for_representatives
   end
 
   def unaccumulated_addresses
     @representatives = Representative.with_totals(@current_closing.id).where(id: params[:id])
-    load_totals_for_representatives
   end
 
   def change_active

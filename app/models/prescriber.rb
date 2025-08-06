@@ -160,11 +160,13 @@ class Prescriber < ApplicationRecord
   end
 
   def self.totals_by_bank_store(totals)
-    totals = totals.last.first
+    return unless totals.present?
+
+    new_totals = totals.last.last
 
     {
-      total_count: totals.total_count.to_i,
-      total_price: totals.total_price.to_f
+      total_count: new_totals.total_count.to_i,
+      total_price: new_totals.total_price.to_f
     }
   end
 end
