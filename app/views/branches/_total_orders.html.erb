@@ -1,44 +1,42 @@
 <ul class="menu rounded-box mb-5">
   <li>
     <ul class="border-l-2 border-b-2 border-primary">
-      <div class="overflow-auto my-2">
-        <table class="table w-full">
-          <thead class="text-base">
+      <table class="table w-full my-2">
+        <thead class="text-base">
+          <tr>
+            <th>Quantidade de Receitas</th>
+            <th>Valor médio da Receita</th>
+            <th>Total de Descontos</th>
+            <th>Total de Taxas</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <tr class="bg-gray-200 border-t border-b border-black">
+            <td><%= loose.quantity %></td>
+            <td><%= number_to_currency(loose.adjusted_revenue_value) %></td>
+            <td><%= number_to_currency(loose.total_discounts) %></td>
+            <td><%= number_to_currency(loose.total_fees) %></td>
+          </tr>
+        </tbody>
+
+        <tfoot>
+          <thead>
             <tr>
-              <th>Quantidade de Receitas</th>
-              <th>Valor médio da Receita</th>
-              <th>Total de Descontos</th>
-              <th>Total de Taxas</th>
+              <th colspan="3" class="pt-7"></th>
+              <th></th>
             </tr>
           </thead>
 
           <tbody>
-            <tr class="bg-gray-200 border-t border-b border-black">
-              <td><%= loose.quantity || 0 %></td>
-              <td><%= number_to_currency(loose.adjusted_revenue_value || 0) %></td>
-              <td><%= number_to_currency(loose.total_discounts || 0) %></td>
-              <td><%= number_to_currency(loose.total_fees || 0) %></td>
+            <tr class="bg-gray-200 border-t border-b border-black h-10">
+              <td colspan="3" class="font-semibold text-base">Total de Pedidos</td>
+
+              <td><%= number_to_currency(loose.total_orders) %></td>
             </tr>
           </tbody>
-
-          <tfoot>
-            <thead>
-              <tr>
-                <th colspan="3" class="pt-7"></th>
-                <th></th>
-              </tr>
-            </thead>
-
-            <tbody>
-              <tr class="bg-gray-200 border-t border-b border-black h-10">
-                <td colspan="3" class="font-semibold text-base">Total de Pedidos</td>
-
-                <td><%= number_to_currency(loose.total_orders || 0) %></td>
-              </tr>
-            </tbody>
-          </tfoot>
-        </table>
-      </div>
+        </tfoot>
+      </table>
     </ul>
   </li>
 </ul>

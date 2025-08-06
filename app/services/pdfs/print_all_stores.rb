@@ -1,11 +1,12 @@
 module Pdfs
   class PrintAllStores < BaseBranchPdf
     def generate_content
-      @branches.each_with_index do |branch, index|
+      @branches.each_with_index do |(name, branch_number, id), index|
         start_new_page unless index == 0
-        @branch_name = branch[0]
-        @branch_number = branch[1]
-        @branch_id = branch[2]
+
+        @branch_name = name
+        @branch_number = branch_number
+        @branch_id = id
 
         @new_loose = @loose[@branch_id]
         @new_total_revenue = @total_revenue[@branch_id]
@@ -22,7 +23,7 @@ module Pdfs
     def header
       table([
         [
-          {content: "Depósitos em Bancos de"},
+          {content: "Todas as lojas de"},
           {content: @branch_name.upcase},
           {content: "em"},
           {content: @closing}
@@ -57,11 +58,11 @@ module Pdfs
 
       rows = [
         [
-          @new_loose.quantity || 0,
-          number_to_currency(@new_loose.adjusted_revenue_value || 0),
-          number_to_currency(@new_loose.total_discounts || 0),
+          @new_loose.quantity,
+          number_to_currency(@new_loose.adjusted_revenue_value),
+          number_to_currency(@new_loose.total_discounts),
           "",
-          number_to_currency(@new_loose.total_fees || 0)
+          number_to_currency(@new_loose.total_fees)
         ]
       ]
 
@@ -69,7 +70,7 @@ module Pdfs
         [
           "Total de Pedidos",
           "", "", "",
-          number_to_currency(@new_loose.total_orders || 0)
+          number_to_currency(@new_loose.total_orders)
         ]
       ]
 

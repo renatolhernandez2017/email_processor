@@ -1,39 +1,37 @@
 <ul class="menu rounded-box mb-5">
   <li>
     <ul class="border-l-2 border-b-2 border-primary">
-      <div class="overflow-auto my-2">
-        <table class="table w-full">
-          <thead class="text-base">
-            <tr><th></th></tr>
-          </thead>
+      <table class="table w-full my-2">
+        <thead class="text-base">
+          <tr><th></th></tr>
+        </thead>
 
-          <tbody>
-            <tr class="bg-gray-200 border-t border-b border-black h-10">
-              <td class="font-semibold text-base">Parceria adiantada pela loja</td>
+        <tbody>
+          <tr class="bg-gray-200 border-t border-b border-black h-10">
+            <td class="font-semibold text-base">Parceria adiantada pela loja</td>
 
-              <td><%= number_to_currency(with_partnership.sum(&:total_discounts)) %> (+)</td>
-            </tr>
+            <td><%= number_to_currency(with_partnership.sum(&:total_discounts)) %> (+)</td>
+          </tr>
 
-            <tr class="bg-gray-200 border-t border-b border-black h-10">
-              <td class="font-semibold text-base">Pagamento de comissão para representantes</td>
+          <tr class="bg-gray-200 border-t border-b border-black h-10">
+            <td class="font-semibold text-base">Pagamento de comissão para representantes</td>
 
-              <td><%= number_to_currency(with_partnership.sum(&:commission_payments_transfers)) %> (-) ver tabela abaixo</td>
-            </tr>
+            <td><%= number_to_currency(with_partnership.sum(&:commission_payments_transfers)) %> (-) ver tabela abaixo</td>
+          </tr>
 
-            <tr class="bg-gray-200 border-t border-b border-black h-10">
-              <td class="font-semibold text-base">Repasse de comissão para representantes</td>
+          <tr class="bg-gray-200 border-t border-b border-black h-10">
+            <td class="font-semibold text-base">Repasse de comissão para representantes</td>
 
-              <td><%= number_to_currency(with_partnership.sum(&:commission_payments_transfers)) %> (+) ver tabela abaixo</td>
-            </tr>
+            <td><%= number_to_currency(with_partnership.sum(&:commission_payments_transfers)) %> (+) ver tabela abaixo</td>
+          </tr>
 
-            <tr class="bg-gray-200 border-t border-b border-black h-10">
-              <td class="font-semibold text-base">Total devido</td>
+          <tr class="bg-gray-200 border-t border-b border-black h-10">
+            <td class="font-semibold text-base">Total devido</td>
 
-              <td><%= number_to_currency(with_partnership.sum(&:branch_partnership)) %> (=)</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
+            <td><%= number_to_currency(with_partnership.sum(&:branch_partnership)) %> (=)</td>
+          </tr>
+        </tbody>
+      </table>
     </ul>
   </li>
 </ul>

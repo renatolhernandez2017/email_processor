@@ -14,19 +14,23 @@ class Request < ApplicationRecord
     joins(:branch)
       .select(<<~SQL.squish)
         branch_id,
-        SUM(total_price) AS total_price,
-        COUNT(DISTINCT requests.id) AS quantity,
-        SUM(amount_received) AS amount_received,
-        SUM(total_discounts) AS total_discounts,
-        SUM(total_fees) AS total_fees,
-        CASE
-          WHEN branches.branch_number != 13 THEN SUM(total_price) / COUNT(DISTINCT requests.id)
-          ELSE (SUM(total_price) / 0.85) / COUNT(DISTINCT requests.id)
-        END AS adjusted_revenue_value,
-        CASE
-          WHEN branches.branch_number != 13 THEN SUM(total_price)
-          ELSE SUM(total_price) / 0.85
-        END AS total_orders
+        COALESCE(SUM(total_price), 0) AS total_price,
+        COALESCE(COUNT(requests.id), 0) AS quantity,
+        COALESCE(SUM(amount_received), 0) AS amount_received,
+        COALESCE(SUM(total_discounts), 0) AS total_discounts,
+        COALESCE(SUM(total_fees), 0) AS total_fees,
+        COALESCE(
+          CASE
+            WHEN branches.branch_number != 13 THEN SUM(total_price) / COUNT(requests.id)
+            ELSE (SUM(total_price) / 0.85) / COUNT(requests.id)
+          END,
+        0) AS adjusted_revenue_value,
+        COALESCE(
+          CASE
+            WHEN branches.branch_number != 13 THEN SUM(total_price)
+            ELSE SUM(total_price) / 0.85
+          END,
+        0) AS total_orders
       SQL
       .where(closing_id: closing_id, entry_date: start_date..end_date)
       .group(:branch_id, "branches.branch_number")
@@ -37,11 +41,12 @@ class Request < ApplicationRecord
     joins(:branch)
       .select(<<~SQL.squish)
         branch_id,
-        SUM(amount_received) AS amount_received,
-        CASE
-          WHEN branches.branch_number != 13 THEN SUM(amount_received)
-          ELSE SUM(amount_received) / 0.85
-        END AS billing
+        COALESCE(SUM(amount_received), 0) AS amount_received,
+        COALESCE(
+          CASE
+            WHEN branches.branch_number != 13 THEN SUM(amount_received)
+            ELSE SUM(amount_received) / 0.85
+        END, 0) AS billing
       SQL
       .where(closing_id: closing_id, payment_date: start_date..end_date)
       .group(:branch_id, "branches.branch_number")

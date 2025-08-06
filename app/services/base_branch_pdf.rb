@@ -6,6 +6,7 @@ class BaseBranchPdf < Prawn::Document
 
   def initialize(branches, closing, current_closing)
     super()
+
     @branches = branches
     @closing = closing
     @current_closing = current_closing

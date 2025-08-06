@@ -1,44 +1,42 @@
 <ul class="menu rounded-box mb-5">
   <li>
     <ul class="border-l-2 border-b-2 border-primary">
-      <div class="overflow-auto my-2">
-        <table class="table w-full my-5">
-          <thead class="text-base">
-            <th>Representante</th>
-            <th>Quantidade</th>
-            <th>Venda</th>
-            <th>Comissão</th>
-            <th>Total</th>
+      <table class="table w-full my-5">
+        <thead class="text-base">
+          <th>Representante</th>
+          <th>Quantidade</th>
+          <th>Venda</th>
+          <th>Comissão</th>
+          <th>Total</th>
+        </thead>
+
+        <tbody>
+          <% with_partnership.group_by(&:representative_name).each do |representative_name, w_partnership| %>
+            <tr class="bg-gray-200 border-t border-b border-black">
+              <td><%= representative_name %></td>
+              <td><%= w_partnership.sum(&:number_of_requests) || 0 %></td>
+              <td><%= number_to_currency(w_partnership.sum(&:total_requests) || 0) %></td>
+              <td><%= formatted_percentage(w_partnership[0].commission || 0) %></td>
+              <td><%= number_to_currency(w_partnership.sum(&:commission_payments_transfers) || 0) %></td>
+            </tr>
+          <% end %>
+        </tbody>
+
+        <tfoot>
+          <thead>
+            <tr><th class="pt-7"></th></tr>
           </thead>
 
           <tbody>
-            <% with_partnership.group_by(&:representative_name).each do |representative_name, w_partnership| %>
-              <tr class="bg-gray-200 border-t border-b border-black">
-                <td><%= representative_name %></td>
-                <td><%= w_partnership.sum(&:number_of_requests) || 0 %></td>
-                <td><%= number_to_currency(w_partnership.sum(&:total_requests) || 0) %></td>
-                <td><%= formatted_percentage(w_partnership[0].commission || 0) %></td>
-                <td><%= number_to_currency(w_partnership.sum(&:commission_payments_transfers) || 0) %></td>
-              </tr>
-            <% end %>
+            <tr class="bg-gray-200 border-t border-b border-black">
+              <td class="font-semibold text-base">Totais</td>
+              <td><%= with_partnership.sum(&:number_of_requests) || 0 %></td>
+              <td colspan="2"><%= number_to_currency(with_partnership.sum(&:total_requests) || 0) %></td>
+              <td><%= number_to_currency(with_partnership.sum(&:commission_payments_transfers) || 0) %></td>
+            </tr>
           </tbody>
-
-          <tfoot>
-            <thead>
-              <tr><th class="pt-7"></th></tr>
-            </thead>
-
-            <tbody>
-              <tr class="bg-gray-200 border-t border-b border-black">
-                <td class="font-semibold text-base">Totais</td>
-                <td><%= with_partnership.sum(&:number_of_requests) || 0 %></td>
-                <td colspan="2"><%= number_to_currency(with_partnership.sum(&:total_requests) || 0) %></td>
-                <td><%= number_to_currency(with_partnership.sum(&:commission_payments_transfers) || 0) %></td>
-              </tr>
-            </tbody>
-          </tfoot>
-        </table>
-      </div>
+        </tfoot>
+      </table>
     </ul>
   </li>
 </ul>
