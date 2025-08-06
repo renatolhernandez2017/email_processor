@@ -4,6 +4,7 @@ class ClosingsController < ApplicationController
   include PdfClassMapper
 
   before_action :set_closing, only: %i[update perform_closing modify_for_this_closure]
+  before_action :set_banks, only: %i[deposits_in_banks download_pdf]
 
   def index
     @pagy, @closings = pagy(Closing.all.order(start_date: :desc))
@@ -64,7 +65,6 @@ class ClosingsController < ApplicationController
   end
 
   def deposits_in_banks
-    @banks = @current_closing&.set_current_accounts(@current_closing&.id)
   end
 
   def closing_audit
@@ -94,7 +94,6 @@ class ClosingsController < ApplicationController
   def download_pdf
     kind = params[:kind]
     current_month = closing_date(@current_closing)
-    @banks = @current_closing&.set_current_accounts(@current_closing&.id)
     pdf_class = PDF_CLASSES[kind]
     pdf = pdf_class.new(@banks, current_month, @current_closing).render
 
@@ -123,5 +122,9 @@ class ClosingsController < ApplicationController
   def closing_date(closing)
     month_abbr = closing.closing.split("/")
     "#{t("view.months.#{month_abbr[0]}")}/#{month_abbr[1]}"
+  end
+
+  def set_banks
+    @banks = Closing.set_current_accounts(@current_closing&.id)
   end
 end

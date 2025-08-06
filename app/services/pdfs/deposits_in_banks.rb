@@ -1,9 +1,10 @@
 module Pdfs
   class DepositsInBanks < BaseClosingPdf
     def generate_content
-      @banks.each_with_index do |bank, index|
+      @banks.each_with_index do |(bank_name, current_accounts), index|
         start_new_page unless index == 0
-        @bank = bank
+        @bank_name = bank_name
+        @current_accounts = current_accounts
 
         header
         content
@@ -13,8 +14,8 @@ module Pdfs
     def header
       table([
         [
-          {content: "Depósitos em Bancos"},
-          {content: @bank[:name].upcase},
+          {content: "Depósitos no"},
+          {content: @bank_name.upcase},
           {content: "em"},
           {content: @current_month}
         ]
@@ -27,21 +28,19 @@ module Pdfs
     end
 
     def content
-      move_down 20
-
       headers = [
         "Representante ID", "Agência", "Conta",
         "Favorecido", "Valor Disponivel", "Representante"
       ]
 
-      rows = @bank[:accounts].map do |current_account|
+      rows = @current_accounts.map do |current_account|
         [
-          current_account.prescriber_id,
-          current_account.bank.agency_number,
-          current_account.bank.account_number,
+          current_account.representative_id,
+          current_account.agency_number,
+          current_account.account_number,
           current_account.favored,
-          set_total_value(current_account),
-          current_account.prescriber.representative.name || "Unipharmus"
+          number_to_currency(current_account.available_value),
+          current_account.representative_name || "Unipharmus"
         ]
       end
 
@@ -49,15 +48,13 @@ module Pdfs
         [
           "Total",
           "", "", "",
-          set_grand_total_value(@bank[:accounts]),
+          number_to_currency(@current_accounts.sum(&:available_value)),
           ""
         ]
       ]
 
       data = build_table_data(headers: headers, rows: rows, footer: footer)
       render_table(data)
-
-      move_down 20
     end
 
     def build_table_data(headers:, rows:, footer: [])

@@ -2,6 +2,7 @@ class Closing < ApplicationRecord
   audited
 
   include PgSearch::Model
+  include Closing::Aggregations
 
   has_many :monthly_reports, dependent: :destroy
   has_many :requests, through: :monthly_reports
@@ -9,23 +10,30 @@ class Closing < ApplicationRecord
   validates :start_date, presence: {message: " deve estar preenchido!"}
   validates :closing, presence: {message: " deve estar preenchido!"}, uniqueness: {message: " já está cadastrado!"}
 
+  scope :set_current_accounts, ->(closing_id) {
+    CurrentAccount.joins(:bank, prescriber: [:representative])
+      .joins(<<~SQL)
+        LEFT JOIN (
+          SELECT DISTINCT ON (prescriber_id) * FROM monthly_reports
+          WHERE closing_id = #{closing_id.to_i}
+          AND accumulated = false
+          ORDER BY prescriber_id
+        ) monthly_reports
+        ON monthly_reports.prescriber_id = prescribers.id
+      SQL
+      .where(standard: true)
+      .group("current_accounts.id", "banks.id", "representatives.name", "prescribers.representative_id")
+      .having(sum_available_value_sql + " > 0")
+      .select(custom_select_sql)
+      .order("banks.name ASC")
+      .uniq { |current_account| [current_account.favored] }
+      .group_by(&:bank_name)
+  }
+
   def monthly_reports_false(closing_id, eager_load = [])
     monthly_reports.includes(*eager_load)
       .where(closing_id: closing_id, accumulated: false)
       .order("prescribers.name ASC")
-  end
-
-  def set_current_accounts(closing_id)
-    CurrentAccount.joins(:bank, prescriber: [:representative, :monthly_reports])
-      .where(monthly_reports: {closing_id: closing_id, accumulated: false}, standard: true)
-      .order("banks.name ASC")
-      .group_by { |current_account| current_account.bank.name }
-      .map do |bank_name, accounts|
-        {
-          name: bank_name,
-          accounts: accounts
-        }
-      end
   end
 
   def store_collections(closing_id)

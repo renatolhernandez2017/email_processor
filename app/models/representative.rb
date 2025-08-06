@@ -24,11 +24,4 @@ class Representative < ApplicationRecord
       .group("representatives.id, representatives.name")
       .order("representatives.name ASC")
   }
-
-  scope :monthly_reports, ->(closing_id, representative_ids) {
-    MonthlyReport.joins(:prescriber)
-      .where(closing_id: closing_id, accumulated: false, representative_id: representative_ids)
-      .group(custom_group_sql)
-      .select(custom_select_sql)
-  }
 end

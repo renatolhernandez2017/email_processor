@@ -48,29 +48,21 @@ class MonthlyReport < ApplicationRecord
   #   end
   # end
 
-  # def available_value
-  #   current_account = prescriber.current_accounts.find_by(standard: true)
+  def available_value
+    current_account = prescriber.current_accounts.find_by(standard: true)
 
-  #   if current_account.present?
-  #     if partnership > 0.0
-  #       [partnership - discounts, 0].max
-  #     else
-  #       0.0
-  #     end
-  #   else
-  #     if partnership > 0.0
-  #       [round_to_ten((partnership - discounts).to_f), 0].max
-  #     else
-  #       0.0
-  #     end
-  #   end
-
-  #   # return 0.00 if partnership <= 0.0
-
-  #   # if prescriber.current_accounts.find_by(standard: true)
-  #   #   [partnership - discounts, 0].max
-  #   # else
-  #   #   [round_to_ten((partnership - discounts).to_f), 0].max
-  #   # end
-  # end
+    if current_account.present?
+      if partnership > 0.0
+        [partnership - discounts, 0].max
+      else
+        0.0
+      end
+    elsif !current_account.present?
+      if partnership > 0.0
+        [round_to_ten((partnership - discounts).to_f), 0].max
+      else
+        0.0
+      end
+    end
+  end
 end

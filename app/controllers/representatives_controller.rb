@@ -133,14 +133,12 @@ class RepresentativesController < ApplicationController
     @totals_by_bank = []
     @totals_by_store = []
     @total_in_cash = []
-    @monthly_reports = []
     @prescribers = []
     @totals = []
     @totals_from_banks = []
     @totals_from_stores = []
 
     @representatives.each do |representative|
-      @monthly_reports[representative.id] = Representative.monthly_reports(@current_closing.id, representative.id)
       @prescribers[representative.id] = Prescriber.with_totals(@current_closing.id, representative.id)
 
       prescriber = @prescribers[representative.id].first

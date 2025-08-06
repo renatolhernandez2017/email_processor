@@ -11,11 +11,11 @@
     </div>
   </div>
 
-  <% @banks&.each do |bank| %>
+  <% @banks.each do |bank_name, current_accounts| %>
     <div class="card shadow-lg border border-primary p-5 mb-5">
       <label class="text-lg">
         <span class="text-primary">
-          <%= bank[:name] %>
+          <%= bank_name %>
         </span>
       </label>
 
@@ -36,14 +36,14 @@
                 </thead>
 
                 <tbody>
-                  <% bank[:accounts].each do |current_account| %>
+                  <% current_accounts.each do |current_account| %>
                     <tr class="bg-gray-200 border-t border-b border-black h-8">
-                      <td><%= current_account.prescriber_id %></td>
-                      <td><%= current_account.bank.agency_number %></td>
-                      <td><%= current_account.bank.account_number %></td>
+                      <td><%= current_account.representative_id %></td>
+                      <td><%= current_account.agency_number %></td>
+                      <td><%= current_account.account_number %></td>
                       <td><%= current_account.favored %></td>
-                      <td><%= set_total_value(current_account) %></td>
-                      <td><%= current_account.prescriber&.representative&.name || "Unipharmus" %></td>
+                      <td><%= number_to_currency(current_account.available_value) %></td>
+                      <td><%= current_account.representative_name || "Unipharmus" %></td>
                     </tr>
                   <% end %>
                 </tbody>
@@ -56,7 +56,7 @@
                   <tbody>
                     <tr class="bg-gray-200 border-t border-b border-black h-8">
                       <td colspan="4" class="text-base font-semibold">Total</td>
-                      <td colspan="2"><%= set_grand_total_value(bank[:accounts]) %></td>
+                      <td colspan="2"><%= number_to_currency(current_accounts.sum(&:available_value)) %></td>
                     </tr>
                   </tbody>
                 </tfoot>
