@@ -2,9 +2,11 @@ class ClosingsController < ApplicationController
   include Pagy::Backend
   include SharedData
   include PdfClassMapper
+  include Roundable
 
   before_action :set_closing, only: %i[update perform_closing modify_for_this_closure]
   before_action :set_banks, only: %i[deposits_in_banks download_pdf]
+  before_action :set_note_divisions, only: %i[note_divisions download_pdf]
 
   def index
     @pagy, @closings = pagy(Closing.all.order(start_date: :desc))
@@ -61,7 +63,6 @@ class ClosingsController < ApplicationController
   end
 
   def note_divisions
-    # Usa informações que vem do include RepresentativeSummaries
   end
 
   def deposits_in_banks
@@ -95,7 +96,7 @@ class ClosingsController < ApplicationController
     kind = params[:kind]
     current_month = closing_date(@current_closing)
     pdf_class = PDF_CLASSES[kind]
-    pdf = pdf_class.new(@banks, current_month, @current_closing).render
+    pdf = pdf_class.new(@representatives, @banks, @total_in_cash, current_month, @current_closing).render
 
     send_data pdf,
       filename: "#{kind}_#{current_month.downcase}.pdf",
@@ -126,5 +127,19 @@ class ClosingsController < ApplicationController
 
   def set_banks
     @banks = Closing.set_current_accounts(@current_closing&.id)
+  end
+
+  def set_note_divisions
+    @total_in_cash = []
+    prescribers = []
+    totals = []
+
+    @representatives.each do |representative|
+      prescribers[representative.id] = Prescriber.with_totals(@current_closing.id, representative.id)
+      prescriber = prescribers[representative.id].first
+      totals[representative.id] = Prescriber.get_totals(prescriber)
+      available_value = totals[representative.id][:real_sale][:available_value].to_f
+      @total_in_cash[representative.id] = divide_into_notes(available_value)
+    end
   end
 end

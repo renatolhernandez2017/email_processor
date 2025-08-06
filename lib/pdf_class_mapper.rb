@@ -7,6 +7,7 @@ module PdfClassMapper
       Pdfs::UnaccumulatedAddresses => %w[unaccumulated_addresses address_report],
       Pdfs::Tags => %w[tags],
       Pdfs::DepositsInBanks => %w[deposits_in_banks],
+      Pdfs::NoteDivisions => %w[note_divisions],
       Pdfs::PrintAllStores => %w[print_all_stores]
     }.each do |klass, keys|
       keys.each { |key| hash[key] = klass }
