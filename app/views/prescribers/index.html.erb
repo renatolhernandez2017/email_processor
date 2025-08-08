@@ -28,7 +28,7 @@
             <td><%= prescriber.full_concil %></td>
 
             <td class="flex justify-center items-center gap-2">
-              <%= link_to_if prescriber.representative.present?,
+              <%= link_to_if prescriber.representative.present? && prescriber.requests.present?,
                   "<span class='material-symbols-outlined text-primary'>personal_injury</span>".html_safe,
                   patient_listing_prescriber_path(prescriber), title: "Listagem de Pacientes"
               %>
