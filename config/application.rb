@@ -1,6 +1,4 @@
 require_relative "boot"
-require_relative "../lib/middleware/ignore_chrome_devtools_request"
-
 require "rails/all"
 
 # Require the gems listed in Gemfile, including any gems
