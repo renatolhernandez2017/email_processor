@@ -13,27 +13,25 @@
           </thead>
 
           <tbody>
-            <% payment_for_representatives&.each do |monthly_report| %>
+            <% payments.each do |representative_name, monthly_reports| %>
               <tr class="bg-gray-200 border-t border-b border-black h-8">
-                <td><%= monthly_report[:name] %></td>
-                <td><%= monthly_report[:quantity] %></td>
-                <td><%= number_to_currency(monthly_report[:value]) %></td>
+                <td><%= representative_name %></td>
+                <td><%= monthly_reports.sum(&:quantity) %></td>
+                <td><%= number_to_currency(monthly_reports.sum(&:available_value)) %></td>
               </tr>
             <% end %>
           </tbody>
 
           <tfoot>
             <thead>
-              <tr>
-                <th class="pt-10"></th>
-              </tr>
+              <tr><th class="pt-10"></th></tr>
             </thead>
 
             <tbody>
               <tr class="bg-gray-200 border-t border-b border-black h-8">
                 <td class="text-base font-semibold">Totais</td>
-                <td><%= representative_total_quantity %></td>
-                <td><%= number_to_currency(representative_total_value) %></td>
+                <td><%= total_quantity %></td>
+                <td><%= number_to_currency(total_value) %></td>
               </tr>
             </tbody>
           </tfoot>

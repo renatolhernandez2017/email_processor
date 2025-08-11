@@ -14,24 +14,31 @@ class MonthlyReport < ApplicationRecord
   validates :closing_id, :prescriber_id, presence: {message: " devem ser preenchidos!"}
 
   scope :with_adjusted_billings, ->(closing_id) {
-    joins(:representative, prescriber: {current_accounts: :bank}, requests: :branch)
+    joins(:representative, requests: :branch)
+      .where(closing_id: closing_id, accumulated: false)
       .select(<<~SQL.squish)
         monthly_reports.representative_id,
         representatives.name AS representative_name,
         branches.name AS branch_name,
-        SUM(monthly_reports.discounts) AS total_discounts,
-        MAX(representatives.partnership) AS commission,
-        SUM(DISTINCT requests.amount_received) AS total_requests,
-        GREATEST(
-          (SUM(DISTINCT requests.amount_received) / NULLIF(MAX(monthly_reports.total_price), 0)) * 
-          (MAX(monthly_reports.partnership) - SUM(monthly_reports.discounts)), 0
-        ) AS branch_partnership,
-        GREATEST(
-          SUM(DISTINCT requests.amount_received) * MAX(representatives.partnership) / 100.0, 0
-        ) AS commission_payments_transfers,
-        COUNT(DISTINCT requests.id) AS number_of_requests
+        COALESCE(SUM(DISTINCT monthly_reports.discounts), 0) AS total_discounts,
+        MAX(DISTINCT representatives.partnership) AS commission,
+        COALESCE(SUM(DISTINCT requests.amount_received), 0) AS total_requests,
+        COALESCE(GREATEST(
+          (SUM(DISTINCT requests.amount_received) / NULLIF(MAX(DISTINCT monthly_reports.total_price), 0)) * 
+          (MAX(DISTINCT monthly_reports.partnership) - SUM(DISTINCT monthly_reports.discounts)), 0
+        ), 0) AS branch_partnership,
+        COALESCE(GREATEST(
+          SUM(DISTINCT requests.amount_received) * MAX(DISTINCT representatives.partnership) / 100.0, 0
+        ), 0) AS commission_payments_transfers,
+        COUNT(DISTINCT requests.id) AS number_of_requests,
+        COALESCE(SUM(COUNT(DISTINCT requests.id)) over(), 0)::integer AS total_number_of_requests,
+        COALESCE(SUM(
+          GREATEST(
+            (SUM(DISTINCT requests.amount_received) / NULLIF(MAX(DISTINCT monthly_reports.total_price), 0)) * 
+            (MAX(DISTINCT monthly_reports.partnership) - SUM(DISTINCT monthly_reports.discounts)), 0
+          )) over(),
+        0) AS total_branch_partnership
       SQL
-      .where(closing_id: closing_id, accumulated: false)
       .group("monthly_reports.representative_id, representatives.name, branches.name")
       .group_by(&:branch_name)
   }
@@ -48,21 +55,21 @@ class MonthlyReport < ApplicationRecord
   #   end
   # end
 
-  def available_value
-    current_account = prescriber.current_accounts.find_by(standard: true)
+  # def available_value
+  #   current_account = prescriber.current_accounts.find_by(standard: true)
 
-    if current_account.present?
-      if partnership > 0.0
-        [partnership - discounts, 0].max
-      else
-        0.0
-      end
-    elsif !current_account.present?
-      if partnership > 0.0
-        [round_to_ten((partnership - discounts).to_f), 0].max
-      else
-        0.0
-      end
-    end
-  end
+  #   if current_account.present?
+  #     if partnership > 0.0
+  #       [partnership - discounts, 0].max
+  #     else
+  #       0.0
+  #     end
+  #   elsif !current_account.present?
+  #     if partnership > 0.0
+  #       [round_to_ten((partnership - discounts).to_f), 0].max
+  #     else
+  #       0.0
+  #     end
+  #   end
+  # end
 end

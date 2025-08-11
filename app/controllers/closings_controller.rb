@@ -7,6 +7,7 @@ class ClosingsController < ApplicationController
   before_action :set_closing, only: %i[update perform_closing modify_for_this_closure]
   before_action :set_banks, only: %i[deposits_in_banks download_pdf]
   before_action :set_note_divisions, only: %i[note_divisions download_pdf]
+  before_action :closing_date, only: %i[closing_audit download_pdf]
 
   def index
     @pagy, @closings = pagy(Closing.all.order(start_date: :desc))
@@ -74,29 +75,28 @@ class ClosingsController < ApplicationController
     as_follow
   end
 
-  def payment_for_representative
-    @payment_for_representatives = @current_closing&.payment_for_representatives(@current_closing&.id)
-    @representative_total_quantity = @payment_for_representatives&.sum { |store| store[:quantity] }
-    @representative_total_value = @payment_for_representatives&.sum { |store| store[:value] }
+  def store_collection
+    @store_collections = MonthlyReport.with_adjusted_billings(@current_closing&.id)
+    @store_total_quantity = @store_collections.map { |branch_name, stores| stores.first.total_number_of_requests }.first
+    @store_total_value = @store_collections.map { |branch_name, stores| stores.first.total_branch_partnership }.first
   end
 
-  def store_collection
-    @store_collections = @current_closing&.store_collections(@current_closing&.id)
-    @store_total_count = @store_collections&.sum { |store| store[:count] }
-    @store_total_value = @store_collections&.sum { |store| store[:total] }
+  def payment_for_representative
+    @payments = Closing.payment_for_representatives(@current_closing&.id)
+    @total_quantity = @payments.map { |name, payment| payment.sum(&:total_quantity) }.first
+    @total_value = @payments.map { |name, payment| payment.sum(&:total_available_value) }.first
   end
 
   def as_follow
-    @as_follows = @current_closing&.as_follows(@current_closing&.id)
-    @as_follow_total_count = @as_follows&.sum { |store| store[:count] }
-    @as_follow_value = @as_follows&.sum { |store| store[:value] }
+    @as_follows = Closing.as_follows(@current_closing&.id)
+    @as_follow_total_quantity = @as_follows.sum { |bank, as_follow| as_follow.sum(&:quantity) }
+    @as_follow_total_value = @as_follows.sum { |bank, as_follow| as_follow.sum(&:available_value) }
   end
 
   def download_pdf
     kind = params[:kind]
-    current_month = closing_date(@current_closing)
     pdf_class = PDF_CLASSES[kind]
-    pdf = pdf_class.new(@representatives, @banks, @total_in_cash, current_month, @current_closing).render
+    pdf = pdf_class.new(@representatives, @banks, @current_month, @current_closing).render
 
     send_data pdf,
       filename: "#{kind}_#{current_month.downcase}.pdf",
@@ -120,9 +120,9 @@ class ClosingsController < ApplicationController
     @closing = Closing.find_by(id: params[:id])
   end
 
-  def closing_date(closing)
-    month_abbr = closing.closing.split("/")
-    "#{t("view.months.#{month_abbr[0]}")}/#{month_abbr[1]}"
+  def closing_date
+    month_abbr = @current_closing.closing.split("/")
+    @current_month = "#{t("view.months.#{month_abbr[0]}")}/#{month_abbr[1]}"
   end
 
   def set_banks

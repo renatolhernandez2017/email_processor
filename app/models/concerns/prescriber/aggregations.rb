@@ -112,7 +112,7 @@ module Prescriber::Aggregations
                 ELSE SUM(monthly_reports.partnership) - SUM(monthly_reports.discounts) - MOD(SUM(monthly_reports.partnership) - SUM(monthly_reports.discounts), 10.0)
               END, 0)
           END
-        ) OVER ()AS total_available_value,
+        ) OVER () AS total_available_value,
         SUM(
           CASE
             WHEN SUM(CASE WHEN monthly_reports.accumulated = TRUE THEN monthly_reports.partnership ELSE 0 END) <= 0 THEN 0
