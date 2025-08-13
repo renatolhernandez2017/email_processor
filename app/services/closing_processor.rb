@@ -139,7 +139,7 @@ class ClosingProcessor
       .where(accumulated: false, closing_id: @closing.id)
       .order("representatives.name ASC, prescribers.name ASC")
 
-    envelope_number = monthly_reports.maximum(:envelope_number).to_i
+    envelope_number = MonthlyReport.where(accumulated: false).maximum(:envelope_number).to_i
 
     monthly_reports.group_by(&:representative_id).each do |_, monthly_reports_e|
       monthly_reports_e.each do |monthly_report|

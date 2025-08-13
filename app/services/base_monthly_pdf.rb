@@ -2,15 +2,21 @@ class BaseMonthlyPdf < Prawn::Document
   include Prawn::View
   include ActionView::Helpers::NumberHelper
   include ActionView::Helpers::TextHelper
-  include RequestsHelper
   include Roundable
 
-  def initialize(representatives, closing, current_closing)
+  def initialize(representatives, closing, current_closing, selected_key)
     super()
+
     @closing = closing
     @current_closing = current_closing
     @representatives = representatives
-    load_totals_for_representatives
+    @title = selected_key
+
+    if @title == "patient_listing" || @title == "summary_patient_listing" || @title == "address_report" || @title == "tags"
+      load_prescribers_for_representatives
+    else
+      load_totals_for_representatives
+    end
   end
 
   def render
@@ -23,6 +29,14 @@ class BaseMonthlyPdf < Prawn::Document
   end
 
   private
+
+  def load_prescribers_for_representatives
+    @prescribers = []
+
+    @representatives.each do |representative|
+      @prescribers[representative.id] = Prescriber.with_totals(@current_closing.id, representative.id)
+    end
+  end
 
   def load_totals_for_representatives
     @totals_by_bank = []

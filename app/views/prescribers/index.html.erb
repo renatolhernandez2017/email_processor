@@ -29,12 +29,12 @@
 
             <td class="flex justify-center items-center gap-2">
               <%= link_to_if prescriber.representative.present? && prescriber.requests.present?,
-                  "<span class='material-symbols-outlined text-primary'>personal_injury</span>".html_safe,
+                  "<span class='material-symbols-outlined #{prescriber.requests.present? ? 'text-primary' : 'text-gray-400'}'>personal_injury</span>".html_safe,
                   patient_listing_prescriber_path(prescriber), title: "Listagem de Pacientes"
               %>
 
               <button onclick="document.getElementById('edit_prescriber<%= prescriber.id %>').showModal();" title="Editar">
-                <span class="material-symbols-outlined text-primary">edit</span>
+                <span class="material-symbols-outlined text-primary ">edit</span>
               </button>
 
               <dialog id="edit_prescriber<%= prescriber.id %>" class="modal modal-bottom w-5/12 justify-self-center">

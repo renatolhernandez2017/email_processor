@@ -14,7 +14,7 @@ class Representative < ApplicationRecord
   has_many :requests, dependent: :destroy
 
   scope :with_totals, ->(closing_id) {
-    left_joins(monthly_reports: :prescriber)
+    left_joins(:monthly_reports)
       .joins(<<~SQL.squish)
         LEFT JOIN current_accounts ca_standard
           ON ca_standard.prescriber_id = monthly_reports.prescriber_id

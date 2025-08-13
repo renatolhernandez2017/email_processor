@@ -1,5 +1,7 @@
 module Pdfs
   class PatientListing < BaseMonthlyPdf
+    include RequestsHelper
+
     def generate_content
       @representatives.each_with_index do |representative, index|
         start_new_page unless index.zero?

@@ -33,23 +33,23 @@
                 <%= render ModalComponent.new(form: render("form", representative: representative, branches: @branches, title: "Editar Representante : #{representative.id}", btn_save: "Atualizar")) %>
               </dialog>
 
-              <%= link_to_if representative.performs_closing?,
-                  "<span class='material-symbols-outlined text-primary'>description</span>".html_safe,
+              <%= link_to_if representative.performs_closing? && representative.monthly_reports.present?,
+                  "<span class='material-symbols-outlined #{representative.monthly_reports.present? ? 'text-primary' : 'text-gray-400'}'>description</span>".html_safe,
                   monthly_report_representative_path(representative), title: "Resumo"
               %>
 
-              <%= link_to_if representative.performs_closing?,
-                  "<span class='material-symbols-outlined text-primary'>list_alt</span>".html_safe,
+              <%= link_to_if representative.performs_closing? && representative.monthly_reports.present?,
+                  "<span class='material-symbols-outlined #{representative.monthly_reports.present? ? 'text-primary' : 'text-gray-400'}'>list_alt</span>".html_safe,
                   patient_listing_representative_path(representative), title: "Listagem"
               %>
 
-              <%= link_to_if representative.performs_closing?,
-                  "<span class='material-symbols-outlined text-primary'>content_paste</span>".html_safe,
+              <%= link_to_if representative.performs_closing? && representative.monthly_reports.present?,
+                  "<span class='material-symbols-outlined #{representative.monthly_reports.present? ? 'text-primary' : 'text-gray-400'}'>content_paste</span>".html_safe,
                   summary_patient_listing_representative_path(representative), title: "Listagem Resumida"
               %>
 
-              <%= link_to_if representative.performs_closing?,
-                  "<span class='material-symbols-outlined text-primary'>home</span>".html_safe,
+              <%= link_to_if representative.performs_closing? && representative.monthly_reports.present?,
+                  "<span class='material-symbols-outlined #{representative.monthly_reports.present? ? 'text-primary' : 'text-gray-400'}'>home</span>".html_safe,
                   unaccumulated_addresses_representative_path(representative), title: "Endereço"
               %>
 

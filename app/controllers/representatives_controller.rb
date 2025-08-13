@@ -7,7 +7,8 @@ class RepresentativesController < ApplicationController
   before_action :set_selects_label
   before_action :set_closing_date, except: %i[index update change_active]
   before_action :set_representative, only: %i[update change_active]
-  before_action :load_totals_for_representatives, only: %i[monthly_report patient_listing summary_patient_listing select unaccumulated_addresses]
+  before_action :load_totals_for_representatives, only: %i[monthly_report]
+  before_action :load_prescribers_for_representatives, only: %i[patient_listing summary_patient_listing unaccumulated_addresses]
 
   def index
     @pagy, @representatives = pagy(Representative.all.order(:number))
@@ -47,8 +48,13 @@ class RepresentativesController < ApplicationController
   def select
     @select_action = params[:select_action]
     @title = @select.find { |select| select if select.include?(@select_action) }.first
-
     @representatives = Representative.with_totals(@current_closing.id)
+
+    if @title == "Listagem de Pacientes" || @title == "Listagem de Pacientes Resumida" || @title == "Relatório de Endereços" || @title == "Etiquetas"
+      load_prescribers_for_representatives
+    else
+      load_totals_for_representatives
+    end
   end
 
   def unaccumulated_addresses
@@ -73,7 +79,7 @@ class RepresentativesController < ApplicationController
   def download_pdf
     @representatives = Representative.with_totals(@current_closing.id).where(id: params[:id])
     pdf_class = PDF_CLASSES[params[:kind]]
-    pdf = pdf_class.new(@representatives, @closing, @current_closing).render
+    pdf = pdf_class.new(@representatives, @closing, @current_closing, params[:kind]).render
 
     send_data pdf,
       filename: "#{pdf_class}_#{@representatives[0].name.parameterize}_#{@closing.downcase}.pdf",
@@ -85,7 +91,7 @@ class RepresentativesController < ApplicationController
     @representatives = Representative.with_totals(@current_closing.id)
     selected_key = @select.find { |action| action[0] == params[:kind] }&.last
     pdf_class = PDF_CLASSES[selected_key]
-    pdf = pdf_class.new(@representatives, @closing, @current_closing).render
+    pdf = pdf_class.new(@representatives, @closing, @current_closing, selected_key).render
 
     send_data pdf,
       filename: "#{pdf_class}_#{@closing&.downcase}.pdf",
@@ -123,6 +129,14 @@ class RepresentativesController < ApplicationController
       ["Etiquetas", "tags"],
       ["Relatório de Endereços", "address_report"]
     ]
+  end
+
+  def load_prescribers_for_representatives
+    @prescribers = []
+
+    @representatives.each do |representative|
+      @prescribers[representative.id] = Prescriber.with_totals(@current_closing.id, representative.id)
+    end
   end
 
   def load_totals_for_representatives

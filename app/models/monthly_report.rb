@@ -42,34 +42,4 @@ class MonthlyReport < ApplicationRecord
       .group("monthly_reports.representative_id, representatives.name, branches.name")
       .group_by(&:branch_name)
   }
-
-  # def situation
-  #   current_account = prescriber.current_accounts.find_by(standard: true)
-
-  #   if accumulated
-  #     "A"
-  #   elsif !accumulated && !current_account.nil?
-  #     "D"
-  #   else
-  #     "E"
-  #   end
-  # end
-
-  # def available_value
-  #   current_account = prescriber.current_accounts.find_by(standard: true)
-
-  #   if current_account.present?
-  #     if partnership > 0.0
-  #       [partnership - discounts, 0].max
-  #     else
-  #       0.0
-  #     end
-  #   elsif !current_account.present?
-  #     if partnership > 0.0
-  #       [round_to_ten((partnership - discounts).to_f), 0].max
-  #     else
-  #       0.0
-  #     end
-  #   end
-  # end
 end
