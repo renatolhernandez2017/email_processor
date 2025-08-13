@@ -31,7 +31,6 @@ class ClosingProcessor
     broadcast("Atualizando relatórios mensais...", false, 4)
     adjust_monthly_reports
     update_monthly_reports
-
     cleanup_temp_files
 
     broadcast("Enumerando envelopes...", false, 5)
@@ -52,23 +51,23 @@ class ClosingProcessor
     ClosingChannel.broadcast_to("closing_#{@closing.id}", {message: message, status: status, step: step})
   end
 
-  def create_monthly_reports
-    requests = Request.where(entry_date: @start_date..@end_date).group_by(&:prescriber_id)
-
-    requests.each_with_index do |(prescriber_id, requests_all), index|
-      prescriber = Prescriber.find(prescriber_id)
-      representative = requests_all.last.representative
-      monthly_report = MonthlyReport.find_or_create_by(closing_id: @closing.id, prescriber: prescriber, representative: representative)
-
-      requests_all.map { |r| r.update(monthly_report_id: monthly_report.id, closing_id: @closing.id) }
-    end
-  end
-
   def update_requests
     Request.where("value_for_report < amount_received")
       .where("value_for_report >= ?", 25.0)
       .where.not(payment_date: nil)
       .update_all("amount_received = value_for_report")
+  end
+
+  def create_monthly_reports
+    requests = Request.where(entry_date: @start_date..@end_date).group_by(&:prescriber_id)
+
+    requests.each do |prescriber_id, requests_all|
+      prescriber = Prescriber.find(prescriber_id)
+      representative = requests_all.first&.representative
+      monthly_report = MonthlyReport.find_or_create_by(closing_id: @closing.id, prescriber: prescriber, representative: representative)
+
+      requests_all.map { |r| r.update(monthly_report: monthly_report, closing_id: @closing.id, representative: representative) }
+    end
   end
 
   def adjust_monthly_reports
@@ -136,14 +135,19 @@ class ClosingProcessor
   end
 
   def enumerates_envelopes
-    envelope_number = MonthlyReport.where(accumulated: false).maximum(:envelope_number).to_i
+    monthly_reports = MonthlyReport.joins(:prescriber, :representative)
+      .where(accumulated: false, closing_id: @closing.id)
+      .order("representatives.name ASC, prescribers.name ASC")
 
-    Request.includes(:prescriber, :monthly_report).where(entry_date: @start_date..@end_date)
-      .where.not(monthly_report_id: nil).order("prescribers.name ASC").each do |request|
-      next if request.monthly_report.accumulated
+    envelope_number = monthly_reports.maximum(:envelope_number).to_i
 
-      envelope_number += 1
-      request.monthly_report.update(envelope_number: envelope_number)
+    monthly_reports.group_by(&:representative_id).each do |_, monthly_reports_e|
+      monthly_reports_e.each do |monthly_report|
+        next if monthly_report.envelope_number.present?
+
+        envelope_number += 1
+        monthly_report.update(envelope_number: envelope_number)
+      end
     end
   end
 

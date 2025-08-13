@@ -28,9 +28,9 @@ module Importers
     def export_csv(data)
       output_path = "#{Rails.root}/tmp/group_duplicates.csv"
 
-      CSV.open(output_path, "w") do |csv|
+      CSV.open(output_path, "w", col_sep: ",", force_quotes: true) do |csv|
         data.each_value do |row|
-          csv << row.map { |cell| cell.to_s.strip }.join(",").gsub(/,{2,}/, ",").split(",")
+          csv << row.map { |cell| cell.to_s.strip }
         end
       end
 

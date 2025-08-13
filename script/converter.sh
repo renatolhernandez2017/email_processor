@@ -1,6 +1,6 @@
 #!/bin/sh
 set -e
-# set -x # isso mostra a execução de linha por linha no terminal
+set -x # isso mostra a execução de linha por linha no terminal
 
 NOW=$(date +"%d-%m-%y")
 

@@ -2,8 +2,8 @@ SET HEADING OFF;
 
 SELECT
   COALESCE(NULLIF(TRIM(fc121.CDFIL), ''), 'N/A') || ',' ||
-  COALESCE(NULLIF(TRIM(fc121.NRRQU), ''), 'N/A') || ',' ||
-  REPLACE(REPLACE(REPLACE(COALESCE(NULLIF(TRIM(fc121.NOMEPA), ''), 'N/A'), ASCII_CHAR(10), ' '), ASCII_CHAR(13), ' '), ASCII_CHAR(9), ' ') || ',' ||
+  COALESCE(NULLIF(TRIM(fc121.NRRQU), ''), 'N/A') || ',"' ||
+  REPLACE(REPLACE(REPLACE(COALESCE(NULLIF(TRIM(fc121.NOMEPA), ''), 'N/A'), ASCII_CHAR(10), ' '), ASCII_CHAR(13), ' '), ASCII_CHAR(9), ' ') || '",' ||
   COALESCE(NULLIF(TRIM(fc121.DTENTR), ''), 'N/A') || ',' ||
   COALESCE(NULLIF(TRIM(fc121.INDREPET), ''), 'N') || ',' ||
 
@@ -16,21 +16,21 @@ SELECT
 
   COALESCE(NULLIF(TRIM(fc040.PFCRM), ''), 'N/A') || ',' ||
   COALESCE(NULLIF(TRIM(fc040.UFCRM), ''), 'N/A') || ',' ||
-  COALESCE(NULLIF(TRIM(fc040.NRCRM), ''), 'N/A') || ',' ||
-  REPLACE(REPLACE(REPLACE(COALESCE(NULLIF(TRIM(fc040.NOMEMED), ''), 'SN'), ASCII_CHAR(10), ' '), ASCII_CHAR(13), ' '), ASCII_CHAR(9), ' ') || ',' ||
-  COALESCE(NULLIF(TRIM(fc040.OBSERV), ''), 'N/A') || ',' ||
+  COALESCE(NULLIF(TRIM(fc040.NRCRM), ''), 'N/A') || ',"' ||
+  REPLACE(REPLACE(REPLACE(COALESCE(NULLIF(TRIM(fc040.NOMEMED), ''), 'SN'), ASCII_CHAR(10), ' '), ASCII_CHAR(13), ' '), ASCII_CHAR(9), ' ') || '","' ||
+  COALESCE(NULLIF(TRIM(fc040.OBSERV), ''), 'N/A') || '","' ||
 
-  COALESCE(NULLIF(TRIM(fc042.CDFUN), ''), '999') || ',' ||
-  COALESCE(NULLIF(TRIM(fc044.ENDER), ''), 'N/A') || ',' ||
-  COALESCE(NULLIF(TRIM(fc044.ENDNR), ''), '0') || ',' ||
-  COALESCE(NULLIF(TRIM(fc044.ENDCP), ''), 'N/A') || ',' ||
-  COALESCE(NULLIF(TRIM(fc044.BAIRR), ''), 'N/A') || ',' ||
-  COALESCE(NULLIF(TRIM(fc044.NRCEP), ''), '00000-000') || ',' ||
-  COALESCE(NULLIF(TRIM(fc044.MUNIC), ''), 'N/A') || ',' ||
-  COALESCE(NULLIF(TRIM(fc044.UNFED), ''), 'SP') || ',' ||
-  COALESCE(NULLIF(TRIM(fc044.NRDDD), ''), '11') || ',' ||
-  COALESCE(NULLIF(TRIM(fc044.NRTEL), ''), '00000-0000') || ',' ||
-  COALESCE(NULLIF(TRIM(fc044.NRDDD2), ''), '11') || ',' ||
+  COALESCE(NULLIF(TRIM(fc042.CDFUN), ''), '999') || '","' ||
+  COALESCE(NULLIF(TRIM(fc044.ENDER), ''), 'N/A') || '","' ||
+  COALESCE(NULLIF(TRIM(fc044.ENDNR), ''), '0') || '","' ||
+  COALESCE(NULLIF(TRIM(fc044.ENDCP), ''), 'N/A') || '","' ||
+  COALESCE(NULLIF(TRIM(fc044.BAIRR), ''), 'N/A') || '","' ||
+  COALESCE(NULLIF(TRIM(fc044.NRCEP), ''), '00000-000') || '","' ||
+  COALESCE(NULLIF(TRIM(fc044.MUNIC), ''), 'N/A') || '","' ||
+  COALESCE(NULLIF(TRIM(fc044.UNFED), ''), 'SP') || '","' ||
+  COALESCE(NULLIF(TRIM(fc044.NRDDD), ''), '11') || '","' ||
+  COALESCE(NULLIF(TRIM(fc044.NRTEL), ''), '00000-0000') || '","' ||
+  COALESCE(NULLIF(TRIM(fc044.NRDDD2), ''), '11') || '",' ||
   COALESCE(NULLIF(TRIM(fc044.NRTEL2), ''), '00000-0000')
 
 FROM FC12100 fc121
