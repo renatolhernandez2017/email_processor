@@ -7,10 +7,13 @@ class ClosingsController < ApplicationController
   before_action :set_closing, only: %i[update perform_closing modify_for_this_closure]
   before_action :set_banks, only: %i[deposits_in_banks download_pdf]
   before_action :set_note_divisions, only: %i[note_divisions download_pdf]
-  before_action :closing_date, only: %i[closing_audit download_pdf]
 
   def index
     @pagy, @closings = pagy(Closing.all.order(start_date: :desc))
+
+    if params[:query].present?
+      @closings = @closings.search_global(params[:query])
+    end
 
     @closing = Closing.new
     closing = @closings.first
@@ -18,7 +21,8 @@ class ClosingsController < ApplicationController
     return unless closing.present?
 
     @closing.start_date = closing.end_date + 1.day
-    @closing.closing = (closing.end_date + 1.month).strftime("%b/%y")
+    end_date = closing.end_date + 1.month
+    @closing.closing = I18n.t("date.month_names")[end_date.month].capitalize + end_date.strftime("/%y")
   end
 
   def create
@@ -96,10 +100,10 @@ class ClosingsController < ApplicationController
   def download_pdf
     kind = params[:kind]
     pdf_class = PDF_CLASSES[kind]
-    pdf = pdf_class.new(@representatives, @banks, @current_month, @current_closing).render
+    pdf = pdf_class.new(@representatives, @banks, @current_closing).render
 
     send_data pdf,
-      filename: "#{kind}_#{@current_month.downcase}.pdf",
+      filename: "#{kind}_#{@current_closing.closing.downcase}.pdf",
       type: "application/pdf",
       disposition: "inline" # ou "attachment" se quiser forçar download
   end
@@ -118,11 +122,6 @@ class ClosingsController < ApplicationController
 
   def set_closing
     @closing = Closing.find_by(id: params[:id])
-  end
-
-  def closing_date
-    month_abbr = @current_closing.closing.split("/")
-    @current_month = "#{t("view.months.#{month_abbr[0]}")}/#{month_abbr[1]}"
   end
 
   def set_banks

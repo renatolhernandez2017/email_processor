@@ -16,7 +16,7 @@ module Pdfs
       table([
         [
           {content: "Divisão de Notas por Representante em"},
-          {content: @current_month}
+          {content: @current_closing.closing}
         ]
       ], cell_style: {borders: [], size: 12}, position: :center) do
         row(0).font_style = :bold

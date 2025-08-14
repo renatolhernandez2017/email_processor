@@ -2,15 +2,13 @@ class BaseClosingPdf < Prawn::Document
   include Prawn::View
   include ActionView::Helpers::NumberHelper
   include ActionView::Helpers::TextHelper
-  include ClosingsHelper
   include Roundable
 
-  def initialize(representatives, banks, current_month, current_closing)
+  def initialize(representatives, banks, current_closing)
     super()
 
     @representatives = representatives
     @banks = banks
-    @current_month = current_month
     @current_closing = current_closing
 
     set_note_divisions

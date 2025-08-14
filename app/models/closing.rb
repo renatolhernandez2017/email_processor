@@ -10,6 +10,18 @@ class Closing < ApplicationRecord
   validates :start_date, presence: {message: " deve estar preenchido!"}
   validates :closing, presence: {message: " deve estar preenchido!"}, uniqueness: {message: " já está cadastrado!"}
 
+  pg_search_scope :search_global,
+    against: [:closing, :last_envelope],
+    using: {
+      tsearch: {
+        prefix: true,
+        any_word: true, # Busca qualquer palavra do nome de estiver como true
+        dictionary: "portuguese"
+      }
+    },
+    order_within_rank: "created_at",
+    ignoring: :accents
+
   scope :set_current_accounts, ->(closing_id) {
     CurrentAccount.joins(:bank, prescriber: [:representative])
       .joins(<<~SQL)

@@ -10,7 +10,7 @@
       </div>
     </div>
 
-    <%= render "shared/patient_listing", closing: @closing,
+    <%= render "shared/patient_listing", closing: @current_closing.closing,
         representative_name: representative.name, prescribers: @prescribers[representative.id]
     %>
   <% end %>

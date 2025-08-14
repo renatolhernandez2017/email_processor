@@ -2,7 +2,6 @@ class PrescribersController < ApplicationController
   include Pagy::Backend
   include SharedData
 
-  before_action :set_closing_date, only: %i[patient_listing]
   before_action :set_prescribers
   before_action :set_prescriber, except: %i[index]
 
@@ -103,10 +102,5 @@ class PrescribersController < ApplicationController
 
   def set_prescribers
     @prescribers_map = Prescriber.all
-  end
-
-  def set_closing_date
-    month_abbr = @current_closing&.closing&.split("/")
-    @closing = "#{t("view.months.#{month_abbr[0]}")}/#{month_abbr[1]}" if month_abbr.present?
   end
 end

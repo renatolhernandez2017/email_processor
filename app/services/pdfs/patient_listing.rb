@@ -35,7 +35,7 @@ module Pdfs
           {content: "Representante: "},
           {content: @representative.name.upcase},
           {content: "em"},
-          {content: @closing.to_s}
+          {content: @current_closing.closing}
         ]
       ], cell_style: {borders: [], size: 12}, position: :center) do
         row(0).font_style = :bold

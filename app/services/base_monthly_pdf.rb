@@ -4,10 +4,9 @@ class BaseMonthlyPdf < Prawn::Document
   include ActionView::Helpers::TextHelper
   include Roundable
 
-  def initialize(representatives, closing, current_closing, selected_key)
+  def initialize(representatives, current_closing, selected_key)
     super()
 
-    @closing = closing
     @current_closing = current_closing
     @representatives = representatives
     @title = selected_key

@@ -5,7 +5,7 @@
 
   <div class="navbar-center">
     <span class="lg:text-base md:text-xs">
-      <%= link_to "Fechamento - #{set_closing_date if @current_closing.present? }", closings_path %>
+      <%= link_to "Fechamento - #{@current_closing.closing}", closings_path %>
     </span>
   </div>
 

@@ -12,7 +12,7 @@
   <div class="card shadow-lg border border-primary p-5">
     <label class="text-lg">
       Auditoria de Fechamento de
-      <span class="text-primary"><%= @current_month %></span>
+      <span class="text-primary"><%= @current_closing.closing %></span>
     </label>
 
     <%= render "store_collection", store_collections: @store_collections, store_total_quantity: @store_total_quantity, store_total_value: @store_total_value %>

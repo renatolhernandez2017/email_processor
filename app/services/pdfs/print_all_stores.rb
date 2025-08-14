@@ -26,7 +26,7 @@ module Pdfs
           {content: "Todas as lojas de"},
           {content: @branch_name.upcase},
           {content: "em"},
-          {content: @closing}
+          {content: @current_closing.closing}
         ]
       ], cell_style: {borders: [], size: 12}, position: :center) do
         row(0).font_style = :bold

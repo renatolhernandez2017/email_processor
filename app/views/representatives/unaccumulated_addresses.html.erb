@@ -14,7 +14,7 @@
       <label class="text-lg">
         Clientes de
         <span class="text-primary"><%= representative.name.upcase %></span> em
-        <span class="text-primary"><%= @closing %></span>
+        <span class="text-primary"><%= @current_closing.closing %></span>
       </label>
 
       <%= render "shared/address", prescribers: @prescribers[representative.id] %>

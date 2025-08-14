@@ -36,6 +36,9 @@ pt-BR:
       HSBC: HSBC
       ITAU: ITAU
       SANTANDER: SANTANDER
+  date:
+    abbr_month_names: [~, Jan, Fev, Mar, Abr, Mai, Jun, Jul, Ago, Set, Out, Nov, Dez]
+    month_names: [~, Janeiro, Fevereiro, Março, Abril, Maio, Junho, Julho, Agosto, Setembro, Outubro, Novembro, Dezembro]
   view:
     toggle:
       true: Sim

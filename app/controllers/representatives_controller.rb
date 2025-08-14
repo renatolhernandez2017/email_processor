@@ -5,7 +5,6 @@ class RepresentativesController < ApplicationController
   include PdfClassMapper
 
   before_action :set_selects_label
-  before_action :set_closing_date, except: %i[index update change_active]
   before_action :set_representative, only: %i[update change_active]
   before_action :load_totals_for_representatives, only: %i[monthly_report]
   before_action :load_prescribers_for_representatives, only: %i[patient_listing summary_patient_listing unaccumulated_addresses]
@@ -83,10 +82,10 @@ class RepresentativesController < ApplicationController
   def download_pdf
     @representatives = Representative.with_totals(@current_closing.id).where(id: params[:id])
     pdf_class = PDF_CLASSES[params[:kind]]
-    pdf = pdf_class.new(@representatives, @closing, @current_closing, params[:kind]).render
+    pdf = pdf_class.new(@representatives, @current_closing, params[:kind]).render
 
     send_data pdf,
-      filename: "#{pdf_class}_#{@representatives[0].name.parameterize}_#{@closing.downcase}.pdf",
+      filename: "#{pdf_class}_#{@representatives[0].name.parameterize}_#{@current_closing.closing.downcase}.pdf",
       type: "application/pdf",
       disposition: "inline" # ou "attachment" se quiser forçar download
   end
@@ -95,10 +94,10 @@ class RepresentativesController < ApplicationController
     @representatives = Representative.with_totals(@current_closing.id)
     selected_key = @select.find { |action| action[0] == params[:kind] }&.last
     pdf_class = PDF_CLASSES[selected_key]
-    pdf = pdf_class.new(@representatives, @closing, @current_closing, selected_key).render
+    pdf = pdf_class.new(@representatives, @current_closing, selected_key).render
 
     send_data pdf,
-      filename: "#{pdf_class}_#{@closing&.downcase}.pdf",
+      filename: "#{pdf_class}_#{@current_closing.closing.downcase}.pdf",
       type: "application/pdf",
       disposition: "inline"
   end
@@ -118,11 +117,6 @@ class RepresentativesController < ApplicationController
 
   def set_representative
     @representative = Representative.find_by(id: params[:id])
-  end
-
-  def set_closing_date
-    month_abbr = @current_closing&.closing&.split("/")
-    @closing = "#{t("view.months.#{month_abbr[0]}")}/#{month_abbr[1]}" if month_abbr.present?
   end
 
   def set_selects_label

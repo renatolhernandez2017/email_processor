@@ -1,5 +1,5 @@
 <section class="flex flex-col p-5 mb-20">
-  <%= render "shared/patient/listing", closing: @closing,
+  <%= render "shared/patient/listing", closing: @current_closing.closing,
       representative_name: @representative.name, prescribers: @prescribers
   %>
 

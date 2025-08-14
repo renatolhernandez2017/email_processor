@@ -3,12 +3,12 @@
     <div class="navbar-start justify-between my-2">
       <h1 class="xl:text-2xl text-xl text-center text-primary"><%= title %></h1>
 
-      <%= form_with url: prescribers_path, method: :get do |f| %>
+      <%= form_with url: closings_path, method: :get do |f| %>
         <div class="flex">
           <label class="join input input-bordered w-96 rounded-full items-center">
             <span class="material-symbols-outlined mr-2">search</span>
 
-            <%= f.text_field :query, value: params[:query], placeholder: "ID, Nome e CRM" %>
+            <%= f.text_field :query, value: params[:query], placeholder: "Fechamento e Envelope" %>
           </label>
 
           <%= f.submit "OK", class: "btn btn-primary rounded-r-full -ml-14" %>
@@ -16,6 +16,10 @@
       <% end %>
     </div>
 
-    <div class="navbar-end"></div>
+    <div class="navbar-end">
+      <button class="btn btn-primary" onclick="modal_closing_create.showModal()">
+        Novo fechamento
+      </button>
+    </div>
   </div>
 </div>

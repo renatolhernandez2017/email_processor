@@ -22,7 +22,7 @@ puts "Criando Fechamento"
 Closing.create!(
   start_date: start_date,
   end_date: end_date,
-  closing: "#{end_date.strftime("%b")}/#{end_date.strftime("%y")}",
+  closing: I18n.t("date.month_names")[end_date.month].capitalize + end_date.strftime("/%y"),
   last_envelope: 1,
   active: true
 )

@@ -5,7 +5,7 @@
     </div>
 
     <div class="col-start-12">
-      <%= render ButtonLinkComponent.new(label: "Gerar PDF", url: download_pdf_closings_path(kind: "print_all_stores")) %>
+      <%= render ButtonLinkComponent.new(label: "Gerar PDF", url: download_pdf_branches_path(kind: "print_all_stores")) %>
     </div>
   </div>
 
@@ -14,7 +14,7 @@
       <div class="card shadow-lg border border-primary p-5">
         <label class="text-lg">
           <span class="text-primary"><%= name.upcase %> - </span>
-          <span class="text-primary"><%= @closing %></span>
+          <span class="text-primary"><%= @current_closing.closing %></span>
         </label>
 
         <%= render "total_orders", loose: @loose[id] if @loose.present? %>

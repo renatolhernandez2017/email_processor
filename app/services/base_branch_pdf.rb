@@ -4,12 +4,12 @@ class BaseBranchPdf < Prawn::Document
   include ActionView::Helpers::TextHelper
   include ApplicationHelper
 
-  def initialize(branches, closing, current_closing)
+  def initialize(branches, current_closing)
     super()
 
     @branches = branches
-    @closing = closing
     @current_closing = current_closing
+
     set_branches
   end
 

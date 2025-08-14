@@ -25,7 +25,7 @@ module Pdfs
           {content: "Etiquetas de"},
           {content: @representative.name.upcase + " -"},
           {content: @current_closing.end_date.strftime("%d/%m/%Y")},
-          {content: @closing.to_s}
+          {content: @current_closing.closing}
         ]
       ], cell_style: {borders: [], size: 12}) do
         row(0).font_style = :bold

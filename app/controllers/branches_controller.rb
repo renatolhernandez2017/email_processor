@@ -4,7 +4,6 @@ class BranchesController < ApplicationController
   include PdfClassMapper
 
   before_action :set_branch, only: %i[update]
-  before_action :set_closing_date, only: %i[print_all_stores download_pdf]
 
   def index
     @pagy, @branches = pagy(Branch.all.order(:branch_number))
@@ -38,10 +37,10 @@ class BranchesController < ApplicationController
   def download_pdf
     kind = params[:kind]
     pdf_class = PDF_CLASSES[kind]
-    pdf = pdf_class.new(@branches, @closing, @current_closing).render
+    pdf = pdf_class.new(@branches, @current_closing).render
 
     send_data pdf,
-      filename: "#{kind}_#{@closing.downcase}.pdf",
+      filename: "#{kind}_#{@current_closing.closing.downcase}.pdf",
       type: "application/pdf",
       disposition: "inline" # ou "attachment" se quiser forçar download
   end
@@ -58,10 +57,5 @@ class BranchesController < ApplicationController
 
   def set_branch
     @branch = Branch.find_by(id: params[:id])
-  end
-
-  def set_closing_date
-    month_abbr = @current_closing&.closing&.split("/")
-    @closing = "#{t("view.months.#{month_abbr[0]}")}/#{month_abbr[1]}" if month_abbr.present?
   end
 end

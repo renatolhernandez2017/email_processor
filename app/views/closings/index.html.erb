@@ -1,10 +1,4 @@
-<div class="flex justify-between items-center my-3 px-5">
-  <h1 class="text-2xl text-center text-primary mx-auto">Listagem de Fechamentos e Relatórios</h1>
-
-  <button class="btn btn-primary" onclick="modal_closing_create.showModal()">
-    Novo fechamento
-  </button>
-</div>
+<%= render "actions", title: "Listagem de Fechamentos" %>
 
 <div class="flex w-full flex-col lg:my-10 md:my-14 px-5">
   <div class="overflow-x-auto">
@@ -23,7 +17,7 @@
         <% @closings.each_with_index do |closing, index| %>
           <tr class="border-t border-black <%= index % 2 == 0 ? "bg-gray-200" : "bg-gray-100" %> h-10">
             <td>
-              <%= link_to closing_date(closing), modify_for_this_closure_closings_path(id: closing.id),
+              <%= link_to closing.closing, modify_for_this_closure_closings_path(id: closing.id),
                   data: { turbo_confirm: "Tem certeza que deseja passar a trabalhar com um novo fechamento?", turbo_method: :post },
                   class: "text-primary"
               %>
