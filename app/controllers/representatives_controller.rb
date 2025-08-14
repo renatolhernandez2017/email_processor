@@ -13,6 +13,10 @@ class RepresentativesController < ApplicationController
   def index
     @pagy, @representatives = pagy(Representative.all.order(:number))
 
+    if params[:query].present?
+      @representatives = @representatives.search_global(params[:query])
+    end
+
     @representative = Representative.new
     @current_account = CurrentAccount.new
     @current_account.build_bank

@@ -13,6 +13,18 @@ class Representative < ApplicationRecord
   has_many :monthly_reports, dependent: :destroy
   has_many :requests, dependent: :destroy
 
+  pg_search_scope :search_global,
+    against: [:name, :number, :branch_id],
+    using: {
+      tsearch: {
+        prefix: true,
+        any_word: true, # Busca qualquer palavra do nome
+        dictionary: "portuguese"
+      }
+    },
+    order_within_rank: "name",
+    ignoring: :accents
+
   scope :with_totals, ->(closing_id) {
     left_joins(:monthly_reports)
       .joins(<<~SQL.squish)
