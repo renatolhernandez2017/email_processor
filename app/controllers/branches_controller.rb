@@ -9,6 +9,10 @@ class BranchesController < ApplicationController
   def index
     @pagy, @branches = pagy(Branch.all.order(:branch_number))
 
+    if params[:query].present?
+      @branches = @branches.search_global(params[:query])
+    end
+
     @current_account = CurrentAccount.new
     @current_account.build_bank
   end

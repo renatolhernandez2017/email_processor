@@ -8,11 +8,11 @@ class Branch < ApplicationRecord
   has_many :requests, dependent: :destroy
 
   pg_search_scope :search_global,
-    against: [:name],
+    against: [:id, :name, :branch_number],
     using: {
       tsearch: {
         prefix: true,
-        any_word: true, # Busca qualquer palavra do nome
+        any_word: true, # Busca qualquer palavra do nome de estiver como true
         dictionary: "portuguese"
       }
     },
