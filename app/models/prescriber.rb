@@ -18,6 +18,18 @@ class Prescriber < ApplicationRecord
   accepts_nested_attributes_for :address
   accepts_nested_attributes_for :requests
 
+  pg_search_scope :search_global,
+    against: [:id, :name, :number_council],
+    using: {
+      tsearch: {
+        prefix: true,
+        any_word: false, # Busca qualquer palavra do nome de estiver como true
+        dictionary: "portuguese"
+      }
+    },
+    order_within_rank: "name",
+    ignoring: :accents
+
   PROFESSIONAL_TYPES = {"CRM" => 1,
                         "CRO" => 2,
                         "CRN" => 9}

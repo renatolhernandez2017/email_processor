@@ -2,4 +2,6 @@
   <%= render "shared/patient/listing", closing: @closing,
       representative_name: @representative.name, prescribers: @prescribers
   %>
+
+  <%= link_to "Voltar", prescribers_path, class: "btn btn-default w-20" %>
 </section>

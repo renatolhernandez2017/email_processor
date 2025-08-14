@@ -10,4 +10,6 @@
   <div class="card shadow-lg border border-primary collapse collapse-arrow">
     <%= render "current_accounts", prescriber: @prescriber, current_accounts: @current_accounts, prescribers: @prescribers_map %>
   </div>
+
+  <%= link_to "Voltar", prescribers_path, class: "btn btn-default w-20" %>
 </section>

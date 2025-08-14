@@ -9,6 +9,10 @@ class PrescribersController < ApplicationController
   def index
     @pagy, @prescribers = pagy(@prescribers_map.order(:name))
 
+    if params[:query].present?
+      @prescribers = @prescribers.search_global(params[:query])
+    end
+
     @current_account = CurrentAccount.new
     @current_account.build_bank
 

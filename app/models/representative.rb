@@ -14,11 +14,11 @@ class Representative < ApplicationRecord
   has_many :requests, dependent: :destroy
 
   pg_search_scope :search_global,
-    against: [:name, :number, :branch_id],
+    against: [:name, :number],
     using: {
       tsearch: {
         prefix: true,
-        any_word: true, # Busca qualquer palavra do nome
+        any_word: true, # Busca qualquer palavra do nome de estiver como true
         dictionary: "portuguese"
       }
     },
