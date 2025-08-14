@@ -99,7 +99,7 @@ class ClosingsController < ApplicationController
     pdf = pdf_class.new(@representatives, @banks, @current_month, @current_closing).render
 
     send_data pdf,
-      filename: "#{kind}_#{current_month.downcase}.pdf",
+      filename: "#{kind}_#{@current_month.downcase}.pdf",
       type: "application/pdf",
       disposition: "inline" # ou "attachment" se quiser forçar download
   end

@@ -1,6 +1,7 @@
 <%= render "actions", title: @title %>
+<%= render ButtonLinkComponent.new(label: "Gerar PDF", url: download_select_pdf_representatives_path(kind: @title)) %>
 
-<section class="flex flex-col mb-20 my-5">
+<section class="flex flex-col mb-20 m-5">
   <% @representatives.each do |representative| %>
     <% if @select_action == "patient_listing" %>
       <%= render "shared/patient/listing", representative_name: representative.name,
