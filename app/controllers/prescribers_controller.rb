@@ -1,6 +1,7 @@
 class PrescribersController < ApplicationController
   include Pagy::Backend
   include SharedData
+  include PdfClassMapper
 
   before_action :set_prescribers
   before_action :set_prescriber, except: %i[index]
@@ -68,6 +69,16 @@ class PrescribersController < ApplicationController
     representative = @prescriber.representative
     @representative = Representative.with_totals(@current_closing.id).find(representative.id)
     @prescribers = Prescriber.with_totals(@current_closing.id, representative.id).where(id: @prescriber.id)
+  end
+
+  def download_pdf
+    pdf_class = PDF_CLASSES[params[:kind]]
+    pdf = pdf_class.new(@prescriber, @current_closing).render
+
+    send_data pdf,
+      filename: "#{pdf_class}_#{@prescriber.name.parameterize}_#{@current_closing.closing.downcase}.pdf",
+      type: "application/pdf",
+      disposition: "inline" # ou "attachment" se quiser forçar download
   end
 
   private

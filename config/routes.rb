@@ -45,6 +45,7 @@ Rails.application.routes.draw do
   resources :prescribers, only: %i[index create update show destroy] do
     post :change_accumulated, on: :member
     get :patient_listing, on: :member
+    get :download_pdf, on: :member
   end
 
   resources :representatives, only: %i[index create update] do

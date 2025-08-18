@@ -1,4 +1,4 @@
-class BaseMonthlyPdf < Prawn::Document
+class BaseRepresentativePdf < Prawn::Document
   include Prawn::View
   include ActionView::Helpers::NumberHelper
   include ActionView::Helpers::TextHelper

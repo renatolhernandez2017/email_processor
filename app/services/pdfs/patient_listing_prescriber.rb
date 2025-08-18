@@ -1,29 +1,15 @@
 module Pdfs
-  class PatientListing < BaseRepresentativePdf
+  class PatientListingPrescriber < BasePrescriberPdf
     include RequestsHelper
 
     def generate_content
-      @representatives.each_with_index do |representative, index|
-        start_new_page unless index.zero?
-        @representative = representative
-        first_page = true
+      @prescribers.each do |prescriber|
+        @prescriber = prescriber
+        header
+        move_down 10
 
-        @prescribers[@representative.id].each do |prescriber|
-          if prescriber.requests.present? && prescriber.envelope_number.to_s != "000000"
-            if !first_page && prescriber.situation.present?
-              start_new_page
-            end
-
-            @prescriber = prescriber
-            first_page = false
-
-            header
-            move_down 10
-
-            @requests = @prescriber.requests
-            content
-          end
-        end
+        @requests = @prescriber.requests
+        content
       end
     end
 

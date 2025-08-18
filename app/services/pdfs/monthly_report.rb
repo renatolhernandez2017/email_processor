@@ -1,5 +1,5 @@
 module Pdfs
-  class MonthlyReport < BaseMonthlyPdf
+  class MonthlyReport < BaseRepresentativePdf
     def generate_content
       @representatives.each_with_index do |representative, index|
         start_new_page unless index == 0

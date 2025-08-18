@@ -1,0 +1,13 @@
+<div class="navbar bg-gray-200 shadow-sm border-b border-gray-300">
+  <div class="navbar-start">
+    <%= link_to "Voltar", prescribers_path, class: "btn btn-default w-20" %>
+  </div>
+
+  <div class="navbar-center justify-between">
+    <h1 class="xl:text-2xl text-xl text-center text-primary"><%= title %></h1>
+  </div>
+
+  <div class="navbar-end">
+    <%= render ButtonLinkComponent.new(label: "Gerar PDF", url: download_pdf_prescriber_path(prescriber, kind: kind)) %>
+  </div>
+</div>
