@@ -1,6 +1,7 @@
 <li class="border-b border-gray-300">
   <% if @method_http.present? %>
     <%= button_to @label, @url, method: @method_http, form: { data: { turbo: false } },
+        onclick: "return confirm('Ao confirmar, o processo de fechamento não poderá ser interrompido!')",
         class: "text-primary lg:text-lg md:text-base font-semibold"
     %>
   <% else %>
