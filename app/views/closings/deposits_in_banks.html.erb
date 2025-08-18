@@ -1,68 +1,62 @@
-<section class="flex flex-col p-5 mb-20">
-  <div class="grid grid-cols-12 mx-10 mb-10">
-    <div class="col-start-1 col-end-11">
-      <h1 class="text-2xl font-bold text-primary text-center">Depósitos em bancos</h1>
-    </div>
+<section class="flex flex-col mb-20">
+  <%= render "sub_actions", title: "Depósitos em bancos", kind: "deposits_in_banks" %>
 
-    <div class="col-start-12">
-      <%= render ButtonLinkComponent.new(label: "Gerar PDF", url: download_pdf_closings_path(kind: "deposits_in_banks")) %>
-    </div>
-  </div>
+  <div class="p-5">
+    <% @banks.each do |bank_name, current_accounts| %>
+      <div class="card shadow-lg border border-primary p-5 mb-5">
+        <label class="text-lg">
+          <span class="text-primary">
+            <%= bank_name %>
+          </span>
+        </label>
 
-  <% @banks.each do |bank_name, current_accounts| %>
-    <div class="card shadow-lg border border-primary p-5 mb-5">
-      <label class="text-lg">
-        <span class="text-primary">
-          <%= bank_name %>
-        </span>
-      </label>
-
-      <ul class="menu rounded-box">
-        <li>
-          <ul class="border-l-2 border-b-2 border-primary">
-            <div class="overflow-hidden my-2">
-              <table class="table-auto w-full">
-                <thead class="text-base">
-                  <tr>
-                    <th>Representante ID</th>
-                    <th>Agência</th>
-                    <th>Conta</th>
-                    <th>Favorecido</th>
-                    <th>Valor Disponivel</th>
-                    <th>Representante</th>
-                  </tr>
-                </thead>
-
-                <tbody>
-                  <% current_accounts.each do |current_account| %>
-                    <tr class="bg-gray-200 border-t border-b border-black h-8">
-                      <td><%= current_account.representative_id %></td>
-                      <td><%= current_account.agency_number %></td>
-                      <td><%= current_account.account_number %></td>
-                      <td><%= current_account.favored %></td>
-                      <td><%= number_to_currency(current_account.available_value) %></td>
-                      <td><%= current_account.representative_name || "Unipharmus" %></td>
+        <ul class="menu rounded-box">
+          <li>
+            <ul class="border-l-2 border-b-2 border-primary">
+              <div class="overflow-hidden my-2">
+                <table class="table-auto w-full">
+                  <thead class="text-base">
+                    <tr>
+                      <th>Representante ID</th>
+                      <th>Agência</th>
+                      <th>Conta</th>
+                      <th>Favorecido</th>
+                      <th>Valor Disponivel</th>
+                      <th>Representante</th>
                     </tr>
-                  <% end %>
-                </tbody>
-
-                <tfoot>
-                  <thead>
-                    <tr><th class="pt-10"></th></tr>
                   </thead>
 
                   <tbody>
-                    <tr class="bg-gray-200 border-t border-b border-black h-8">
-                      <td colspan="4" class="text-base font-semibold">Total</td>
-                      <td colspan="2"><%= number_to_currency(current_accounts.sum(&:available_value)) %></td>
-                    </tr>
+                    <% current_accounts.each do |current_account| %>
+                      <tr class="bg-gray-200 border-t border-b border-black h-8">
+                        <td><%= current_account.representative_id %></td>
+                        <td><%= current_account.agency_number %></td>
+                        <td><%= current_account.account_number %></td>
+                        <td><%= current_account.favored %></td>
+                        <td><%= number_to_currency(current_account.available_value) %></td>
+                        <td><%= current_account.representative_name || "Unipharmus" %></td>
+                      </tr>
+                    <% end %>
                   </tbody>
-                </tfoot>
-              </table>
-            </div>
-          </ul>
-        </li>
-      </ul>
-    </div>
-  <% end %>
+
+                  <tfoot>
+                    <thead>
+                      <tr><th class="pt-10"></th></tr>
+                    </thead>
+
+                    <tbody>
+                      <tr class="bg-gray-200 border-t border-b border-black h-8">
+                        <td colspan="4" class="text-base font-semibold">Total</td>
+                        <td colspan="2"><%= number_to_currency(current_accounts.sum(&:available_value)) %></td>
+                      </tr>
+                    </tbody>
+                  </tfoot>
+                </table>
+              </div>
+            </ul>
+          </li>
+        </ul>
+      </div>
+    <% end %>
+  </div>
 </section>

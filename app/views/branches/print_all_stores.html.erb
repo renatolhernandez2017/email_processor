@@ -1,13 +1,5 @@
 <div class="mb-20">
-  <div class="grid grid-cols-12 mx-10 my-7">
-    <div class="col-start-1 col-end-11">
-      <h1 class="text-2xl font-bold text-primary text-center">Imprime todas as lojas</h1>
-    </div>
-
-    <div class="col-start-12">
-      <%= render ButtonLinkComponent.new(label: "Gerar PDF", url: download_pdf_branches_path(kind: "print_all_stores")) %>
-    </div>
-  </div>
+  <%= render "sub_actions", title: "Imprime todas as lojas", kind: "print_all_stores" %>
 
   <% @branches.each do |name, branch_number, id| %>  
     <section class="flex flex-col p-5">

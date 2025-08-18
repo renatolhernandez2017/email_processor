@@ -1,24 +1,18 @@
-<section class="flex flex-col gap-5 p-5 mb-20">
-  <div class="grid grid-cols-12 mx-10">
-    <div class="col-start-1 col-end-11">
-      <h1 class="text-2xl font-bold text-primary text-center">Auditoria de Fechamento</h1>
+<section class="flex flex-col gap-5 mb-20">
+  <%= render "sub_actions", title: "Auditoria de Fechamento", kind: "closing_audit" %>
+
+  <div class="p-5">
+    <div class="card shadow-lg border border-primary p-5">
+      <label class="text-lg">
+        Auditoria de Fechamento de
+        <span class="text-primary"><%= @current_closing.closing %></span>
+      </label>
+
+      <%= render "store_collection", store_collections: @store_collections, store_total_quantity: @store_total_quantity, store_total_value: @store_total_value %>
+      <%= render "payment_for_representative", payments: @payments, total_quantity: @total_quantity, total_value: @total_value %>
+      <%= render "as_follow", as_follows: @as_follows, as_follow_total_quantity: @as_follow_total_quantity, as_follow_total_value: @as_follow_total_value %>
+
+      <p><b>Obs.:</b> não estão computados nestes depósitos a comissão sobre vendas para representantes.</p>
     </div>
-
-    <div class="col-start-12">
-      <%= render ButtonLinkComponent.new(label: "Gerar PDF", url: download_pdf_closings_path(kind: "closing_audit")) %>
-    </div>
-  </div>
-
-  <div class="card shadow-lg border border-primary p-5">
-    <label class="text-lg">
-      Auditoria de Fechamento de
-      <span class="text-primary"><%= @current_closing.closing %></span>
-    </label>
-
-    <%= render "store_collection", store_collections: @store_collections, store_total_quantity: @store_total_quantity, store_total_value: @store_total_value %>
-    <%= render "payment_for_representative", payments: @payments, total_quantity: @total_quantity, total_value: @total_value %>
-    <%= render "as_follow", as_follows: @as_follows, as_follow_total_quantity: @as_follow_total_quantity, as_follow_total_value: @as_follow_total_value %>
-
-    <p><b>Obs.:</b> não estão computados nestes depósitos a comissão sobre vendas para representantes.</p>
   </div>
 </section>
