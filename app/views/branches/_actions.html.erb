@@ -8,11 +8,16 @@
           <label class="join input input-bordered w-96 rounded-full items-center">
             <span class="material-symbols-outlined mr-2">search</span>
 
-            <%= f.text_field :query, value: params[:query], placeholder: "ID, Nome ou Número" %>
+            <%= f.text_field :query, value: params[:query], placeholder: "Buscar" %>
           </label>
 
           <%= f.submit "OK", class: "btn btn-primary rounded-r-full -ml-14" %>
         </div>
+
+        <span class="text-sm font-bold mx-5">
+          Procure por:
+          <span class="text-primary">ID, Nome ou Número</span>
+        </span>
       <% end %>
     </div>
 
