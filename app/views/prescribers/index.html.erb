@@ -5,6 +5,7 @@
     <table class="table-auto w-full text-sm font-semibold text-center">
       <thead class="text-base">
         <tr>
+          <th></th>
           <th>ID</th>
           <th>Nome</th>
           <th>Representante</th>
@@ -16,13 +17,14 @@
       <tbody>
         <% @prescribers.each_with_index do |prescriber, index| %>
           <tr class="border-t border-black <%= index % 2 == 0 ? "bg-gray-200" : "bg-gray-100" %> h-10">
+            <td><%= accumulated(prescriber) %></td>
             <td><%= prescriber.id %></td>
 
             <td>
               <%= link_to prescriber.name, prescriber_path(prescriber), class: "text-primary" %>
             </td>
 
-            <td><%= prescriber&.representative&.name %></td>
+            <td><%= prescriber.representative.name %></td>
             <td><%= prescriber.full_concil %></td>
 
             <td class="flex justify-center items-center gap-2">
