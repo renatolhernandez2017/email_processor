@@ -54,7 +54,6 @@
     </div>
 
     <%= render "shared/notification_card" %>
-
     <%= render 'layouts/header' unless params[:controller].include?('users/sessions') %>
 
     <div class="grid grid-cols-12 font-jost h-screen">
@@ -64,10 +63,25 @@
 
       <div class="xl:col-start-3 xl:col-span-10 lg:col-start-4 lg:col-span-10 md:col-start-5 md:col-span-8 p-5">
         <%= render "layouts/navbar" unless params[:controller].include?('users/sessions') %>
-        <main><%= yield %></main>
+
+        <main>
+          <%= yield %>
+
+          <button onclick="scrollToTop()" class="btn bg-primary fixed bottom-5 right-5 z-50 hover:bg-primary text-white font-jost btn-top max-[768px]:relative max-[768px]:right-0 max-[768px]:top-1 max-[768px]:left-32 max-[768px]:mb-5">
+            Voltar ao topo
+          </button>
+        </main>
       </div>
+
+
     </div>
 
     <%= render 'layouts/footer' unless params[:controller].include?('users/sessions') %>
   </body>
+
+  <script>
+    function scrollToTop() {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  </script>
 </html>
