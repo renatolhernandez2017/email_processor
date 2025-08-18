@@ -2,10 +2,10 @@
   <% if @method_http.present? %>
     <%= button_to @label, @url, method: @method_http, form: { data: { turbo: false } },
         onclick: "return confirm('Ao confirmar, o processo de fechamento não poderá ser interrompido!')",
-        class: "text-primary lg:text-lg md:text-base font-semibold"
+        class: "text-primary xl:text-lg lg:text-base md:text-base font-semibold"
     %>
   <% else %>
-    <%= link_to @label, @url, class: "text-primary lg:text-lg md:text-base font-semibold" %>
+    <%= link_to @label, @url, class: "text-primary xl:text-lg lg:text-base md:text-base font-semibold" %>
   <% end %>
 
   <span class="lg:text-sm md:text-xs pointer-events-none">

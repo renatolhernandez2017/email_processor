@@ -53,7 +53,7 @@ class RepresentativesController < ApplicationController
     @title = @select.find { |select| select if select.include?(@select_action) }.first
     @representatives = Representative.with_totals(@current_closing.id)
 
-    if @title == "Listagem de Pacientes" || @title == "Listagem de Pacientes Resumida" || @title == "Relatório de Endereços" || @title == "Etiquetas"
+    if @title == "Lista de Pacientes" || @title == "Lista de Pacientes Resumida" || @title == "Relatório de Endereços" || @title == "Etiquetas"
       load_prescribers_for_representatives
     else
       load_totals_for_representatives
@@ -121,8 +121,8 @@ class RepresentativesController < ApplicationController
 
   def set_selects_label
     @select = [
-      ["Listagem de Pacientes", "patient_listing"],
-      ["Listagem de Pacientes Resumida", "summary_patient_listing"],
+      ["Lista de Pacientes", "patient_listing"],
+      ["Lista de Pacientes Resumida", "summary_patient_listing"],
       ["Resumido Mensal", "monthly_summary"],
       ["Etiquetas", "tags"],
       ["Relatório de Endereços", "address_report"]

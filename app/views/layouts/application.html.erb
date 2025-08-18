@@ -57,7 +57,7 @@
     <%= render 'layouts/header' unless params[:controller].include?('users/sessions') %>
 
     <div class="grid grid-cols-12 font-jost h-screen">
-      <div class="col-start-1 col-span-2">
+      <div class="col-start-1 xl:col-span-2 lg:col-span-3 md:col-span-3">
         <%= render 'layouts/sidebar' unless params[:controller].include?('users/sessions') %>
       </div>
 

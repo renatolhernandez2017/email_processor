@@ -1,6 +1,6 @@
-<%= render "actions", title: "Listagem de Representantes" %>
+<%= render "actions", title: "Lista de Representantes" %>
 
-<div class="flex flex-col px-5 mt-8">
+<div class="flex flex-col my-10">
   <div class="overflow-x-auto">
     <table class="table-auto w-full text-sm font-semibold text-center">
       <thead class="text-base">
@@ -40,12 +40,12 @@
 
               <%= link_to_if representative.performs_closing? && representative.monthly_reports.present?,
                   "<span class='material-symbols-outlined #{representative.monthly_reports.present? ? 'text-primary' : 'text-gray-400'}'>list_alt</span>".html_safe,
-                  patient_listing_representative_path(representative), title: "Listagem"
+                  patient_listing_representative_path(representative), title: "Lista"
               %>
 
               <%= link_to_if representative.performs_closing? && representative.monthly_reports.present?,
                   "<span class='material-symbols-outlined #{representative.monthly_reports.present? ? 'text-primary' : 'text-gray-400'}'>content_paste</span>".html_safe,
-                  summary_patient_listing_representative_path(representative), title: "Listagem Resumida"
+                  summary_patient_listing_representative_path(representative), title: "Lista Resumida"
               %>
 
               <%= link_to_if representative.performs_closing? && representative.monthly_reports.present?,
