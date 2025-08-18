@@ -1,14 +1,6 @@
 <section class="flex flex-col gap-5 p-5 mb-20">
   <% @representatives.each do |representative| %>
-    <div class="grid grid-cols-12 mx-10">
-      <div class="col-start-1 col-end-11">
-        <h1 class="text-2xl font-bold text-primary text-center">Listagem Resumida</h1>
-      </div>
-
-      <div class="col-start-12">
-        <%= render ButtonLinkComponent.new(label: "Gerar PDF", url: download_pdf_representative_path(representative, kind: "summary_patient_listing")) %>
-      </div>
-    </div>
+    <%= render "sub_actions", representative: representative, title: "Listagem de Pacientes Resumida", kind: "summary_patient_listing" %>
 
     <%= render "shared/patient_listing", closing: @current_closing.closing,
         representative_name: representative.name, prescribers: @prescribers[representative.id]
