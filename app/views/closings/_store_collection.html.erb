@@ -1,42 +1,40 @@
 <h2>(+) Arrecadação de lojas</h2>
 <ul class="menu rounded-box my-5">
   <li>
-    <ul class="border-l-2 border-b-2 border-primary">
-      <div class="overflow-hidden my-2">
-        <table class="table-auto w-full">
-          <thead class="text-base">
-            <tr>
-              <th>Filial</th>
-              <th>Qt. receitas</th>
-              <th>Valor parceria</th>
+    <ul class="border-l-2 border-b-2 border-primary my-5">
+      <table class="xl:table-auto lg:table-xs w-full">
+        <thead class="xl:text-base lg:text-sm">
+          <tr>
+            <th>Filial</th>
+            <th>Qt. receitas</th>
+            <th>Valor parceria</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <% store_collections&.each do |branch_name, monthly_reports| %>
+            <tr class="bg-gray-200 border-t border-b border-black h-8">
+              <td><%= branch_name %></td>
+              <td><%= monthly_reports.sum(&:number_of_requests) %></td>
+              <td><%= number_to_currency(monthly_reports.sum(&:branch_partnership)) %></td>
             </tr>
+          <% end %>
+        </tbody>
+
+        <tfoot>
+          <thead>
+            <tr><th class="pt-10"></th></tr>
           </thead>
 
           <tbody>
-            <% store_collections&.each do |branch_name, monthly_reports| %>
-              <tr class="bg-gray-200 border-t border-b border-black h-8">
-                <td><%= branch_name %></td>
-                <td><%= monthly_reports.sum(&:number_of_requests) %></td>
-                <td><%= number_to_currency(monthly_reports.sum(&:branch_partnership)) %></td>
-              </tr>
-            <% end %>
+            <tr class="bg-gray-200 border-t border-b border-black h-8">
+              <td class="xl:text-base lg:text-sm font-semibold">Totais</td>
+              <td><%= store_total_quantity %></td>
+              <td><%= number_to_currency(store_total_value) %></td>
+            </tr>
           </tbody>
-
-          <tfoot>
-            <thead>
-              <tr><th class="pt-10"></th></tr>
-            </thead>
-
-            <tbody>
-              <tr class="bg-gray-200 border-t border-b border-black h-8">
-                <td class="text-base font-semibold">Totais</td>
-                <td><%= store_total_quantity %></td>
-                <td><%= number_to_currency(store_total_value) %></td>
-              </tr>
-            </tbody>
-          </tfoot>
-        </table>
-      </div>
+        </tfoot>
+      </table>
     </ul>
   </li>
 </ul>

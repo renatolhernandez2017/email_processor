@@ -1,10 +1,10 @@
 <section class="flex flex-col mb-20">
   <%= render "sub_actions", title: "Divisão de Notas por Representante", kind: "note_divisions" %>
 
-  <div class="p-5">
+  <div class="my-10">
     <% @representatives.each do |representative| %>
       <div class="card shadow-lg border border-primary p-5 mb-5">
-        <label class="text-lg">
+        <label class="xl:text-xl lg:text-lg">
           <span class="text-primary">
             <%= representative.name.upcase %>
           </span>

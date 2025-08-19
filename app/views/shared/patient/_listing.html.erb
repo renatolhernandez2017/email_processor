@@ -1,7 +1,7 @@
-<div class="card border border-primary p-5 my-2">
-  <div class="flex mb-5 gap-3 font-bold">
+<div class="card border border-primary p-3 my-10">
+  <div class="flex mb-5 gap-3 font-bold xl:text-base lg:text-sm">
     Representante: <span class="text-primary">
-      <%= representative_name&.upcase || "Sem Representante" %>
+      <%= representative_name.upcase %>
     </span>
 
     em <span class="text-primary"><%= closing %></span>
@@ -9,54 +9,52 @@
 
   <% prescribers.each do |prescriber| %>
     <% if prescriber.requests.present? %>
-      <ul class="menu rounded-box mb-4">
+      <ul class="menu rounded-box mb-4 overflow-x-auto">
         <li>
-          <ul class="border-l-2 border-b-2 border-primary">
-            <div class="overflow-hidden mb-10">
-              <table class="table-auto w-full">
-                <thead>
-                  <tr>
-                    <th class="font-semibold text-base">Pacientes</th>
-                    <th class="font-semibold text-base">Repetida</th>
-                    <th class="font-semibold text-base">Data de Entrada</th>
-                    <th class="font-semibold text-base">Data de Pagamento</th>
-                    <th class="font-semibold text-base">Valor</th>
-                    <th class="font-semibold text-base">Requisição ID</th>
-                    <th class="font-semibold text-base">Filial</th>
-                  </tr>
-                </thead>
+          <ul class="border-l-2 border-b-2 border-primary mb-5">
+            <table class="xl:table-auto lg:table-xs w-full">
+              <thead class="xl:text-base lg:text-sm font-semibold">
+                <tr>
+                  <th>Pacientes</th>
+                  <th>Repetida</th>
+                  <th>Data de Entrada</th>
+                  <th>Data de Pagamento</th>
+                  <th>Valor</th>
+                  <th>Requisição ID</th>
+                  <th>Filial</th>
+                </tr>
+              </thead>
 
-                <tbody>
-                  <div class="grid grid-rows-2 mb-7 gap-2 text-center border-b border-primary">
-                    <div class="grid grid-cols-3">
-                      <span class="font-semibold text-base">Prescritor</span>
-                      <span class="font-semibold text-base">Situação</span>
-                      <span class="font-semibold text-base">Envelope</span>
-                    </div>
-
-                    <div class="grid grid-cols-3 text-primary">
-                      <span><%= prescriber.name %></span>
-                      <span><%= prescriber.situation %></span>
-                      <span><%= prescriber.envelope_number %></span>
-                    </div>
+              <tbody>
+                <div class="grid grid-rows-2 mb-7 gap-2 text-center border-b border-primary">
+                  <div class="grid grid-cols-3 xl:text-lg lg:text-base font-semibold">
+                    <span>Prescritor</span>
+                    <span>Situação</span>
+                    <span>Envelope</span>
                   </div>
 
-                  <% prescriber.requests.each do |request| %>
-                    <tr class="bg-gray-200 border-t border-b border-black h-10">
-                      <td><%= request.patient_name || "Sem Nome" %></td>
-                      <td><%= request.repeat ? "-R" : "" %></td>
-                      <td><%= request.entry_date.strftime("%d/%m/%y") %></td>
-                      <td><%= set_payment_date(request) %></td>
-                      <td><%= set_price(request) %></td>
-                      <td><%= request.nrreq_id %></td>
-                      <td><%= request.branch.name %></td>
-                    </tr>
-                  <% end %>
-                </tbody>
+                  <div class="grid grid-cols-3 text-primary">
+                    <span><%= prescriber.name %></span>
+                    <span><%= prescriber.situation %></span>
+                    <span><%= prescriber.envelope_number %></span>
+                  </div>
+                </div>
 
-                <%= render "shared/patient/foot", prescriber: prescriber %>
-              </table>
-            </div>
+                <% prescriber.requests.each do |request| %>
+                  <tr class="bg-gray-200 border-t border-b border-black h-10">
+                    <td><%= request.patient_name || "Sem Nome" %></td>
+                    <td><%= request.repeat ? "-R" : "" %></td>
+                    <td><%= request.entry_date.strftime("%d/%m/%y") %></td>
+                    <td><%= set_payment_date(request) %></td>
+                    <td><%= set_price(request) %></td>
+                    <td><%= request.nrreq_id %></td>
+                    <td><%= request.branch.name %></td>
+                  </tr>
+                <% end %>
+              </tbody>
+
+              <%= render "shared/patient/foot", prescriber: prescriber %>
+            </table>
           </ul>
         </li>
       </ul>

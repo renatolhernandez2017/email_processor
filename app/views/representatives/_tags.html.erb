@@ -11,36 +11,34 @@
       <span class="text-red-500"><%= "- (ESP)" unless prescriber.current_accounts.present? %>
     </label>
 
-    <ul class="menu rounded-box">
+    <ul class="menu rounded-box overflow-x-auto">
       <li>
         <ul class="border-l-2 border-primary border-b-2">
-          <div class="overflow-hidden">
-            <table class="table-auto w-full">
-              <thead class="text-base">
-                <tr>
-                  <th>ID</th>
-                  <th>Nome</th>
-                  <th>Informações</th>
-                  <th>Observação</th>
-                </tr>
-              </thead>
+          <table class="xl:table-auto lg:table-xs w-full">
+            <thead class="xl:text-base lg:text-sm">
+              <tr>
+                <th>ID</th>
+                <th>Nome</th>
+                <th>Informações</th>
+                <th>Observação</th>
+              </tr>
+            </thead>
 
-              <tbody>
-                <tr>
-                  <td><%= prescriber.id %></td>
-                  <td><%= prescriber.name %></td>
+            <tbody>
+              <tr>
+                <td><%= prescriber.id %></td>
+                <td><%= prescriber.name %></td>
 
-                  <td>
-                    <p><%= prescriber&.full_address %></p>
-                    <p><%= prescriber.full_contact %></p>
-                    <p><%= prescriber.secretary %></p>
-                  </td>
+                <td>
+                  <p><%= prescriber&.full_address %></p>
+                  <p><%= prescriber.full_contact %></p>
+                  <p><%= prescriber.secretary %></p>
+                </td>
 
-                  <td>OBS: <%= truncate(prescriber.note, length: 50) %></td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
+                <td>OBS: <%= truncate(prescriber.note, length: 50) %></td>
+              </tr>
+            </tbody>
+          </table>
         </ul>
       </li>
     </ul>

@@ -1,29 +1,27 @@
-<label class="menu-title flex place-items-center text-lg text-primary">
+<label class="menu-title flex place-items-center xl:text-lg lg:text-base text-primary">
   Endereço
 </label>
 
-<ul class="menu rounded-box">
+<ul class="menu rounded-box overflow-x-auto">
   <li>
     <ul class="border-l-2 border-primary">
-      <div class="overflow-x-auto">
-        <table class="table">
-          <thead class="text-base">
-            <tr>
-              <th>Endereço Completo</th>
-              <th>Telefone 1</th>
-              <th>Telefone 2</th>
-            </tr>
-          </thead>
+      <table class="table xl:text-sm lg:text-xs font-semibold">
+        <thead class="xl:text-base lg:text-sm">
+          <tr>
+            <th>Endereço Completo</th>
+            <th>Telefone 1</th>
+            <th>Telefone 2</th>
+          </tr>
+        </thead>
 
-          <tbody>
-            <tr class="bg-gray-200">
-              <td><%= full_address %></td>
-              <td><%= address&.phone %></td>
-              <td><%= address&.cellphone %></td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
+        <tbody>
+          <tr class="bg-gray-200">
+            <td><%= full_address %></td>
+            <td><%= address&.phone %></td>
+            <td><%= address&.cellphone %></td>
+          </tr>
+        </tbody>
+      </table>
     </ul>
   </li>
 </ul>

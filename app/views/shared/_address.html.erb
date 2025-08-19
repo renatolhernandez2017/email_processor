@@ -1,46 +1,44 @@
-<ul class="menu rounded-box">
+<ul class="menu rounded-box overflow-x-auto">
   <li>
-    <ul class="border-l-2 border-b-2 border-primary">
-      <div class="overflow-auto my-2">
-        <table class="table w-full">
-          <thead class="text-base">
-            <tr>
-              <th>Envelope</th>
-              <th>Informações</th>
-              <th>Quantidade</th>
-              <th>Valor Disponível</th>
+    <ul class="border-l-2 border-b-2 border-primary my-5">
+      <table class="xl:table-auto lg:table-xs w-full">
+        <thead class="xl:text-base lg:text-sm">
+          <tr>
+            <th>Envelope</th>
+            <th>Informações</th>
+            <th>Quantidade</th>
+            <th>Valor Disponível</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <% prescribers.each do |prescriber| %>
+            <tr class="bg-gray-200 border-t border-b border-black">
+              <td><%= prescriber.envelope_number %></td>
+
+              <td>
+                <p>
+                  <b>Nome:</b>
+                  <%= link_to prescriber.name,
+                      prescriber_path(prescriber), class: "text-primary"
+                  %>
+                </p>
+
+                <p>
+                  <b>Endereço:</b> <%= prescriber&.full_address %>
+                </p>
+
+                <p><b>Fones:</b> <%= prescriber.full_contact %></p>
+                <p><b>Contatos:</b> <%= prescriber.secretary %></p>
+                <p><b>OBS:</b> <%= truncate(prescriber.note, length: 50) %></p>
+              </td>
+
+              <td><%= prescriber.quantity %></td>
+              <td><%= number_to_currency(prescriber.available_value) %></td>
             </tr>
-          </thead>
-
-          <tbody>
-            <% prescribers.each do |prescriber| %>
-              <tr class="bg-gray-200 border-t border-b border-black">
-                <td><%= prescriber.envelope_number %></td>
-
-                <td>
-                  <p>
-                    <b>Nome:</b>
-                    <%= link_to prescriber.name,
-                        prescriber_path(prescriber), class: "text-primary"
-                    %>
-                  </p>
-
-                  <p>
-                    <b>Endereço:</b> <%= prescriber&.full_address %>
-                  </p>
-
-                  <p><b>Fones:</b> <%= prescriber.full_contact %></p>
-                  <p><b>Contatos:</b> <%= prescriber.secretary %></p>
-                  <p><b>OBS:</b> <%= truncate(prescriber.note, length: 50) %></p>
-                </td>
-
-                <td><%= prescriber.quantity %></td>
-                <td><%= number_to_currency(prescriber.available_value) %></td>
-              </tr>
-            <% end %>
-          </tbody>
-        </table>
-      </div>
+          <% end %>
+        </tbody>
+      </table>
     </ul>
   </li>
 </ul>

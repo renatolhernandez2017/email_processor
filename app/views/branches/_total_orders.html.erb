@@ -1,8 +1,8 @@
 <ul class="menu rounded-box mb-5">
   <li>
     <ul class="border-l-2 border-b-2 border-primary">
-      <table class="table w-full my-2">
-        <thead class="text-base">
+      <table class="xl:table-auto lg:table-xs w-full my-2">
+        <thead class="xl:text-base lg:text-sm">
           <tr>
             <th>Quantidade de Receitas</th>
             <th>Valor médio da Receita</th>
@@ -30,7 +30,7 @@
 
           <tbody>
             <tr class="bg-gray-200 border-t border-b border-black h-10">
-              <td colspan="3" class="font-semibold text-base">Total de Pedidos</td>
+              <td colspan="3" class="xl:text-base lg:text-sm font-semibold">Total de Pedidos</td>
 
               <td><%= number_to_currency(loose.total_orders) %></td>
             </tr>

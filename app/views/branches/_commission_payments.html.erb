@@ -1,8 +1,8 @@
 <ul class="menu rounded-box mb-5">
   <li>
     <ul class="border-l-2 border-b-2 border-primary">
-      <table class="table w-full my-5">
-        <thead class="text-base">
+      <table class="xl:table-auto lg:table-xs w-full my-5">
+        <thead class="xl:text-base lg:text-sm">
           <th>Representante</th>
           <th>Quantidade</th>
           <th>Venda</th>
@@ -29,7 +29,7 @@
 
           <tbody>
             <tr class="bg-gray-200 border-t border-b border-black">
-              <td class="font-semibold text-base">Totais</td>
+              <td class="xl:text-base lg:text-sm font-semibold">Totais</td>
               <td><%= with_partnership.sum(&:number_of_requests) || 0 %></td>
               <td colspan="2"><%= number_to_currency(with_partnership.sum(&:total_requests) || 0) %></td>
               <td><%= number_to_currency(with_partnership.sum(&:commission_payments_transfers) || 0) %></td>

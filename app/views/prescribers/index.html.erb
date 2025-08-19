@@ -1,9 +1,9 @@
 <%= render "actions", title: "Lista de Prescritores" %>
 
-<div class="flex flex-col px-5">
+<div class="flex flex-col">
   <div class="overflow-x-auto">
-    <table class="table-auto w-full text-sm font-semibold text-center">
-      <thead class="text-base">
+    <table class="table-auto w-full xl:text-sm lg:text-xs font-semibold text-center">
+      <thead class="xl:text-base lg:text-sm">
         <tr>
           <th></th>
           <th>ID</th>
@@ -16,7 +16,7 @@
 
       <tbody>
         <% @prescribers.each_with_index do |prescriber, index| %>
-          <tr class="border-t border-black <%= index % 2 == 0 ? "bg-gray-200" : "bg-gray-100" %> h-10">
+          <tr class="border-t border-black <%= index % 2 == 0 ? "bg-gray-200" : "bg-gray-100" %> h-9">
             <td><%= accumulated(prescriber) %></td>
             <td><%= prescriber.id %></td>
 
@@ -37,7 +37,7 @@
                 <span class="material-symbols-outlined text-primary ">edit</span>
               </button>
 
-              <dialog id="edit_prescriber<%= prescriber.id %>" class="modal modal-bottom w-5/12 justify-self-center">
+              <dialog id="edit_prescriber<%= prescriber.id %>" class="modal modal-bottom w-9/12 justify-self-center">
                 <%= render ModalComponent.new(form: render("form", prescriber: prescriber, representatives: @representatives, title: "Editar Prescritor : #{prescriber.id}", btn_save: "Atualizar")) %>
               </dialog>
 

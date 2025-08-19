@@ -3,43 +3,41 @@
 
   <li>
     <ul class="border-l-2 border-b-2 border-primary">
-      <div class="overflow-hidden my-2">
-        <table class="xl:table-auto lg:table-sm xl:w-full w-full">
-          <thead class="text-base">
+      <table class="xl:table-auto lg:table-xs w-full">
+        <thead class="xl:text-base lg:text-sm">
+          <tr>
+            <th>Quantidade</th>
+            <th>Banco</th>
+            <th>Valor</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <% banks.each do |bank_name, bank| %>
+            <tr class="bg-gray-200 border-t border-b border-black h-8">
+              <td><%= bank.sum(&:count) %></td>
+              <td><%= bank_name %></td>
+              <td><%= number_to_currency(bank.sum(&:total)) %></td>
+            </tr>
+          <% end %>
+        </tbody>
+
+        <tfoot>
+          <thead>
             <tr>
-              <th>Quantidade</th>
-              <th>Banco</th>
-              <th>Valor</th>
+              <th colspan="2" class="font-semibold text-base pt-10">Total de Bancos</th>
+              <th class="font-semibold text-base pt-10">Total</th>
             </tr>
           </thead>
 
           <tbody>
-            <% banks.each do |bank_name, bank| %>
-              <tr class="bg-gray-200 border-t border-b border-black h-8">
-                <td><%= bank.sum(&:count) %></td>
-                <td><%= bank_name %></td>
-                <td><%= number_to_currency(bank.sum(&:total)) %></td>
-              </tr>
-            <% end %>
+            <tr class="bg-gray-200 border-t border-b border-black h-8">
+              <th colspan="2"><%= totals_from_banks[:total_count] %></th>
+              <th><%= number_to_currency(totals_from_banks[:total_price]) %></th>
+            </tr>
           </tbody>
-
-          <tfoot>
-            <thead>
-              <tr>
-                <th colspan="2" class="font-semibold text-base pt-10">Total de Bancos</th>
-                <th class="font-semibold text-base pt-10">Total</th>
-              </tr>
-            </thead>
-
-            <tbody>
-              <tr class="bg-gray-200 border-t border-b border-black h-8">
-                <th colspan="2"><%= totals_from_banks[:total_count] %></th>
-                <th><%= number_to_currency(totals_from_banks[:total_price]) %></th>
-              </tr>
-            </tbody>
-          </tfoot>
-        </table>
-      </div>
+        </tfoot>
+      </table>
     </ul>
   </li>
 </ul>

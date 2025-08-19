@@ -1,8 +1,8 @@
 <ul class="menu rounded-box mb-5">
   <li>
     <ul class="border-l-2 border-b-2 border-primary">
-      <table class="table w-full my-2">
-        <thead class="text-base">
+      <table class="xl:table-auto lg:table-xs w-full my-2">
+        <thead class="xl:text-base lg:text-sm">
           <tr>
             <th>Avulso</th>
             <th>Com parceria</th>
@@ -33,7 +33,7 @@
 
           <tbody>
             <tr class="bg-gray-200 border-t border-b border-black h-10">
-              <td class="font-semibold text-base">Faturamento</td>
+              <td class="xl:text-base lg:text-sm font-semibold">Faturamento</td>
 
               <td><%= number_to_currency(total_revenue.billing) %></td>
             </tr>
