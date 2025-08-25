@@ -165,7 +165,16 @@ module Prescriber::Aggregations
             LIMIT 1
           )
           ELSE 'Dinheiro'
-        END AS kind
+        END AS kind,
+        CASE
+          WHEN BOOL_OR(monthly_reports.accumulated) THEN 'A'
+          WHEN COUNT(monthly_reports.id) = 0 THEN 'A'
+          WHEN NOT BOOL_OR(monthly_reports.accumulated) AND EXISTS (
+            SELECT 1 FROM current_accounts
+            WHERE current_accounts.prescriber_id = prescribers.id AND current_accounts.standard = true
+          ) THEN 'D'
+          ELSE 'E'
+        END AS new_situation
       SQL
     end
   end

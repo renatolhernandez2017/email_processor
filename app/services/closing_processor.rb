@@ -5,9 +5,9 @@ class ClosingProcessor
     @closing = closing
     @start_date = Date.parse(@closing.start_date.strftime("%Y-%m-%d"))
     @end_date = Date.parse(@closing.end_date.strftime("%Y-%m-%d"))
-    @periodo_para_desacumular = 10
-    @valor_de_vendas_para_desacumular = 667.0
-    @minimo_de_de_vendas_para_desacumular = 1
+    @period_to_deaccumulate = 10
+    @sales_value_to_disaccumulate = 667.0
+    @minimum_of_sales_to_desacumular = 1
   end
 
   def call
@@ -75,7 +75,7 @@ class ClosingProcessor
 
     monthly_reports.where("prescribers.repetitions = 0.0").each do |monthly_report|
       prescriber = monthly_report.prescriber
-      available_requests = prescriber.requests.where(repeat: true)
+      available_requests = prescriber.requests.where(repeat: true).where.not(payment_date: nil)
 
       available_requests.destroy_all
     end
@@ -103,15 +103,15 @@ class ClosingProcessor
 
     monthly_reports.each do |monthly_report|
       prescriber = monthly_report.prescriber
-      requests = prescriber.requests
+      requests = prescriber.requests.where.not(payment_date: nil)
       standard_account = prescriber.current_accounts.find_by(standard: true)
       amount_received = requests.sum(&:amount_received)
       total = ((prescriber.partnership.to_f / 100.0) * amount_received).round(2)
       partnership = standard_account.present? ? total : total.round(-1)
       discounts = requests.sum(&:total_discounts) * ([prescriber.discount_of_up_to, 1].max / 100.0)
-      quantity = requests.where.not(payment_date: nil).count
+      quantity = requests.count
 
-      accumulated = if quantity >= @minimo_de_de_vendas_para_desacumular && amount_received >= @valor_de_vendas_para_desacumular
+      accumulated = if quantity >= @minimum_of_sales_to_desacumular && amount_received >= @sales_value_to_disaccumulate
         0
       else
         1
@@ -133,6 +133,52 @@ class ClosingProcessor
       )
     end
   end
+
+  # def teste
+  #   monthly_reports = MonthlyReport.where(closing_id: @closing.id)
+
+  #   monthly_reports.each do |monthly_report|
+  #     prescriber = monthly_report.prescriber
+  #     requests = prescriber.requests.where.not(payment_date: nil)
+  #       .where("requests.total_discounts = ? AND requests.repeat = ?", 0, false)
+
+  #     listagem_de_pacientes = ""
+
+  #     requests.each do |request|
+  #       listagem_de_pacientes << if request.patient_name.present?
+  #         request.patient_name.lstrip[0..23].ljust(24)
+  #       else
+  #         "SN.".ljust(24)
+  #       end
+
+  #       listagem_de_pacientes << if request.repeat?
+  #         "-R "
+  #       else
+  #         " "
+  #       end
+
+  #       listagem_de_pacientes << request.entry_date.strftime("%d/%m/%y") + " "
+
+  #       if request.payment_date.present?
+  #         if request.amount_received.to_s && request.nrreq_id.present?
+  #           listagem_de_pacientes << request.payment_date.strftime("%d/%m/%y")
+  #           listagem_de_pacientes << " " + request.total_amount_for_report.to_s.rjust(8) + " " + request.nrreq_id.rjust(8)
+  #         end
+  #       else
+  #         if request.total_price.to_s && request.nrreq_id.present?
+  #           listagem_de_pacientes << "  /  /  "
+  #           listagem_de_pacientes << " " + request.total_price.to_s.rjust(8) + " " + request.nrreq_id.rjust(8)
+  #         end
+  #       end
+
+  #       listagem_de_pacientes << "\n"
+  #     end
+
+  #     listagem_de_pacientes << "\n\n"
+
+  #     monthly_report.update(report: listagem_de_pacientes)
+  #   end
+  # end
 
   def enumerates_envelopes
     monthly_reports = MonthlyReport.joins(:prescriber, :representative)
