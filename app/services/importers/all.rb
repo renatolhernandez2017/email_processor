@@ -1,7 +1,8 @@
 module Importers
   class All
-    def initialize(file_path)
+    def initialize(file_path, closing_id)
       @file_path = file_path
+      @closing_id = closing_id
     end
 
     def import!
@@ -78,7 +79,8 @@ module Importers
 
       request = Request.find_or_create_by(
         cdfil_id: branch_number, nrreq_id: @nrreq_id, patient_name: @patient_name,
-        entry_date: @entry_date, prescriber: @prescriber, branch: branch
+        entry_date: @entry_date, prescriber: @prescriber, branch: branch,
+        closing_id: @closing_id
       )
 
       request.update!(

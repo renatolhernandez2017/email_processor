@@ -20,7 +20,7 @@ class ClosingProcessor
     end
 
     broadcast("Criando requisições dos prescritores...", false, 2)
-    ImportCsvService.new("#{Rails.root}/tmp/group_duplicates.csv").import!
+    ImportCsvService.new("#{Rails.root}/tmp/group_duplicates.csv", @closing.id).import!
 
     broadcast("Criando relatórios mensais...", false, 3)
     update_requests
@@ -57,7 +57,7 @@ class ClosingProcessor
   end
 
   def create_monthly_reports
-    requests = Request.where(closing_id: nil).where(
+    requests = Request.where(
       "(entry_date BETWEEN :start_date AND :end_date) OR (payment_date BETWEEN :start_date AND :end_date)",
       start_date: @start_date, end_date: @end_date
     ).group_by(&:prescriber_id)
@@ -68,7 +68,7 @@ class ClosingProcessor
       monthly_report = MonthlyReport.find_or_create_by(closing_id: @closing.id, prescriber: prescriber, representative: representative)
 
       requests_all.each do |request|
-        request.update(monthly_report_id: monthly_report.id, closing_id: @closing.id, representative_id: representative.id)
+        request.update(monthly_report_id: monthly_report.id, representative_id: representative.id)
       end
     end
   end
