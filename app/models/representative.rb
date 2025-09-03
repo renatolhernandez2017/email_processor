@@ -14,7 +14,7 @@ class Representative < ApplicationRecord
   has_many :requests, dependent: :destroy
 
   pg_search_scope :search_global,
-    against: [:id, :name, :number],
+    against: [:id, :name],
     using: {
       tsearch: {
         prefix: true,
