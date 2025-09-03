@@ -31,7 +31,7 @@ class ClosingsController < ApplicationController
 
     if @closing.save
       flash[:success] = "Fechamento criado com sucesso!"
-      render turbo_stream: turbo_stream.action(:redirect, closings_path)
+      turbo_redirect_back(fallback_location: closings_path)
     else
       render turbo_stream: turbo_stream.replace("form_closing",
         partial: "closings/form", locals: {
@@ -43,7 +43,7 @@ class ClosingsController < ApplicationController
   def update
     if @closing.update(closing_params)
       flash[:success] = "Fechamento atualizado com sucesso."
-      render turbo_stream: turbo_stream.action(:redirect, closings_path)
+      turbo_redirect_back(fallback_location: closings_path)
     else
       render turbo_stream: turbo_stream.replace("form_closing",
         partial: "closings/form", locals: {
@@ -64,7 +64,7 @@ class ClosingsController < ApplicationController
 
     flash[:notice] = "O sistema está utilizando o fechamento de #{@closing.closing}!"
 
-    render turbo_stream: turbo_stream.action(:redirect, root_path)
+    turbo_redirect_back(fallback_location: root_path)
   end
 
   def note_divisions
@@ -134,9 +134,10 @@ class ClosingsController < ApplicationController
     totals = []
 
     @representatives.each do |representative|
-      prescribers[representative.id] = Prescriber.with_totals(@current_closing.id, representative.id)
+      prescribers_all = representative.prescribers.where(representative_id: representative.id)
+      prescribers[representative.id] = prescribers_all.with_totals(@current_closing.id)
       prescriber = prescribers[representative.id].first
-      totals[representative.id] = Prescriber.get_totals(prescriber)
+      totals[representative.id] = prescribers_all.get_totals(prescriber)
       available_value = totals[representative.id][:real_sale][:available_value].to_f
       @total_in_cash[representative.id] = divide_into_notes(available_value)
     end

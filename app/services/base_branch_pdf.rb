@@ -2,7 +2,6 @@ class BaseBranchPdf < Prawn::Document
   include Prawn::View
   include ActionView::Helpers::NumberHelper
   include ActionView::Helpers::TextHelper
-  include ApplicationHelper
 
   def initialize(branches, current_closing)
     super()

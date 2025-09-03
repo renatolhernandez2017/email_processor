@@ -21,6 +21,6 @@ module Redirectable
 
   def render_redirect
     path = @table.present? ? send(:"#{@route}_path", @table) : send(:"#{@route.pluralize}_path")
-    render turbo_stream: turbo_stream.action(:redirect, path)
+    turbo_redirect_back(fallback_location: path)
   end
 end

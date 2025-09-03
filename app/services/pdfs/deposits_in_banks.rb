@@ -2,20 +2,18 @@ module Pdfs
   class DepositsInBanks < BaseClosingPdf
     def generate_content
       @banks.each_with_index do |(bank_name, current_accounts), index|
-        start_new_page unless index == 0
-        @bank_name = bank_name
-        @current_accounts = current_accounts
+        start_new_page if index > 0
 
-        header
-        content
+        header(bank_name)
+        content(current_accounts)
       end
     end
 
-    def header
+    def header(bank_name)
       table([
         [
           {content: "Depósitos no"},
-          {content: @bank_name.upcase},
+          {content: bank_name.upcase},
           {content: "em"},
           {content: @current_closing.closing}
         ]
@@ -27,13 +25,13 @@ module Pdfs
       end
     end
 
-    def content
+    def content(current_accounts)
       headers = [
         "Representante ID", "Agência", "Conta",
         "Favorecido", "Valor Disponivel", "Representante"
       ]
 
-      rows = @current_accounts.map do |current_account|
+      rows = current_accounts.map do |current_account|
         [
           current_account.representative_id,
           current_account.agency_number,
@@ -48,7 +46,7 @@ module Pdfs
         [
           "Total",
           "", "", "",
-          number_to_currency(@current_accounts.sum(&:available_value)),
+          number_to_currency(current_accounts.sum(&:available_value)),
           ""
         ]
       ]

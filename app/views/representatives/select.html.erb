@@ -1,11 +1,21 @@
 <%= render "actions", title: @title %>
-<%= render ButtonLinkComponent.new(label: "Gerar PDF", url: download_select_pdf_representatives_path(kind: @title)) %>
 
-<section class="flex flex-col mb-20 m-5">
+<div class="flex items-center">
+  <div class="navbar-start">
+    <%#= render "form_filter", url: select_representatives_path(select_action: @select_action) %>
+  </div>
+
+  <div class="navbar-end">
+    <%= render ButtonLinkComponent.new(label: "Gerar PDF", url: download_select_pdf_representatives_path(kind: @title, filter: params[:filter]), target: "_blank") %>
+  </div>
+</div>
+
+<section class="flex flex-col mb-20">
   <% @representatives.each do |representative| %>
     <% if @select_action == "patient_listing" %>
       <%= render "shared/patient/listing", representative_name: representative.name,
-          closing: @current_closing.closing, prescribers: @prescribers[representative.id]
+          closing: @current_closing.closing, prescribers: @prescribers[representative.id],
+          requests: @requests
       %>
     <% elsif @select_action == "summary_patient_listing" %>
       <%= render "shared/patient_listing", representative_name: representative.name,

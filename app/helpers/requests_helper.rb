@@ -1,6 +1,5 @@
 module RequestsHelper
   include ActionView::Helpers::NumberHelper
-  include Roundable
 
   def set_payment_date(request)
     if request.payment_date?

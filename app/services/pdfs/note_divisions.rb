@@ -4,10 +4,8 @@ module Pdfs
       header
 
       @representatives.each_with_index do |representative, index|
-        @representative = representative
-
         move_down 25
-        content
+        content(representative, @total_in_cash[representative.id])
         move_down 25
       end
     end
@@ -26,12 +24,12 @@ module Pdfs
       end
     end
 
-    def content
+    def content(representative, total_in_cash)
       build_generic_table(
-        title: @representative.name.upcase,
+        title: representative.name.upcase,
         headers: ["Quantidade", "Notas", "Valor"],
-        rows: @total_in_cash[@representative.id].map { |item, cash| [cash || 0, item || "N/A", number_to_currency(cash * item || 0)] },
-        footer: [["Total de Notas", "", "Total"], [@total_in_cash[@representative.id].values.sum || 0, "", number_to_currency(@total_in_cash[@representative.id].sum { |key, value| key * value } || 0)]],
+        rows: total_in_cash.map { |item, cash| [cash || 0, item || "N/A", number_to_currency(cash * item || 0)] },
+        footer: [["Total de Notas", "", "Total"], [total_in_cash.values.sum || 0, "", number_to_currency(total_in_cash.sum { |key, value| key * value } || 0)]],
         type: "notes"
       )
     end

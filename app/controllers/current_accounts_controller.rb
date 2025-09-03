@@ -26,7 +26,7 @@ class CurrentAccountsController < ApplicationController
           current_account: @current_account,
           representatives: @representatives,
           representative: @representative,
-          title: "Novo fechamento",
+          title: "Criar Nova Conta Corrente",
           btn_save: "Salvar",
           route: @route
         })

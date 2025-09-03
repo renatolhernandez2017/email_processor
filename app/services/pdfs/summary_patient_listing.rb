@@ -1,36 +1,31 @@
 module Pdfs
   class SummaryPatientListing < BaseRepresentativePdf
     def generate_content
-      @representatives.each_with_index do |representative, index|
-        start_new_page unless index == 0
+      stroke_color "00008b"
+      line_width 0.5
 
-        @representative = representative
-        header
+      @representatives.each_with_index do |representative, index|
+        start_new_page if index > 0
+
+        header(representative)
         move_down 10
 
-        @prescribers[@representative.id].each do |prescriber|
-          if prescriber.requests.present? && prescriber.envelope_number.to_s != "000000"
-            @prescriber = prescriber
-            content
+        @prescribers[representative.id].each do |prescriber|
+          content(prescriber)
 
-            stroke_color "00008b"
-            line_width 0.5
-            stroke_horizontal_rule
-            stroke_color "00008b"
-
-            move_down 30
-          end
+          stroke_horizontal_rule
+          move_down 30
         end
       end
     end
 
     private
 
-    def header
+    def header(representative)
       table([
         [
           {content: "Representante: "},
-          {content: @representative.name.upcase},
+          {content: representative.name.upcase},
           {content: "em"},
           {content: @current_closing.closing}
         ]
@@ -42,16 +37,16 @@ module Pdfs
       end
     end
 
-    def content
+    def content(prescriber)
       move_down 10
       table([
         [
           {content: "Prescritor:", font_style: :bold},
-          {content: @prescriber.name},
+          {content: prescriber.name},
           {content: "Situação:", font_style: :bold},
-          {content: @prescriber.situation},
+          {content: prescriber.new_situation},
           {content: "Envelope:", font_style: :bold},
-          {content: @prescriber.envelope_number}
+          {content: prescriber.envelope_number}
         ]
       ], cell_style: {borders: [], size: 10}, position: :center) do
         [1, 3].each { |i| cells[0, i].text_color = "00008b" }
@@ -62,9 +57,9 @@ module Pdfs
 
       rows = [
         [
-          @prescriber.quantity,
+          prescriber.quantity,
           "", "",
-          number_to_currency(@prescriber.available_value)
+          number_to_currency(prescriber.available_value)
         ]
       ]
 

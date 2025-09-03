@@ -1,30 +1,36 @@
 module Pdfs
   class PrintAllStores < BaseBranchPdf
     def generate_content
-      @branches.each_with_index do |(name, branch_number, id), index|
-        start_new_page unless index == 0
+      @branches.each_with_index do |(name, number, id), index|
+        start_new_page if index > 0
 
-        @branch_name = name
-        @branch_number = branch_number
-        @branch_id = id
+        if @with_partnership[name]
+          header(name)
+          move_down 20
 
-        @new_loose = @loose[@branch_id]
-        @new_total_revenue = @total_revenue[@branch_id]
-        @new_with_partnership = @with_partnership[@branch_name]
-        @with_partnership_by_representative = @new_with_partnership&.group_by(&:representative_name)
+          total_orders(@loose[id])
+          move_down 20
 
-        if @new_with_partnership
-          header
-          content
+          billings(number, @total_revenue[id], @with_partnership[name])
+          move_down 20
+
+          full_partnership(@with_partnership[name])
+          move_down 20
+
+          other_informations(@with_partnership[name])
+          move_down 20
+
+          commission_payments(@with_partnership[name])
+          move_down 20
         end
       end
     end
 
-    def header
+    def header(branch_name)
       table([
         [
           {content: "Todas as lojas de"},
-          {content: @branch_name.upcase},
+          {content: branch_name.upcase},
           {content: "em"},
           {content: @current_closing.closing}
         ]
@@ -36,21 +42,7 @@ module Pdfs
       end
     end
 
-    def content
-      move_down 20
-      total_orders
-      move_down 20
-      billings
-      move_down 20
-      full_partnership
-      move_down 20
-      other_informations
-      move_down 20
-      commission_payments
-      move_down 20
-    end
-
-    def total_orders
+    def total_orders(loose)
       headers = [
         "Quantidade de Receitas", "Valor médio da Receita",
         "Total de Descontos", "", "Total de Taxas"
@@ -58,11 +50,11 @@ module Pdfs
 
       rows = [
         [
-          @new_loose.quantity,
-          number_to_currency(@new_loose.adjusted_revenue_value),
-          number_to_currency(@new_loose.total_discounts),
+          loose.quantity,
+          number_to_currency(loose.adjusted_revenue_value),
+          number_to_currency(loose.total_discounts),
           "",
-          number_to_currency(@new_loose.total_fees)
+          number_to_currency(loose.total_fees)
         ]
       ]
 
@@ -70,7 +62,7 @@ module Pdfs
         [
           "Total de Pedidos",
           "", "", "",
-          number_to_currency(@new_loose.total_orders)
+          number_to_currency(loose.total_orders)
         ]
       ]
 
@@ -78,18 +70,18 @@ module Pdfs
       render_table(data, "total_orders")
     end
 
-    def billings
+    def billings(branch_number, total_revenue, with_partnership)
       headers = ["Avulso", "", "", "", "Com parceria"]
 
       rows = [
         [
-          if @branch_number != 13
-            number_to_currency((@new_total_revenue.amount_received - @new_with_partnership.sum(&:total_requests)) || 0)
+          if branch_number != 13
+            number_to_currency((total_revenue.amount_received - with_partnership.sum(&:total_requests)) || 0)
           else
-            number_to_currency(((@new_total_revenue.amount_received / 0.85) - @new_with_partnership.sum(&:total_requests)) || 0)
+            number_to_currency(((total_revenue.amount_received / 0.85) - with_partnership.sum(&:total_requests)) || 0)
           end,
           "", "", "",
-          number_to_currency(@new_with_partnership.sum(&:total_requests) || 0)
+          number_to_currency(with_partnership.sum(&:total_requests) || 0)
         ]
       ]
 
@@ -97,7 +89,7 @@ module Pdfs
         [
           "Faturamento",
           "", "", "",
-          number_to_currency(@new_total_revenue.billing || 0)
+          number_to_currency(total_revenue.billing || 0)
         ]
       ]
 
@@ -105,14 +97,14 @@ module Pdfs
       render_table(data, "billings")
     end
 
-    def full_partnership
+    def full_partnership(with_partnership)
       headers = ["Em dinheiro", "", "", "", "Em bancos"]
 
       rows = [
         [
-          number_to_currency(@new_with_partnership.sum(&:branch_partnership)),
+          number_to_currency(with_partnership.sum(&:branch_partnership)),
           "", "", "",
-          number_to_currency(@new_with_partnership.sum(&:total_discounts))
+          number_to_currency(with_partnership.sum(&:total_discounts))
         ]
       ]
 
@@ -120,7 +112,7 @@ module Pdfs
         [
           "Parceria total",
           "", "", "",
-          number_to_currency(@new_with_partnership.sum(&:branch_partnership) + @new_with_partnership.sum(&:total_discounts)) + " " + "(-)"
+          number_to_currency(with_partnership.sum(&:branch_partnership) + with_partnership.sum(&:total_discounts)) + " " + "(-)"
         ]
       ]
 
@@ -128,28 +120,28 @@ module Pdfs
       render_table(data, "full_partnership")
     end
 
-    def other_informations
+    def other_informations(with_partnership)
       headers = []
       rows = [
         [
           "Parceria adiantada pela loja",
           "", "", "",
-          number_to_currency(@new_with_partnership.sum(&:total_discounts)) + " " + "(+)"
+          number_to_currency(with_partnership.sum(&:total_discounts)) + " " + "(+)"
         ],
         [
           "Pagamento de comissão para representantes",
           "", "", "",
-          number_to_currency(@new_with_partnership.sum(&:commission_payments_transfers)) + " " + "(-) ver tabela abaixo"
+          number_to_currency(with_partnership.sum(&:commission_payments_transfers)) + " " + "(-) ver tabela abaixo"
         ],
         [
           "Repasse de comissão para representantes",
           "", "", "",
-          number_to_currency(@new_with_partnership.sum(&:commission_payments_transfers)) + " " + "(+) ver tabela abaixo"
+          number_to_currency(with_partnership.sum(&:commission_payments_transfers)) + " " + "(+) ver tabela abaixo"
         ],
         [
           "Total devido",
           "", "", "",
-          number_to_currency(@new_with_partnership.sum(&:branch_partnership)) + " " + "(=)"
+          number_to_currency(with_partnership.sum(&:branch_partnership)) + " " + "(=)"
         ]
       ]
       footer = []
@@ -158,31 +150,35 @@ module Pdfs
       render_table(data, "other_informations")
     end
 
-    def commission_payments
+    def commission_payments(with_partnership)
       headers = ["Representante", "Quantidade", "Venda", "Comissão", "Total"]
 
-      rows = @with_partnership_by_representative.map do |representative_name, partnership_by_representative|
+      rows = with_partnership&.group_by(&:representative_name)&.map do |representative_name, by_representative|
         [
           representative_name,
-          partnership_by_representative.sum(&:number_of_requests) || 0,
-          number_to_currency(partnership_by_representative.sum(&:total_requests) || 0),
-          formatted_percentage(partnership_by_representative[0].commission || 0),
-          number_to_currency(partnership_by_representative.sum(&:commission_payments_transfers) || 0)
+          by_representative.sum(&:number_of_requests) || 0,
+          number_to_currency(by_representative.sum(&:total_requests) || 0),
+          formatted_percentage(by_representative[0].commission || 0),
+          number_to_currency(by_representative.sum(&:commission_payments_transfers) || 0)
         ]
       end
 
       footer = [
         [
           "Totais",
-          @new_with_partnership.sum(&:number_of_requests) || 0,
-          number_to_currency(@new_with_partnership.sum(&:total_requests) || 0),
+          with_partnership.sum(&:number_of_requests) || 0,
+          number_to_currency(with_partnership.sum(&:total_requests) || 0),
           "",
-          number_to_currency(@new_with_partnership.sum(&:commission_payments_transfers) || 0)
+          number_to_currency(with_partnership.sum(&:commission_payments_transfers) || 0)
         ]
       ]
 
       data = build_table_data(headers: headers, rows: rows, footer: footer)
       render_table(data, "commission")
+    end
+
+    def formatted_percentage(value)
+      number_to_percentage(value, precision: 2)
     end
 
     def build_table_data(headers:, rows:, footer: [])

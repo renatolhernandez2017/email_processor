@@ -24,16 +24,4 @@ class Representative < ApplicationRecord
     },
     order_within_rank: "name",
     ignoring: :accents
-
-  scope :with_totals, ->(closing_id) {
-    left_joins(:monthly_reports)
-      .joins(<<~SQL.squish)
-        LEFT JOIN current_accounts ca_standard
-          ON ca_standard.prescriber_id = monthly_reports.prescriber_id
-          AND ca_standard.standard = TRUE
-      SQL
-      .where(active: true, monthly_reports: {closing_id: closing_id})
-      .group("representatives.id, representatives.name")
-      .order("representatives.name ASC")
-  }
 end

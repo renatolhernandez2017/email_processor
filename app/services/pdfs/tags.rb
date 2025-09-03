@@ -2,28 +2,25 @@ module Pdfs
   class Tags < BaseRepresentativePdf
     def generate_content
       @representatives.each_with_index do |representative, index|
-        start_new_page unless index == 0
-        @representative = representative
+        start_new_page if index > 0
 
-        header
+        header(representative)
         move_down 5
 
-        @prescribers[@representative.id].each do |prescriber|
-          @prescriber = prescriber
-
-          other_header
-          content
+        @prescribers[representative.id].each do |prescriber|
+          other_header(prescriber)
+          content(prescriber)
         end
       end
     end
 
     private
 
-    def header
+    def header(representative)
       table([
         [
           {content: "Etiquetas de"},
-          {content: @representative.name.upcase + " -"},
+          {content: representative.name.upcase + " -"},
           {content: @current_closing.end_date.strftime("%d/%m/%Y")},
           {content: @current_closing.closing}
         ]
@@ -33,11 +30,11 @@ module Pdfs
       end
     end
 
-    def other_header
-      current_accounts = @prescriber.current_accounts
+    def other_header(prescriber)
+      current_accounts = prescriber.current_accounts
       table([
         [
-          {content: @prescriber.envelope_number},
+          {content: prescriber.envelope_number},
           {content: current_accounts.present? ? "" : "- (ESP)"}
         ]
       ], cell_style: {borders: [], size: 12}) do
@@ -45,20 +42,20 @@ module Pdfs
       end
     end
 
-    def content
+    def content(prescriber)
       headers = ["ID", "Nome", "Env.", "Informações", "Observação"]
 
       rows = [
         [
-          @prescriber.id,
-          @prescriber.name,
-          @prescriber.envelope_number,
+          prescriber.id,
+          prescriber.name,
+          prescriber.envelope_number,
           [
-            @prescriber&.full_address,
-            @prescriber&.full_contact,
-            @prescriber.secretary
+            prescriber&.full_address,
+            prescriber&.full_contact,
+            prescriber.secretary
           ].compact.join("\n"),
-          "OBS: #{truncate(@prescriber.note, length: 50)}"
+          "OBS: #{truncate(prescriber.note, length: 50)}"
         ]
       ]
 

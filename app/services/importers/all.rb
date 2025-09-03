@@ -10,17 +10,17 @@ module Importers
         csv_enum.each do |row|
           next if row.empty? || (row[0]&.strip == "N/A")
 
-          branch_number = row[0]&.strip
-          @nrreq_id = row[1]&.strip
+          branch_number = row[0]&.strip.to_i
+          @nrreq_id = row[1]&.strip.to_i
           @patient_name = row[2]&.strip
           @entry_date = row[3]&.strip
           @repeat = row[4]&.strip
-          total_price = row[5]&.strip.to_f - row[7]&.strip&.to_f
-          @total_price = (row[8]&.strip == "N/A") ? total_price.to_f : total_price.to_f - (total_price.to_f * 0.10)
+          total_price = row[5]&.strip.to_f - row[7]&.strip.to_f
+          @total_price = total_price.to_f - (total_price.to_f * 0.10)
           @total_discounts = row[6]&.strip.to_f
-          @total_fees = row[7]&.strip&.to_f
+          @total_fees = row[7]&.strip.to_f
           @payment_date = row[8]&.strip
-          @amount_received = (@payment_date == "N/A") ? row[9]&.strip.to_f : row[9]&.strip.to_f - (row[9]&.strip.to_f * 0.10)
+          @amount_received = row[9]&.strip.to_f - (row[9]&.strip.to_f * 0.10)
           @class_council = row[10]&.strip
           @uf_council = row[11]&.strip
           @number_council = row[12]&.strip

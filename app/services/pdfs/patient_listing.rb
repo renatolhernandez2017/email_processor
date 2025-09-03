@@ -4,36 +4,33 @@ module Pdfs
 
     def generate_content
       @representatives.each_with_index do |representative, index|
-        start_new_page unless index.zero?
-        @representative = representative
+        start_new_page if index > 0
+
         first_page = true
 
-        @prescribers[@representative.id].each do |prescriber|
-          if prescriber.requests.present? && prescriber.envelope_number.to_s != "000000"
-            if !first_page && prescriber.situation.present?
-              start_new_page
-            end
-
-            @prescriber = prescriber
-            first_page = false
-
-            header
-            move_down 10
-
-            @requests = @prescriber.requests
-            content
+        @prescribers[representative.id].each do |prescriber|
+          if !first_page && prescriber.new_situation.present?
+            start_new_page
           end
+
+          first_page = false
+
+          header(representative)
+          move_down 10
+
+          requests = prescriber.requests
+          content(prescriber, requests)
         end
       end
     end
 
     private
 
-    def header
+    def header(representative)
       table([
         [
           {content: "Representante: "},
-          {content: @representative.name.upcase},
+          {content: representative.name.upcase},
           {content: "em"},
           {content: @current_closing.closing}
         ]
@@ -43,16 +40,16 @@ module Pdfs
       end
     end
 
-    def content
+    def content(prescriber, requests)
       move_down 20
       table([
         [
           {content: "Prescritor:", font_style: :bold},
-          {content: @prescriber.name},
+          {content: prescriber.name},
           {content: "Situação:", font_style: :bold},
-          {content: @prescriber.situation},
+          {content: prescriber.new_situation},
           {content: "Envelope:", font_style: :bold},
-          {content: @prescriber.envelope_number}
+          {content: prescriber.envelope_number}
         ]
       ], cell_style: {borders: [], size: 10}, position: :center) do
         [1, 3].each { |i| cells[0, i].text_color = "00008b" }
@@ -64,23 +61,23 @@ module Pdfs
         "Data de Pagamento", "Valor", "Filial"
       ]
 
-      rows = @requests.map do |request|
+      rows = requests.map do |request|
         [
-          request.patient_name || "Sem Nome",
+          request.patient_name,
           request.repeat ? "-R" : "",
           request.entry_date.strftime("%d/%m/%y"),
           set_payment_date(request),
           set_price(request),
-          request.branch&.name || "Sem Filial"
+          request.branch.name
         ]
       end
 
       footer = [
         ["Quantidade", "", "", "", "", "Valor Disponível"],
         [
-          @prescriber.quantity,
+          prescriber.quantity,
           "", "", "", "",
-          number_to_currency(@prescriber.available_value)
+          number_to_currency(prescriber.available_value)
         ]
       ]
 

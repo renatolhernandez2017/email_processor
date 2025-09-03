@@ -1,6 +1,6 @@
 <div class="navbar bg-gray-200 shadow-sm border-b border-gray-300">
   <div class="navbar-start">
-    <%= link_to "Voltar", closings_path, class: "btn btn-default w-20" %>
+    <%= render ButtonLinkComponent.new(label: "Voltar", url: closings_path) %>
   </div>
 
   <div class="navbar-center justify-between">
@@ -8,6 +8,6 @@
   </div>
 
   <div class="navbar-end">
-    <%= render ButtonLinkComponent.new(label: "Gerar PDF", url: download_pdf_closings_path(kind: kind)) %>
+    <%= render ButtonLinkComponent.new(label: "Gerar PDF", url: download_pdf_closings_path(kind: kind), target: "_blank") %>
   </div>
 </div>

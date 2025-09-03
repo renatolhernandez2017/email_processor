@@ -8,7 +8,6 @@ module SharedData
   private
 
   def load_shared_data
-    @branches = Branch.pluck(:name, :branch_number, :id)
-    @representatives = Representative.where(active: true)
+    @representatives = Representative.where(active: true).order("representatives.name ASC")
   end
 end

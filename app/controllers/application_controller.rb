@@ -7,4 +7,11 @@ class ApplicationController < ActionController::Base
   def set_current_closing
     @current_closing = Closing.find_by(active: true)
   end
+
+  protected
+
+  def turbo_redirect_back(fallback_location:)
+    redirect_target = request.referer || fallback_location
+    render turbo_stream: turbo_stream.action(:redirect, redirect_target)
+  end
 end

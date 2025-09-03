@@ -4,17 +4,16 @@ class BaseRepresentativePdf < Prawn::Document
   include ActionView::Helpers::TextHelper
   include Roundable
 
-  def initialize(representatives, current_closing, selected_key)
+  def initialize(representatives, current_closing, title, filter)
     super()
 
-    @current_closing = current_closing
     @representatives = representatives
-    @title = selected_key
+    @current_closing = current_closing
 
-    if @title == "patient_listing" || @title == "summary_patient_listing" || @title == "address_report" || @title == "tags"
-      load_prescribers_for_representatives
+    if title == "patient_listing" || title == "summary_patient_listing" || title == "address_report" || title == "tags"
+      load_prescribers_for_representatives(filter)
     else
-      load_totals_for_representatives
+      load_totals_for_representatives(filter)
     end
   end
 
@@ -29,15 +28,16 @@ class BaseRepresentativePdf < Prawn::Document
 
   private
 
-  def load_prescribers_for_representatives
+  def load_prescribers_for_representatives(filter)
     @prescribers = []
 
     @representatives.each do |representative|
-      @prescribers[representative.id] = Prescriber.with_totals(@current_closing.id, representative.id)
+      prescribers = representative.prescribers.where(representative_id: representative.id)
+      @prescribers[representative.id] = prescribers.with_totals(@current_closing.id, filter)
     end
   end
 
-  def load_totals_for_representatives
+  def load_totals_for_representatives(filter)
     @totals_by_bank = []
     @totals_by_store = []
     @total_in_cash = []
@@ -47,20 +47,19 @@ class BaseRepresentativePdf < Prawn::Document
     @totals_from_stores = []
 
     @representatives.each do |representative|
-      @prescribers[representative.id] = Prescriber.with_totals(@current_closing.id, representative.id)
+      prescribers = representative.prescribers.where(representative_id: representative.id)
+      @prescribers[representative.id] = prescribers.with_totals(@current_closing.id, filter)
 
       prescriber = @prescribers[representative.id].first
-      @totals[representative.id] = Prescriber.get_totals(prescriber)
+      @totals[representative.id] = prescribers.get_totals(prescriber)
 
-      @totals_by_bank[representative.id] = Prescriber.totals_by_bank_for_representatives(@current_closing.id, representative.id)
-      totals_from_banks = @totals_by_bank[representative.id].first
-      @totals_from_banks[representative.id] = Prescriber.totals_by_bank_store(totals_from_banks)
+      @totals_by_bank[representative.id] = prescribers.totals_by_bank_for_representatives(@current_closing.id, filter)
+      @totals_from_banks[representative.id] = prescribers.totals_by_bank_store(@totals_by_bank[representative.id])
 
-      @totals_by_store[representative.id] = Prescriber.totals_by_store_for_representatives(@current_closing.id, representative.id)
-      totals_from_stores = @totals_by_store[representative.id].first
-      @totals_from_stores[representative.id] = Prescriber.totals_by_bank_store(totals_from_stores)
+      @totals_by_store[representative.id] = prescribers.totals_by_store_for_representatives(@current_closing.id, filter)
+      @totals_from_stores[representative.id] = prescribers.totals_by_bank_store(@totals_by_store[representative.id])
 
-      available_value = @totals[representative.id][:real_sale][:available_value].to_f
+      available_value = @totals[representative.id][:real_sale][:available_value].to_f.round
       @total_in_cash[representative.id] = divide_into_notes(available_value)
     end
   end

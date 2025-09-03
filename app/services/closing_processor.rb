@@ -1,6 +1,4 @@
 class ClosingProcessor
-  include Roundable
-
   def initialize(closing)
     @closing = closing
     @start_date = Date.parse(@closing.start_date.strftime("%Y-%m-%d"))
@@ -59,14 +57,19 @@ class ClosingProcessor
   end
 
   def create_monthly_reports
-    requests = Request.where(entry_date: @start_date..@end_date).group_by(&:prescriber_id)
+    requests = Request.where(closing_id: nil).where(
+      "(entry_date BETWEEN :start_date AND :end_date) OR (payment_date BETWEEN :start_date AND :end_date)",
+      start_date: @start_date, end_date: @end_date
+    ).group_by(&:prescriber_id)
 
     requests.each do |prescriber_id, requests_all|
       prescriber = Prescriber.find(prescriber_id)
-      representative = requests_all.first&.representative
+      representative = prescriber.representative
       monthly_report = MonthlyReport.find_or_create_by(closing_id: @closing.id, prescriber: prescriber, representative: representative)
 
-      requests_all.map { |r| r.update(monthly_report: monthly_report, closing_id: @closing.id, representative: representative) }
+      requests_all.each do |request|
+        request.update(monthly_report_id: monthly_report.id, closing_id: @closing.id, representative_id: representative.id)
+      end
     end
   end
 
@@ -75,7 +78,7 @@ class ClosingProcessor
 
     monthly_reports.where("prescribers.repetitions = 0.0").each do |monthly_report|
       prescriber = monthly_report.prescriber
-      available_requests = prescriber.requests.where(repeat: true).where.not(payment_date: nil)
+      available_requests = prescriber.requests.where(repeat: true, closing_id: @closing.id).where.not(payment_date: nil)
 
       available_requests.destroy_all
     end
@@ -85,7 +88,7 @@ class ClosingProcessor
       repetitions = prescriber.repetitions.to_f / 100.0
       discount_percentage = prescriber.consider_discount_of_up_to.to_f / 100.0
 
-      available_requests = prescriber.requests.where(repeat: true)
+      available_requests = prescriber.requests.where(repeat: true, closing_id: @closing.id)
         .where.not(payment_date: nil)
         .where("total_discounts <= total_price * ?", discount_percentage)
         .order(:total_price)
@@ -103,9 +106,15 @@ class ClosingProcessor
 
     monthly_reports.each do |monthly_report|
       prescriber = monthly_report.prescriber
-      requests = prescriber.requests.where.not(payment_date: nil)
+
+      requests = prescriber.requests.where(closing_id: @closing.id)
+        .where.not(payment_date: nil).where(
+          "(entry_date BETWEEN :start_date AND :end_date) OR (payment_date BETWEEN :start_date AND :end_date)",
+          start_date: @start_date, end_date: @end_date
+        )
+
       standard_account = prescriber.current_accounts.find_by(standard: true)
-      amount_received = requests.sum(&:amount_received)
+      amount_received = requests.sum { |r| r.amount_received.to_f.round }
       total = ((prescriber.partnership.to_f / 100.0) * amount_received).round(2)
       partnership = standard_account.present? ? total : total.round(-1)
       discounts = requests.sum(&:total_discounts) * ([prescriber.discount_of_up_to, 1].max / 100.0)

@@ -2,27 +2,24 @@ module Pdfs
   class UnaccumulatedAddresses < BaseRepresentativePdf
     def generate_content
       @representatives.each_with_index do |representative, index|
-        start_new_page unless index == 0
-        @representative = representative
+        start_new_page if index > 0
 
-        header
+        header(representative)
         move_down 5
 
-        @prescribers[@representative.id].each do |prescriber|
-          @prescriber = prescriber
-
-          content
+        @prescribers[representative.id].each do |prescriber|
+          content(prescriber)
         end
       end
     end
 
     private
 
-    def header
+    def header(representative)
       table([
         [
-          {content: "Relatório de Endereços de"},
-          {content: @representative.name.upcase},
+          {content: "Relatório de Endereços, clientes de"},
+          {content: representative.name.upcase},
           {content: "em"},
           {content: @current_closing.closing}
         ]
@@ -32,21 +29,21 @@ module Pdfs
       end
     end
 
-    def content
+    def content(prescriber)
       headers = ["Envelope", "Informações", "Quant.", "Valor Disp."]
 
       rows = [
         [
-          @prescriber.envelope_number,
+          prescriber.envelope_number,
           [
-            "<b>Nome:</b> <color rgb='00008b'>#{@prescriber.name}</color>",
-            "<b>Endereço:</b> #{@prescriber&.full_address}",
-            "<b>Fones:</b> #{@prescriber&.full_contact}",
-            "<b>Contatos:</b> #{@prescriber.secretary}",
-            "<b>OBS:</b> #{truncate(@prescriber.note, length: 50)}"
+            "<b>Nome:</b> <color rgb='00008b'>#{prescriber.name}</color>",
+            "<b>Endereço:</b> #{prescriber&.full_address}",
+            "<b>Fones:</b> #{prescriber&.full_contact}",
+            "<b>Contatos:</b> #{prescriber.secretary}",
+            "<b>OBS:</b> #{truncate(prescriber.note, length: 50)}"
           ].compact.join("\n"),
-          @prescriber.quantity,
-          number_to_currency(@prescriber.available_value)
+          prescriber.quantity,
+          number_to_currency(prescriber.available_value)
         ]
       ]
 

@@ -4,12 +4,9 @@ module Pdfs
 
     def generate_content
       @prescribers.each do |prescriber|
-        @prescriber = prescriber
         header
         move_down 10
-
-        @requests = @prescriber.requests
-        content
+        content(prescriber)
       end
     end
 
@@ -29,16 +26,16 @@ module Pdfs
       end
     end
 
-    def content
+    def content(prescriber)
       move_down 20
       table([
         [
           {content: "Prescritor:", font_style: :bold},
-          {content: @prescriber.name},
+          {content: prescriber.name},
           {content: "Situação:", font_style: :bold},
-          {content: @prescriber.situation},
+          {content: prescriber.situation},
           {content: "Envelope:", font_style: :bold},
-          {content: @prescriber.envelope_number}
+          {content: prescriber.envelope_number}
         ]
       ], cell_style: {borders: [], size: 10}, position: :center) do
         [1, 3].each { |i| cells[0, i].text_color = "00008b" }
@@ -50,23 +47,23 @@ module Pdfs
         "Data de Pagamento", "Valor", "Filial"
       ]
 
-      rows = @requests.map do |request|
+      rows = prescriber.requests.map do |request|
         [
-          request.patient_name || "Sem Nome",
+          request.patient_name,
           request.repeat ? "-R" : "",
           request.entry_date.strftime("%d/%m/%y"),
           set_payment_date(request),
           set_price(request),
-          request.branch&.name || "Sem Filial"
+          request.branch.name
         ]
       end
 
       footer = [
         ["Quantidade", "", "", "", "", "Valor Disponível"],
         [
-          @prescriber.quantity,
+          prescriber.quantity,
           "", "", "", "",
-          number_to_currency(@prescriber.available_value)
+          number_to_currency(prescriber.available_value)
         ]
       ]
 

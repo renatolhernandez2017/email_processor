@@ -2,7 +2,6 @@ class BasePrescriberPdf < Prawn::Document
   include Prawn::View
   include ActionView::Helpers::NumberHelper
   include ActionView::Helpers::TextHelper
-  include Roundable
 
   def initialize(prescriber, current_closing)
     super()
@@ -25,8 +24,8 @@ class BasePrescriberPdf < Prawn::Document
   private
 
   def load_prescribers_for_representatives
-    representative = @prescriber.representative
-    @representative = Representative.with_totals(@current_closing.id).find(representative.id)
-    @prescribers = Prescriber.with_totals(@current_closing.id, representative.id).where(id: @prescriber.id)
+    @representative = @prescriber.representative
+    prescribers = @representative.prescribers.where(representative_id: @representative.id)
+    @prescribers = prescribers.with_totals(@current_closing.id).where(id: @prescriber.id)
   end
 end

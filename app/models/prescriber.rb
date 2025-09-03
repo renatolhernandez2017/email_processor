@@ -34,54 +34,82 @@ class Prescriber < ApplicationRecord
                         "CRO" => 2,
                         "CRN" => 9}
 
-  scope :with_totals, ->(closing_id, representative_ids) {
-    where(representative_id: representative_ids)
-      .joins(<<~SQL)
-        LEFT JOIN monthly_reports
-          ON monthly_reports.prescriber_id = prescribers.id
-          AND monthly_reports.closing_id = #{closing_id.to_i}
+  scope :with_totals, ->(closing_id, filter = nil) {
+    joins(<<~SQL)
+      LEFT JOIN monthly_reports
+        ON monthly_reports.prescriber_id = prescribers.id
+        AND monthly_reports.closing_id = #{closing_id.to_i}
     SQL
+      .then { |rel|
+        case filter
+        when "accumulated"
+          rel.where("monthly_reports.accumulated = ? OR monthly_reports.id IS NULL", true)
+        when "unaccumulated"
+          rel.where("monthly_reports.accumulated = ?", false)
+        else
+          rel
+        end
+      }
       .select(custom_select_sql)
       .group("prescribers.id")
       .order("prescribers.name ASC")
   }
 
-  scope :totals_by_bank_for_representatives, ->(closing_id, representative_ids) {
-    # Subselect para pegar os relatórios já filtrados
-    monthly_reports_subquery = MonthlyReport
-      .where(closing_id: closing_id)
-      .select(:id, :prescriber_id, :partnership, :discounts)
-      .to_sql
-
-    where(representative_id: representative_ids)
-      .joins(current_accounts: :bank)
-      .joins("LEFT JOIN (#{monthly_reports_subquery}) AS filtered_reports ON filtered_reports.prescriber_id = prescribers.id")
-      .group("prescribers.id, banks.name")
+  scope :totals_by_bank_for_representatives, ->(closing_id, filter = nil) {
+    joins(current_accounts: :bank)
+      .joins(<<~SQL)
+        LEFT JOIN monthly_reports
+          ON monthly_reports.prescriber_id = prescribers.id
+        AND monthly_reports.closing_id = #{closing_id.to_i}
+      SQL
+      .then { |rel|
+        case filter
+        when "accumulated"
+          rel.where("monthly_reports.accumulated = ? OR monthly_reports.id IS NULL", true)
+        when "unaccumulated"
+          rel.where("monthly_reports.accumulated = ?", false)
+        else
+          rel
+        end
+      }
+      .group("banks.name")
       .select(
         "banks.name AS bank_name",
-        "COUNT(DISTINCT filtered_reports.id) AS count",
-        "COALESCE(SUM(DISTINCT filtered_reports.partnership - filtered_reports.discounts), 0) AS total",
-        # Totais gerais usando janela (window function)
-        "SUM(COUNT(DISTINCT filtered_reports.id)) OVER () AS total_count",
-        "SUM(COALESCE(SUM(DISTINCT filtered_reports.partnership - filtered_reports.discounts), 0)) OVER () AS total_price"
+        "COUNT(DISTINCT monthly_reports.id) AS count",
+        "COALESCE(SUM(DISTINCT monthly_reports.partnership - monthly_reports.discounts), 0) AS total",
+        # Totais gerais usando janela
+        "SUM(COUNT(DISTINCT monthly_reports.id)) OVER () AS total_count",
+        "SUM(COALESCE(SUM(DISTINCT monthly_reports.partnership - monthly_reports.discounts), 0)) OVER () AS total_price"
       )
-      .group_by(&:bank_name)
   }
 
-  scope :totals_by_store_for_representatives, ->(closing_id, representative_ids) {
-    Request.joins(:monthly_report, :branch)
-      .where(representative_id: representative_ids)
-      .where("monthly_reports.accumulated = ? AND monthly_reports.closing_id = ?", false, closing_id)
+  scope :totals_by_store_for_representatives, ->(closing_id, filter = nil) {
+    joins(requests: :branch)
+      .joins(<<~SQL)
+        LEFT JOIN monthly_reports
+          ON monthly_reports.prescriber_id = prescribers.id
+        AND monthly_reports.closing_id = #{closing_id.to_i}
+      SQL
+      .where("monthly_reports.closing_id = ?", closing_id)
+      .then { |rel|
+        case filter
+        when "accumulated"
+          rel.where("monthly_reports.accumulated = ? OR monthly_reports.id IS NULL", true)
+        when "unaccumulated"
+          rel.where("monthly_reports.accumulated = ?", false)
+        else
+          rel
+        end
+      }
       .group("branches.name")
       .select(
         "branches.name AS branch_name",
         "COUNT(requests.id) AS count",
-        "SUM(requests.amount_received) AS total",
-        # Totais gerais usando janela (window function)
+        "COALESCE(SUM(requests.amount_received), 0) AS total",
+        # Totais gerais usando janela
         "SUM(COUNT(requests.id)) OVER () AS total_count",
-        "SUM(COALESCE(SUM(requests.amount_received), 0)) OVER () AS total_price"
+        "SUM(SUM(requests.amount_received)) OVER () AS total_price"
       )
-      .group_by(&:branch_name)
   }
 
   def situation
@@ -172,13 +200,18 @@ class Prescriber < ApplicationRecord
   end
 
   def self.totals_by_bank_store(totals)
-    return unless totals.present?
+    if totals.present?
+      new_totals = totals.first
 
-    new_totals = totals.last.last
-
-    {
-      total_count: new_totals.total_count.to_i,
-      total_price: new_totals.total_price.to_f
-    }
+      {
+        total_count: new_totals.total_count.to_i,
+        total_price: new_totals.total_price.to_f
+      }
+    else
+      {
+        total_count: 0.0,
+        total_price: 0.0
+      }
+    end
   end
 end

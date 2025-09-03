@@ -52,9 +52,10 @@ class BaseClosingPdf < Prawn::Document
     totals = []
 
     @representatives.each do |representative|
-      prescribers[representative.id] = Prescriber.with_totals(@current_closing.id, representative.id)
+      prescribers_all = representative.prescribers.where(representative_id: representative.id)
+      prescribers[representative.id] = prescribers_all.with_totals(@current_closing.id)
       prescriber = prescribers[representative.id].first
-      totals[representative.id] = Prescriber.get_totals(prescriber)
+      totals[representative.id] = prescribers_all.get_totals(prescriber)
       available_value = totals[representative.id][:real_sale][:available_value].to_f
       @total_in_cash[representative.id] = divide_into_notes(available_value)
     end

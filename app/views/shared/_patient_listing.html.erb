@@ -5,7 +5,7 @@
   </div>
 
   <% prescribers.each do |prescriber| %>
-    <% if prescriber.present? && prescriber.envelope_number.to_s != "000000" %>
+    <% if prescriber.present? %>
       <ul class="menu rounded-box mb-4">
         <li>
           <ul class="border-l-2 border-b-2 border-primary my-2">
@@ -19,7 +19,7 @@
 
                 <div class="grid grid-cols-3 text-primary">
                   <span><%= prescriber.name %></span>
-                  <span><%= prescriber.situation %></span>
+                  <span><%= prescriber.new_situation %></span>
                   <span><%= prescriber.envelope_number %></span>
                 </div>
               </div>

@@ -2,7 +2,6 @@ class Request < ApplicationRecord
   audited
 
   include PgSearch::Model
-  include Roundable
 
   belongs_to :branch, optional: true
   belongs_to :closing, optional: true

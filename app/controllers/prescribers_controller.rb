@@ -22,7 +22,7 @@ class PrescribersController < ApplicationController
   def update
     if @prescriber.update(prescriber_params)
       flash[:success] = "Prescritor atualizado com sucesso."
-      render turbo_stream: turbo_stream.action(:redirect, prescribers_path)
+      turbo_redirect_back(fallback_location: prescribers_path)
     else
       render turbo_stream: turbo_stream.replace("form_prescriber",
         partial: "prescribers/form", locals: {
@@ -43,11 +43,12 @@ class PrescribersController < ApplicationController
     @prescriber.destroy
 
     flash[:success] = "Prescritor apagado com sucesso."
-    render turbo_stream: turbo_stream.action(:redirect, prescribers_path)
+    turbo_redirect_back(fallback_location: prescribers_path)
   end
 
   def change_accumulated
     accumulated = @prescriber.to_boolean(params[:accumulated])
+
     @monthly_report = @current_closing.monthly_reports.where(
       prescriber_id: @prescriber.id, accumulated: accumulated
     ).first
@@ -62,13 +63,18 @@ class PrescribersController < ApplicationController
       flash[:notice] = "Prescritor já acumulado este mês." if accumulated == false
     end
 
-    render turbo_stream: turbo_stream.action(:redirect, prescribers_path)
+    turbo_redirect_back(fallback_location: prescribers_path)
   end
 
   def patient_listing
-    representative = @prescriber.representative
-    @representative = Representative.with_totals(@current_closing.id).find(representative.id)
-    @prescribers = Prescriber.with_totals(@current_closing.id, representative.id).where(id: @prescriber.id)
+    @requests = []
+    @representative = @prescriber.representative
+    prescribers = @representative.prescribers.where(representative_id: @representative.id)
+    @prescribers = prescribers.with_totals(@current_closing.id).where(id: @prescriber.id)
+
+    @prescribers.each do |prescriber|
+      @requests[prescriber.id] = @prescriber.requests.where(closing_id: @current_closing.id)
+    end
   end
 
   def download_pdf

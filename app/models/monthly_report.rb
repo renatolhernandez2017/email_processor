@@ -2,7 +2,6 @@ class MonthlyReport < ApplicationRecord
   audited
 
   include PgSearch::Model
-  include Roundable
 
   belongs_to :closing
   belongs_to :representative, optional: true

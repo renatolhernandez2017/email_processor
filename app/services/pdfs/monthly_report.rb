@@ -2,19 +2,30 @@ module Pdfs
   class MonthlyReport < BaseRepresentativePdf
     def generate_content
       @representatives.each_with_index do |representative, index|
-        start_new_page unless index == 0
-        @representative = representative
+        start_new_page if index > 0
 
-        header
-        content
+        header(representative)
+        move_down 25
+
+        table_monthly_reports(@prescribers[representative.id], @totals[representative.id])
+        move_down 25
+
+        table_by_bank(@totals_by_bank[representative.id], @totals_from_banks[representative.id])
+        move_down 20
+
+        table_by_store(@totals_by_store[representative.id], @totals_from_stores[representative.id])
+        move_down 20
+
+        table_by_notes(@total_in_cash[representative.id])
+        move_down 20
       end
     end
 
-    def header
+    def header(representative)
       table([
         [
           {content: "Resumo de"},
-          {content: @representative.name.upcase},
+          {content: representative.name.upcase},
           {content: "em"},
           {content: @current_closing.closing}
         ]
@@ -26,108 +37,93 @@ module Pdfs
       end
     end
 
-    def content
-      move_down 25
-      table_monthly_reports
-      move_down 25
-
-      table_by_bank
-      move_down 20
-
-      table_by_store
-      move_down 20
-
-      table_by_notes
-      move_down 20
-    end
-
-    def table_monthly_reports
+    def table_monthly_reports(prescribers, totals)
       headers = [
         "Id", "Prescritor", "Qt.", "Total", "Parceria",
         "Desc.", "Valor Disp.", "Tipo", "Envelope"
       ]
 
-      rows = @prescribers[@representative.id].map do |prescriber|
+      rows = prescribers.map do |prescriber|
         [
-          prescriber.id || "N/A",
-          prescriber.name || "N/A",
-          prescriber.quantity || "N/A",
-          number_to_currency(prescriber.price || 0),
-          number_to_currency(prescriber.partnership || 0),
-          number_to_currency(prescriber.discounts || 0),
-          number_to_currency(prescriber.available_value || 0),
-          prescriber.kind || "N/A",
+          prescriber.id,
+          prescriber.name,
+          prescriber.quantity,
+          number_to_currency(prescriber.price),
+          number_to_currency(prescriber.partnership),
+          number_to_currency(prescriber.discounts),
+          number_to_currency(prescriber.available_value),
+          prescriber.kind,
           prescriber.envelope_number
         ]
       end
 
-      footer = build_monthly_reports_footer
+      footer = build_monthly_reports_footer(totals)
       data = build_table_data(headers: headers, rows: rows, footer: footer)
 
       render_table(data, "reports")
     end
 
-    def table_by_bank
+    def table_by_bank(totals_by_bank, totals_from_banks)
       build_generic_table(
         title: "Total por Banco",
         headers: ["Quantidade", "Banco", "Valor"],
-        rows: @totals_by_bank[@representative.id].map { |bank_name, bank| [bank.sum(&:count), bank_name || "N/A", number_to_currency(bank.sum(&:total))] },
-        footer: [["Total de Bancos", "", "Total"], [@totals_from_banks[@representative.id][:total_count], "", number_to_currency(@totals_from_banks[@representative.id][:total_price])]],
+        rows: totals_by_bank.map { |bank| [bank.count, bank.bank_name, number_to_currency(bank.total)] },
+        footer: [["Total de Bancos", "", "Total"], [totals_from_banks[:total_count], "", number_to_currency(totals_from_banks[:total_price])]],
         type: "banks"
       )
     end
 
-    def table_by_store
+    def table_by_store(totals_by_store, totals_from_stores)
       build_generic_table(
         title: "Total por Loja",
         headers: ["Quantidade", "Loja", "Valor"],
-        rows: @totals_by_store[@representative.id].map { |branch_name, store| [store.sum(&:count), branch_name || "N/A", number_to_currency(store.sum(&:total))] },
-        footer: [["Total de Lojas", "", "Total"], [@totals_from_stores[@representative.id][:total_count], "", number_to_currency(@totals_from_stores[@representative.id][:total_price])]],
+        rows: totals_by_store.map { |store| [store.count, store.branch_name, number_to_currency(store.total)] },
+        footer: [["Total de Lojas", "", "Total"], [totals_from_stores[:total_count], "", number_to_currency(totals_from_stores[:total_price])]],
         type: "stores"
       )
     end
 
-    def table_by_notes
+    def table_by_notes(total_in_cash)
       build_generic_table(
         title: "Divisão de Notas",
         headers: ["Quantidade", "Notas", "Valor"],
-        rows: @total_in_cash[@representative.id].map { |item, cash| [cash || 0, item || "N/A", number_to_currency(cash * item || 0)] },
-        footer: [["Total de Notas", "", "Total"], [@total_in_cash[@representative.id].values.sum || 0, "", number_to_currency(@total_in_cash[@representative.id].sum { |key, value| key * value } || 0)]],
+        rows: total_in_cash.map { |item, cash| [cash || 0, item, number_to_currency(cash * item || 0)] },
+        footer: [["Total de Notas", "", "Total"], [total_in_cash.values.sum || 0, "", number_to_currency(total_in_cash.sum { |key, value| key * value } || 0)]],
         type: "notes"
       )
     end
 
-    def build_monthly_reports_footer
+    def build_monthly_reports_footer(totals)
       [
         ["Quant.", "", "", "", "", "", "", "", ""],
         [
-          @totals[@representative.id][:count],
+          totals[:count],
           "Total Geral",
-          @totals[@representative.id][:quantity],
-          number_to_currency(@totals[@representative.id][:price]),
-          number_to_currency(@totals[@representative.id][:partnership]),
-          number_to_currency(@totals[@representative.id][:discounts]),
-          number_to_currency(@totals[@representative.id][:available_value]),
+          totals[:quantity],
+          number_to_currency(totals[:price]),
+          number_to_currency(totals[:partnership]),
+          number_to_currency(totals[:discounts]),
+          number_to_currency(totals[:available_value]),
           "", ""
         ],
         [
-          @totals[@representative.id][:accumulated][:count],
+          totals[:accumulated][:count],
           "Acumulados",
-          @totals[@representative.id][:accumulated][:quantity],
-          number_to_currency(@totals[@representative.id][:accumulated][:price]),
-          number_to_currency(@totals[@representative.id][:accumulated][:partnership]),
-          number_to_currency(@totals[@representative.id][:accumulated][:discounts]),
-          number_to_currency(@totals[@representative.id][:accumulated][:available_value]),
+          totals[:accumulated][:quantity],
+          number_to_currency(totals[:accumulated][:price]),
+          number_to_currency(totals[:accumulated][:partnership]),
+          number_to_currency(totals[:accumulated][:discounts]),
+          number_to_currency(totals[:accumulated][:available_value]),
           "", ""
         ],
         [
-          @totals[@representative.id][:real_sale][:count],
+          totals[:real_sale][:count],
           "Venda Real",
-          @totals[@representative.id][:real_sale][:quantity],
-          number_to_currency(@totals[@representative.id][:real_sale][:price]),
-          number_to_currency(@totals[@representative.id][:real_sale][:partnership]),
-          number_to_currency(@totals[@representative.id][:real_sale][:discounts]),
-          number_to_currency(@totals[@representative.id][:real_sale][:available_value]),
+          totals[:real_sale][:quantity],
+          number_to_currency(totals[:real_sale][:price]),
+          number_to_currency(totals[:real_sale][:partnership]),
+          number_to_currency(totals[:real_sale][:discounts]),
+          number_to_currency(totals[:real_sale][:available_value]),
           "", ""
         ]
       ]

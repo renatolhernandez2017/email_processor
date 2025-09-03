@@ -13,11 +13,11 @@
         </thead>
 
         <tbody>
-          <% stores.each do |branch_name, store| %>
+          <% stores.each do |store| %>
             <tr class="bg-gray-200 border-t border-b border-black h-8">
-              <td><%= store.sum(&:count) %></td>
-              <td><%= branch_name %></td>
-              <td><%= number_to_currency(store.sum(&:total)) %></td>
+              <td><%= store.count %></td>
+              <td><%= store.branch_name %></td>
+              <td><%= number_to_currency(store.total) %></td>
             </tr>
           <% end %>
         </tbody>
