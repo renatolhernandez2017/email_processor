@@ -16,7 +16,8 @@ module Importers
           @patient_name = row[2]&.strip
           @entry_date = row[3]&.strip
           @repeat = row[4]&.strip
-          total_price = row[5]&.strip.to_f - row[7]&.strip.to_f
+          price = row[5]&.strip.to_f - row[7]&.strip.to_f
+          total_price = (row[8]&.strip == "N/A") ? price.to_f - row[6]&.strip.to_f : price.to_f
           @total_price = total_price.to_f - (total_price.to_f * 0.10)
           @total_discounts = row[6]&.strip.to_f
           @total_fees = row[7]&.strip.to_f
