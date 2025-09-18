@@ -33,7 +33,7 @@ class Closing < ApplicationRecord
         ) monthly_reports
         ON monthly_reports.prescriber_id = prescribers.id
       SQL
-      .where(standard: true)
+      .where(standard: true, representatives: {active: true})
       .group("current_accounts.id", "banks.id", "representatives.name", "prescribers.representative_id")
       .having(sum_available_value_sql + " > 0")
       .select(custom_select_sql)
@@ -44,7 +44,7 @@ class Closing < ApplicationRecord
 
   scope :payment_for_representatives, ->(closing_id) {
     MonthlyReport.joins(:requests, :representative)
-      .where(closing_id: closing_id, accumulated: false)
+      .where(closing_id: closing_id, accumulated: false, representatives: {active: true})
       .group("representatives.id", "representatives.name")
       .select(
         "representatives.id AS id",
@@ -55,8 +55,8 @@ class Closing < ApplicationRecord
   }
 
   scope :as_follows, ->(closing_id) {
-    MonthlyReport.joins(:requests, current_accounts: :bank)
-      .where(closing_id: closing_id, accumulated: false)
+    MonthlyReport.joins(:representative, :requests, current_accounts: :bank)
+      .where(closing_id: closing_id, accumulated: false, representatives: {active: true})
       .group("banks.name")
       .select(
         "banks.name AS bank_name",

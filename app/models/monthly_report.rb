@@ -14,7 +14,7 @@ class MonthlyReport < ApplicationRecord
 
   scope :with_adjusted_billings, ->(closing_id) {
     joins(:representative, requests: :branch)
-      .where(closing_id: closing_id, accumulated: false)
+      .where(closing_id: closing_id, accumulated: false, representatives: {active: true})
       .select(<<~SQL.squish)
         monthly_reports.representative_id,
         representatives.name AS representative_name,

@@ -4,7 +4,7 @@ module Closing::Aggregations
   class_methods do
     def sum_available_value_sql
       <<~SQL.squish
-        SUM(
+        SUM(DISTINCT
           CASE
             WHEN monthly_reports.partnership <= 0 THEN 0
             WHEN EXISTS (

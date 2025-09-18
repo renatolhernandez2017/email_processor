@@ -33,7 +33,7 @@
                 </div>
 
                 <div class="grid grid-cols-3 text-primary">
-                  <span><%= prescriber.name %></span>
+                  <span><%= link_to prescriber.name, prescriber_path(prescriber), class: "" %></span>
                   <span><%= prescriber.new_situation %></span>
                   <span><%= prescriber.envelope_number %></span>
                 </div>
