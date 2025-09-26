@@ -1,7 +1,7 @@
 <section class="flex flex-col mb-20 gap-5">
   <% @representatives.each do |representative| %>
     <%= render "sub_actions", representative: representative, title: "Lista de Pacientes", kind: "patient_listing", filter: params[:filter] %>
-    <%#= render "form_filter", url: patient_listing_representative_path(representative) %>
+    <%= render "form_filter", url: patient_listing_representative_path(representative) %>
 
     <%= render "shared/patient/listing", closing: @current_closing.closing, representative_name: representative.name,
         prescribers: @prescribers[representative.id], requests: @requests

@@ -1,7 +1,7 @@
 <section class="flex flex-col gap-5 mb-20">
   <% @representatives.each do |representative| %>
     <%= render "sub_actions", representative: representative, title: "Resumo", kind: "monthly_report", filter: params[:filter] %>
-    <%#= render "form_filter", url: monthly_report_representative_path(representative) %>
+    <%= render "form_filter", url: monthly_report_representative_path(representative) %>
     
     <div class="card shadow-lg border border-primary p-5">
       <%= render "shared/label_of", representative_name: representative.name, closing: @current_closing.closing, title: "Resumo de" %>

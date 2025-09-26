@@ -23,7 +23,7 @@ echo "Data Final: $END_DATE"
 
 if [ "$RAILS_ENV" = "development" ]; then
   echo "Abre a conexão com a VPN"
-  /bin/bash /workspaces/unipharmus_v2/script/vpn_start.sh
+  /bin/bash $WORK_DIR/script/vpn_start.sh
 fi
 
 echo "Criando arquivo das Filiais"
@@ -41,7 +41,11 @@ else
 fi
 
 echo "Criando arquivo Prescritores e Requisições"
-envsubst < "$WORK_DIR/script/all.sql" | \
+# Modo envsubst só funciona com devContainer direto no Vscode
+# envsubst < "$WORK_DIR/script/all.sql" | \
+
+# Modo sed só funciona com os dockers direto no Terminal
+sed -e "s/\${START_DATE}/$START_DATE/g" -e "s/\${END_DATE}/$END_DATE/g" "$WORK_DIR/script/all.sql" | \
 if [ "$RAILS_ENV" = "development" ]; then
   isql-fb "192.168.0.12:D:\\Fcerta-teste\\DB\\ALTERDB.ib" -u sysdba -p masterkey > "$TMP_DIR/all.csv"
 else
@@ -50,7 +54,7 @@ fi
 
 if [ "$RAILS_ENV" = "development" ]; then
   echo "Fecha a conexão com a VPN"
-  /bin/bash /workspaces/unipharmus_v2/script/vpn_close.sh
+  /bin/bash $WORK_DIR/script/vpn_close.sh
 fi
 
 echo "ACABOU"

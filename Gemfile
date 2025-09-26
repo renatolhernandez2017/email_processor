@@ -42,11 +42,17 @@ gem "view_component"
 gem "uglifier", ">= 4.1.20"
 
 group :development, :test do
+  gem "byebug", platforms: %i[mri mingw x64_mingw]
+  gem "capybara"
+  gem "debase"
   gem "debug", platforms: %i[mri windows]
   gem "faker"
+  gem "selenium-webdriver"
 end
 
 group :development do
+  gem "better_errors"
+  gem "binding_of_caller"
   gem "error_highlight", ">= 0.4.0", platforms: [:ruby]
   gem "htmlbeautifier"
   gem "letter_opener"
