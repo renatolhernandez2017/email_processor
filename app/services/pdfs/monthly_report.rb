@@ -48,10 +48,10 @@ module Pdfs
           prescriber.id,
           prescriber.name,
           prescriber.quantity,
-          sprintf("$%.2f", prescriber.price),
-          sprintf("$%.2f", prescriber.partnership),
-          sprintf("$%.2f", prescriber.discounts),
-          sprintf("$%.2f", prescriber.available_value),
+          number_to_currency(prescriber.price),
+          number_to_currency(prescriber.partnership),
+          number_to_currency(prescriber.discounts),
+          number_to_currency(prescriber.available_value),
           prescriber.kind,
           prescriber.envelope_number
         ]
@@ -156,8 +156,6 @@ module Pdfs
             if data.size <= 7
               cells[1, 1].text_color = "00008b"
               row(3).font_style = :bold
-
-              # (4..6).each { |row_index| cells[row_index, 1].font_style = :bold }
             else
               (1...data.size - 5).each { |i| cells[i, 1].text_color = "00008b" }
               (4...data.size - 3).each { |i| row(i).font_style = :bold }
