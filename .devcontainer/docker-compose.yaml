@@ -1,5 +1,5 @@
 services:
-  rails:
+  unipharmus:
     build:
       context: ..
       dockerfile: .devcontainer/Dockerfile
@@ -12,77 +12,69 @@ services:
     working_dir: /workspaces/unipharmus_v2
     command: bash -c "rm -f tmp/pids/server.pid && bin/rails server -b 0.0.0.0 -p 3003"
     networks:
-      - default
+      - unipharmus_network
     ports:
       - 3003:3003
     environment:
-      REDIS_URL: redis://redis:6379/1
+      RAILS_ENV: "development"
       DB_HOST: postgres
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
+      REDIS_URL: redis://redis:6379/0
     depends_on:
-      - selenium
       - redis
       - postgres
 
-  selenium:
-    image: seleniarm/standalone-chromium
-    restart: unless-stopped
-    networks:
-      - default
-
-  redis:
-    image: redis:7.2
-    restart: unless-stopped
-    ports:
-      - "6379:6379"
-    volumes:
-      - redis-data:/data
-    healthcheck:
-      test: ["CMD", "redis-cli", "ping"]
-      interval: 5s
-      timeout: 3s
-      retries: 5
-
   postgres:
     image: postgres:16.1
-    restart: unless-stopped
     ports:
       - 5432:5432
     volumes:
-      - postgres-data:/var/lib/postgresql/data
+      - unipharmus_postgres_data:/var/lib/postgresql/data
     environment:
-      DB_HOST: postgres
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
+    networks:
+      - unipharmus_network
+
+  redis:
+    image: redis:7.4
+    ports:
+      - "6379:6379"
+    networks:
+      - unipharmus_network
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 2s
+      timeout: 2s
+      retries: 10
+      start_period: 2s
 
   sidekiq:
     build:
       context: ..
       dockerfile: .devcontainer/Dockerfile
-    working_dir: /workspaces/unipharmus_v2
-    # network_mode: host
-    restart: unless-stopped
-    cap_add:
-      - NET_ADMIN
-    devices:
-      - /dev/net/tun:/dev/net/tun
     volumes:
-      - ../..:/workspaces
+      - ../..:/workspaces:cached
+    working_dir: /workspaces/unipharmus_v2
+    command: bash -c "until redis-cli -h redis ping; do echo 'Esperando Redis...'; sleep 2; done; bundle exec sidekiq"
+    networks:
+      - unipharmus_network
     environment:
-      REDIS_URL: redis://redis:6379/1
+      RAILS_ENV: "development"
       DB_HOST: postgres
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
+      REDIS_URL: redis://redis:6379/0
     depends_on:
-      selenium:
-        condition: service_started
-      postgres:
-        condition: service_started
       redis:
         condition: service_healthy
-    command: bundle exec sidekiq -e development
+      postgres:
+        condition: service_started
 
 volumes:
-  redis-data:
-  postgres-data:
+  unipharmus_postgres_data:
+
+networks:
+  unipharmus_network:
+    name: unipharmus_network

@@ -16,6 +16,7 @@ RUN apt-get update && apt-get install -y \
     gettext-base \
     firebird-dev firebird-utils \
     openvpn \
+    redis-tools \
     && rm -rf /var/lib/apt/lists/*
 
 # Instala Node.js e Yarn
@@ -24,20 +25,22 @@ RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash - \
   && npm install --global yarn
 
 # Cria diretório da aplicação
-WORKDIR /app
+WORKDIR /workspaces/unipharmus_v2
 
 # Copia Gemfile e Gemfile.lock
-COPY ./Gemfile ./Gemfile
-COPY ./Gemfile.lock ./Gemfile.lock
+COPY Gemfile Gemfile.lock ./
 
 # Instala gems
-RUN gem install bundler && bundle install
+RUN bundle install
 
-# Se houver package.json mas sem yarn.lock, crie automaticamente
-RUN if [ -f package.json ] && [ ! -f yarn.lock ]; then yarn install; fi
+COPY package.json yarn.lock ./
+RUN yarn install
 
-# Copia código da aplicação
+# Copia tudo
 COPY . .
+
+# Build da aplicação (Tailwind/Vue)
+RUN npm run build
 
 # Expõe porta do Rails
 EXPOSE 3003

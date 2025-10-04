@@ -8,6 +8,7 @@ class Closing < ApplicationRecord
   has_many :requests, through: :monthly_reports
 
   validates :start_date, presence: {message: " deve estar preenchido!"}
+  validates :end_date, presence: {message: " deve estar preenchido!"}
   validates :closing, presence: {message: " deve estar preenchido!"}, uniqueness: {message: " já está cadastrado!"}
 
   pg_search_scope :search_global,

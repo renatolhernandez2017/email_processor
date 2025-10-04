@@ -13,3 +13,6 @@
   :enabled: true
   :lock_info: true
   :default_lock_timeout: 10m
+
+:redis:
+  url: redis://redis:6379/0
