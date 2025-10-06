@@ -19,22 +19,22 @@ class MonthlyReport < ApplicationRecord
         monthly_reports.representative_id,
         representatives.name AS representative_name,
         branches.name AS branch_name,
-        COALESCE(SUM(DISTINCT monthly_reports.discounts), 0) AS total_discounts,
-        MAX(DISTINCT representatives.partnership) AS commission,
-        COALESCE(SUM(DISTINCT requests.amount_received), 0) AS total_requests,
+        COALESCE(SUM(monthly_reports.discounts), 0) AS total_discounts,
+        MAX(representatives.partnership) AS commission,
+        COALESCE(SUM(requests.amount_received), 0) AS total_requests,
         COALESCE(GREATEST(
-          (SUM(DISTINCT requests.amount_received) / NULLIF(MAX(DISTINCT monthly_reports.total_price), 0)) * 
-          (MAX(DISTINCT monthly_reports.partnership) - SUM(DISTINCT monthly_reports.discounts)), 0
+          (SUM(requests.amount_received) / NULLIF(MAX(monthly_reports.total_price), 0)) * 
+          (MAX(monthly_reports.partnership) - SUM(monthly_reports.discounts)), 0
         ), 0) AS branch_partnership,
         COALESCE(GREATEST(
-          SUM(DISTINCT requests.amount_received) * MAX(DISTINCT representatives.partnership) / 100.0, 0
+          SUM(requests.amount_received) * MAX(representatives.partnership) / 100.0, 0
         ), 0) AS commission_payments_transfers,
-        COUNT(DISTINCT requests.id) AS number_of_requests,
-        COALESCE(SUM(COUNT(DISTINCT requests.id)) over(), 0)::integer AS total_number_of_requests,
+        COUNT(requests.id) AS number_of_requests,
+        COALESCE(SUM(COUNT(requests.id)) over(), 0)::integer AS total_number_of_requests,
         COALESCE(SUM(
           GREATEST(
-            (SUM(DISTINCT requests.amount_received) / NULLIF(MAX(DISTINCT monthly_reports.total_price), 0)) * 
-            (MAX(DISTINCT monthly_reports.partnership) - SUM(DISTINCT monthly_reports.discounts)), 0
+            (SUM(requests.amount_received) / NULLIF(MAX(monthly_reports.total_price), 0)) * 
+            (MAX(monthly_reports.partnership) - SUM(monthly_reports.discounts)), 0
           )) over(),
         0) AS total_branch_partnership
       SQL
