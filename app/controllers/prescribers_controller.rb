@@ -73,7 +73,7 @@ class PrescribersController < ApplicationController
     @prescribers = prescribers.with_totals(@current_closing.id).where(id: @prescriber.id)
 
     @prescribers.each do |prescriber|
-      @requests[prescriber.id] = @prescriber.requests.where(closing_id: @current_closing.id)
+      @requests[prescriber.id] = @prescriber.requests.where(closing_id: @current_closing.id).where.not(monthly_report_id: nil)
     end
   end
 

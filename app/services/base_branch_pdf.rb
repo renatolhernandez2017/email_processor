@@ -24,8 +24,8 @@ class BaseBranchPdf < Prawn::Document
   private
 
   def set_branches
-    @loose = Request.with_adjusted_totals(@current_closing.start_date, @current_closing.end_date, @current_closing.id)
-    @total_revenue = Request.with_adjusted_totals_billings(@current_closing.start_date, @current_closing.end_date, @current_closing.id)
+    @loose = Request.with_adjusted_totals(@current_closing.id)
+    @total_revenue = Request.with_adjusted_totals_billings(@current_closing.id)
     @with_partnership = MonthlyReport.with_adjusted_billings(@current_closing.id)
   end
 end

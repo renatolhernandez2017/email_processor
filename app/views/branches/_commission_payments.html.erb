@@ -11,13 +11,13 @@
         </thead>
 
         <tbody>
-          <% with_partnership.group_by(&:representative_name).each do |representative_name, w_partnership| %>
+          <% with_partnership.each do |w_partnership| %>
             <tr class="bg-gray-200 border-t border-b border-black">
-              <td><%= representative_name %></td>
-              <td><%= w_partnership.sum(&:number_of_requests) || 0 %></td>
-              <td><%= number_to_currency(w_partnership.sum(&:total_requests) || 0) %></td>
-              <td><%= formatted_percentage(w_partnership[0].commission || 0) %></td>
-              <td><%= number_to_currency(w_partnership.sum(&:commission_payments_transfers) || 0) %></td>
+              <td><%= w_partnership.representative_name %></td>
+              <td><%= w_partnership.number_of_requests || 0 %></td>
+              <td><%= number_to_currency(w_partnership.total_requests || 0) %></td>
+              <td><%= formatted_percentage(w_partnership.commission || 0) %></td>
+              <td><%= number_to_currency(w_partnership.commission_payments_transfers || 0) %></td>
             </tr>
           <% end %>
         </tbody>

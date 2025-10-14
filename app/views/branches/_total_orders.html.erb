@@ -8,6 +8,7 @@
             <th>Valor médio da Receita</th>
             <th>Total de Descontos</th>
             <th>Total de Taxas</th>
+            <th>Total de Pedidos</th>
           </tr>
         </thead>
 
@@ -17,25 +18,9 @@
             <td><%= number_to_currency(loose.adjusted_revenue_value) %></td>
             <td><%= number_to_currency(loose.total_discounts) %></td>
             <td><%= number_to_currency(loose.total_fees) %></td>
+            <td><%= number_to_currency(loose.total_orders) %></td>
           </tr>
         </tbody>
-
-        <tfoot>
-          <thead>
-            <tr>
-              <th colspan="3" class="pt-7"></th>
-              <th></th>
-            </tr>
-          </thead>
-
-          <tbody>
-            <tr class="bg-gray-200 border-t border-b border-black h-10">
-              <td colspan="3" class="xl:text-base lg:text-sm font-semibold">Total de Pedidos</td>
-
-              <td><%= number_to_currency(loose.total_orders) %></td>
-            </tr>
-          </tbody>
-        </tfoot>
       </table>
     </ul>
   </li>

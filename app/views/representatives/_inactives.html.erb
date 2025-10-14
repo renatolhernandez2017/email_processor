@@ -1,0 +1,77 @@
+<div class="overflow-x-auto">
+  <table class="table-auto w-full xl:text-sm lg:text-xs font-semibold text-center">
+    <thead class="xl:text-base lg:text-sm">
+      <tr>
+        <th>ID</th>
+        <th>Representante</th>
+        <th>Número</th>
+        <th>Filial</th>
+        <th>Parceria</th>
+        <th>Ações</th>
+        <th></th>
+      </tr>
+    </thead>
+
+    <tbody>
+      <% representatives.each_with_index do |representative, index| %>
+        <tr class="border-t border-black items-center <%= index % 2 == 0 ? "bg-gray-200" : "bg-gray-100" %>">
+          <td><%= representative.id %></td>
+          <td><%= representative.name %></td>
+          <td><%= representative.number.to_s.rjust(3, '0') %></td>
+          <td><%= representative&.branch&.name %></td>
+          <td><%= formatted_percentage(representative.partnership) %></td>
+
+          <td class="flex justify-center items-center gap-2 h-10">
+            <button type="button" onclick="document.getElementById('edit_representative<%= representative.id %>').showModal();" title="Editar">
+              <span class="material-symbols-outlined text-primary">edit</span>
+            </button>
+
+            <dialog id="edit_representative<%= representative.id %>" class="modal place-items-center">
+              <%= render ModalComponent.new(form: render("form", representative: representative, branches: @branches, title: "Editar Representante : #{representative.id}", btn_save: "Atualizar")) %>
+            </dialog>
+
+            <%= link_to_if representative.performs_closing? && representative.monthly_reports.present?,
+                "<span class='material-symbols-outlined #{representative.monthly_reports.present? ? 'text-primary' : 'text-gray-400'}'>description</span>".html_safe,
+                monthly_report_representative_path(representative), title: "Resumo"
+            %>
+
+            <%= link_to_if representative.performs_closing? && representative.monthly_reports.present?,
+                "<span class='material-symbols-outlined #{representative.monthly_reports.present? ? 'text-primary' : 'text-gray-400'}'>list_alt</span>".html_safe,
+                patient_listing_representative_path(representative), title: "Lista"
+            %>
+
+            <%= link_to_if representative.performs_closing? && representative.monthly_reports.present?,
+                "<span class='material-symbols-outlined #{representative.monthly_reports.present? ? 'text-primary' : 'text-gray-400'}'>content_paste</span>".html_safe,
+                summary_patient_listing_representative_path(representative), title: "Lista Resumida"
+            %>
+
+            <%= link_to_if representative.performs_closing? && representative.monthly_reports.present?,
+                "<span class='material-symbols-outlined #{representative.monthly_reports.present? ? 'text-primary' : 'text-gray-400'}'>home</span>".html_safe,
+                unaccumulated_addresses_representative_path(representative), title: "Endereço"
+            %>
+
+            <button type="button" onclick="document.getElementById('account_balance_representative<%= representative.id %>').showModal();" title="Adicionar nova Conta Corrente">
+              <span class="material-symbols-outlined text-primary">account_balance</span>
+            </button>
+
+            <dialog id="account_balance_representative<%= representative.id %>" class="modal place-items-center">
+              <%= render ModalComponent.new(form: render("current_accounts/form", representative: representative, current_account: @current_account, representatives: @representatives, title: "Criar Nova Conta Corrente", btn_save: "Salvar", route: "representative")) %>
+            </dialog>
+
+            <%= render ActiveInactiveLinkComponent.new(representative: representative, route: "representative", url: change_active_representative_path(representative)) %>
+          </td>
+
+          <td class="cursor-pointer" data-controller="toggle" data-action="click->toggle#tableTr" data-tr-id="representative_tr_hidden_<%= index %>">
+            <details class="collapse collapse-arrow -top-3 h-10">
+              <summary class="collapse-title font-semibold"></summary>
+            </details>
+          </td>
+        </tr>
+
+        <tr class="hidden bg-white" id="representative_tr_hidden_<%= index %>">
+          <%= render "current_accounts", representative: representative, representatives: @representatives, index: index %>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+</div>

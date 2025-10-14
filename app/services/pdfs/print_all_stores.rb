@@ -29,7 +29,7 @@ module Pdfs
     def header(branch_name)
       table([
         [
-          {content: "Todas as lojas de"},
+          {content: "Filial"},
           {content: branch_name.upcase},
           {content: "em"},
           {content: @current_closing.closing}
@@ -45,7 +45,7 @@ module Pdfs
     def total_orders(loose)
       headers = [
         "Quantidade de Receitas", "Valor médio da Receita",
-        "Total de Descontos", "", "Total de Taxas"
+        "Total de Descontos", "Total de Taxas", "Total de Pedidos"
       ]
 
       rows = [
@@ -53,70 +53,42 @@ module Pdfs
           loose.quantity,
           number_to_currency(loose.adjusted_revenue_value),
           number_to_currency(loose.total_discounts),
-          "",
-          number_to_currency(loose.total_fees)
-        ]
-      ]
-
-      footer = [
-        [
-          "Total de Pedidos",
-          "", "", "",
+          number_to_currency(loose.total_fees),
           number_to_currency(loose.total_orders)
         ]
       ]
 
-      data = build_table_data(headers: headers, rows: rows, footer: footer)
+      data = build_table_data(headers: headers, rows: rows, footer: footer = [])
       render_table(data, "total_orders")
     end
 
     def billings(branch_number, total_revenue, with_partnership)
-      headers = ["Avulso", "", "", "", "Com parceria"]
+      headers = ["Avulso", "Com parceria", "Faturamento"]
 
       rows = [
         [
-          if branch_number != 13
-            number_to_currency((total_revenue.amount_received - with_partnership.sum(&:total_requests)) || 0)
-          else
-            number_to_currency(((total_revenue.amount_received / 0.85) - with_partnership.sum(&:total_requests)) || 0)
-          end,
-          "", "", "",
-          number_to_currency(with_partnership.sum(&:total_requests) || 0)
-        ]
-      ]
-
-      footer = [
-        [
-          "Faturamento",
-          "", "", "",
+          number_to_currency(((total_revenue.amount_received / 0.85) - with_partnership.sum(&:total_requests)) || 0),
+          number_to_currency(with_partnership.sum(&:total_requests) || 0),
           number_to_currency(total_revenue.billing || 0)
         ]
       ]
 
-      data = build_table_data(headers: headers, rows: rows, footer: footer)
+      data = build_table_data(headers: headers, rows: rows, footer: footer = [])
       render_table(data, "billings")
     end
 
     def full_partnership(with_partnership)
-      headers = ["Em dinheiro", "", "", "", "Em bancos"]
+      headers = ["Em dinheiro", "Em bancos", "Parceria total"]
 
       rows = [
         [
           number_to_currency(with_partnership.sum(&:branch_partnership)),
-          "", "", "",
-          number_to_currency(with_partnership.sum(&:total_discounts))
-        ]
-      ]
-
-      footer = [
-        [
-          "Parceria total",
-          "", "", "",
+          number_to_currency(with_partnership.sum(&:total_discounts)),
           number_to_currency(with_partnership.sum(&:branch_partnership) + with_partnership.sum(&:total_discounts)) + " " + "(-)"
         ]
       ]
 
-      data = build_table_data(headers: headers, rows: rows, footer: footer)
+      data = build_table_data(headers: headers, rows: rows, footer: footer = [])
       render_table(data, "full_partnership")
     end
 

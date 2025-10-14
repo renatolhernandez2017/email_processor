@@ -6,39 +6,31 @@
           <tr>
             <th>Avulso</th>
             <th>Com parceria</th>
+            <th>Em dinheiro</th>
+            <th>Em bancos</th>
+            <th>Parceria total</th>
+            <th>Faturamento</th>
           </tr>
         </thead>
 
         <tbody>
           <tr class="bg-gray-200 border-t border-b border-black">
             <td>
-              <% if branch_number != 13 %>
-                <%= number_to_currency((total_revenue.amount_received - with_partnership.sum(&:total_requests)) || 0) %>
-              <% else %>
-                <%= number_to_currency(((total_revenue.amount_received / 0.85) - with_partnership.sum(&:total_requests)) || 0) %>
-              <% end %>
+              <%= number_to_currency(((total_revenue.amount_received) - with_partnership.sum(&:total_requests)) || 0) %>
             </td>
 
             <td><%= number_to_currency(with_partnership.sum(&:total_requests) || 0) %></td>
+            <td><%= number_to_currency(with_partnership.sum(&:branch_partnership)) %></td>
+            <td><%= number_to_currency(with_partnership.sum(&:total_discounts)) %></td>
+
+            <td>
+              <%= number_to_currency(with_partnership.sum(&:branch_partnership) + with_partnership.sum(&:total_discounts)) %>
+              (-)
+            </td>
+
+            <td><%= number_to_currency(total_revenue.billing - loose.total_discounts) %></td>
           </tr>
         </tbody>
-
-        <tfoot>
-          <thead>
-            <tr>
-              <th class="pt-7"></th>
-              <th></th>
-            </tr>
-          </thead>
-
-          <tbody>
-            <tr class="bg-gray-200 border-t border-b border-black h-10">
-              <td class="xl:text-base lg:text-sm font-semibold">Faturamento</td>
-
-              <td><%= number_to_currency(total_revenue.billing) %></td>
-            </tr>
-          </tbody>
-        </tfoot>
       </table>
     </ul>
   </li>

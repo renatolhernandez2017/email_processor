@@ -10,8 +10,7 @@
         </label>
 
         <%= render "total_orders", loose: @loose[id] if @loose.present? %>
-        <%= render "billings", branch_number: branch_number, total_revenue: @total_revenue[id], with_partnership: @with_partnership[name] if @with_partnership.present? %>
-        <%= render "full_partnership", with_partnership: @with_partnership[name] if @with_partnership[name].present? %>
+        <%= render "billings", loose: @loose[id], branch_number: branch_number, total_revenue: @total_revenue[id], with_partnership: @with_partnership[name] if @loose.present? && @with_partnership.present? %>
         <%= render "other_informations", with_partnership: @with_partnership[name] if @with_partnership[name].present? %>
         <%= render "commission_payments", with_partnership: @with_partnership[name] if @with_partnership[name].present? %>
       </div>

@@ -1,5 +1,4 @@
 class RepresentativesController < ApplicationController
-  include Pagy::Backend
   include Roundable
   include SharedData
   include PdfClassMapper
@@ -12,7 +11,8 @@ class RepresentativesController < ApplicationController
   before_action :load_prescribers_for_representatives, only: %i[patient_listing summary_patient_listing unaccumulated_addresses]
 
   def index
-    @pagy, @representatives = pagy(Representative.all.order(:number))
+    @representatives = Representative.where(active: true).order(:number)
+    @representatives_inactives = Representative.where(active: false).order(:number)
 
     if params[:query].present?
       @representatives = @representatives.search_global(params[:query])
@@ -141,7 +141,7 @@ class RepresentativesController < ApplicationController
       @prescribers[representative.id] = prescribers.with_totals(@current_closing.id, params[:filter])
 
       @prescribers[representative.id].each do |prescriber|
-        @requests[prescriber.id] = prescriber.requests.where(closing_id: @current_closing.id)
+        @requests[prescriber.id] = prescriber.requests.where(closing_id: @current_closing.id).where.not(monthly_report_id: nil)
       end
     end
   end

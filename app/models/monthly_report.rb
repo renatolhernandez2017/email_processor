@@ -16,7 +16,6 @@ class MonthlyReport < ApplicationRecord
     joins(:representative, requests: :branch)
       .where(closing_id: closing_id, accumulated: false, representatives: {active: true})
       .select(<<~SQL.squish)
-        monthly_reports.representative_id,
         representatives.name AS representative_name,
         branches.name AS branch_name,
         COALESCE(SUM(monthly_reports.discounts), 0) AS total_discounts,
@@ -38,7 +37,7 @@ class MonthlyReport < ApplicationRecord
           )) over(),
         0) AS total_branch_partnership
       SQL
-      .group("monthly_reports.representative_id, representatives.name, branches.name")
+      .group("representatives.name, branches.name")
       .group_by(&:branch_name)
   }
 end

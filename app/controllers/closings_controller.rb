@@ -61,9 +61,9 @@ class ClosingsController < ApplicationController
 
     @current_closing.update(active: false)
     @closing.update(active: true)
+    Rails.cache.clear
 
     flash[:notice] = "O sistema está utilizando o fechamento de #{@closing.closing}!"
-
     turbo_redirect_back(fallback_location: root_path)
   end
 

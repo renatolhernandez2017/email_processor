@@ -3,7 +3,6 @@ class ClosingProcessor
     @closing = closing
     @start_date = Date.parse(@closing.start_date.strftime("%Y-%m-%d"))
     @end_date = Date.parse(@closing.end_date.strftime("%Y-%m-%d"))
-    @period_to_deaccumulate = 10
     @sales_value_to_disaccumulate = 667.0
     @minimum_of_sales_to_desacumular = 1
   end
@@ -57,10 +56,7 @@ class ClosingProcessor
   end
 
   def create_monthly_reports
-    requests = Request.where(
-      "(entry_date BETWEEN :start_date AND :end_date) OR (payment_date BETWEEN :start_date AND :end_date)",
-      start_date: @start_date, end_date: @end_date
-    ).group_by(&:prescriber_id)
+    requests = Request.where(closing_id: @closing.id).group_by(&:prescriber_id)
 
     requests.each do |prescriber_id, requests_all|
       prescriber = Prescriber.find(prescriber_id)
@@ -80,7 +76,7 @@ class ClosingProcessor
       prescriber = monthly_report.prescriber
       available_requests = prescriber.requests.where(repeat: true, closing_id: @closing.id).where.not(payment_date: nil)
 
-      available_requests.destroy_all
+      available_requests.update_all(monthly_report_id: nil)
     end
 
     monthly_reports.where("prescribers.repetitions > 0.0").each do |monthly_report|
@@ -97,7 +93,7 @@ class ClosingProcessor
       accepted_requests = available_requests.limit(limite)
       not_accepted_requests = available_requests.where.not(id: accepted_requests.ids)
 
-      not_accepted_requests.destroy_all
+      not_accepted_requests.update_all(monthly_report_id: nil)
     end
   end
 
@@ -108,10 +104,8 @@ class ClosingProcessor
       prescriber = monthly_report.prescriber
 
       requests = prescriber.requests.where(closing_id: @closing.id)
-        .where.not(payment_date: nil).where(
-          "(entry_date BETWEEN :start_date AND :end_date) OR (payment_date BETWEEN :start_date AND :end_date)",
-          start_date: @start_date, end_date: @end_date
-        )
+        .where.not(payment_date: nil)
+        .where.not(monthly_report_id: nil)
 
       standard_account = prescriber.current_accounts.find_by(standard: true)
       amount_received = requests.sum { |r| r.amount_received.to_f.round }

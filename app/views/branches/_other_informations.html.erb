@@ -28,7 +28,7 @@
           <tr class="bg-gray-200 border-t border-b border-black h-10">
             <td class="xl:text-base lg:text-sm font-semibold">Total devido</td>
 
-            <td><%= number_to_currency(with_partnership.sum(&:branch_partnership)) %> (=)</td>
+            <td><%= number_to_currency(with_partnership.sum(&:branch_partnership) + with_partnership.sum(&:commission_payments_transfers)) %> (=)</td>
           </tr>
         </tbody>
       </table>
