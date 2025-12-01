@@ -14,7 +14,7 @@
         <% if closing.persisted? %>
           <%= render TextFieldComponent.new(form: f, field_name: :last_envelope, type: "number", label: "Número do último envelope", error_message: closing.errors.messages[:last_envelope]) %>
         <% else %>
-          <input type="hidden" name="closing[last_envelope]" value="<%= @current_closing.last_envelope + 1 %>">
+          <input type="hidden" name="closing[last_envelope]" value="<%= Closing.last&.last_envelope.to_i + 1 %>">
         <% end %>
       </div>
 
