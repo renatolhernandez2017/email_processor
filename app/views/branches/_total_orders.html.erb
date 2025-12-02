@@ -14,11 +14,11 @@
 
         <tbody>
           <tr class="bg-gray-200 border-t border-b border-black">
-            <td><%= loose.quantity %></td>
-            <td><%= number_to_currency(loose.adjusted_revenue_value) %></td>
-            <td><%= number_to_currency(loose.total_discounts) %></td>
-            <td><%= number_to_currency(loose.total_fees) %></td>
-            <td><%= number_to_currency(loose.total_orders) %></td>
+            <td><%= loose&.quantity %></td>
+            <td><%= number_to_currency(loose&.adjusted_revenue_value) %></td>
+            <td><%= number_to_currency(loose&.total_discounts) %></td>
+            <td><%= number_to_currency(loose&.total_fees) %></td>
+            <td><%= number_to_currency(loose&.total_orders) %></td>
           </tr>
         </tbody>
       </table>

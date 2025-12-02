@@ -20,7 +20,7 @@ class MonthlyReport < ApplicationRecord
         branches.name AS branch_name,
         COALESCE(SUM(monthly_reports.discounts), 0) AS total_discounts,
         MAX(representatives.partnership) AS commission,
-        COALESCE(SUM(requests.amount_received), 0) AS total_requests,
+        COALESCE(SUM(requests.amount_received) / 0.85, 0) AS total_requests,
         COALESCE(GREATEST(
           (SUM(requests.amount_received) / NULLIF(MAX(monthly_reports.total_price), 0)) * 
           (MAX(monthly_reports.partnership) - SUM(monthly_reports.discounts)), 0

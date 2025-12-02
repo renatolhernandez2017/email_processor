@@ -3,7 +3,7 @@
 
   <% @branches.each do |name, branch_number, id| %>  
     <section class="flex flex-col p-5">
-      <div class="card shadow-lg border border-primary p-5">
+      <div class="card shadow-lg border border-primary p-5 text-center">
         <label class="xl:text-lg lg:text-base">
           <span class="text-primary"><%= name.upcase %> - </span>
           <span class="text-primary"><%= @current_closing.closing %></span>

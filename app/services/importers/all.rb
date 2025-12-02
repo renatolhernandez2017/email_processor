@@ -30,7 +30,7 @@ module Importers
           @note = row[14]&.strip
           representative_number = row[15]&.strip
 
-          @representative = Representative.find_by(number: representative_number)
+          @representative = Representative.find_by(number: representative_number) || Representative.find_by(number: 777)
           @prescriber = create_prescriber(representative_number)
 
           create_address(row)

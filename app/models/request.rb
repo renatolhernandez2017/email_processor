@@ -20,7 +20,7 @@ class Request < ApplicationRecord
         COALESCE(SUM(total_discounts), 0) AS total_discounts,
         COALESCE(SUM(total_fees), 0) AS total_fees,
         COALESCE(SUM(total_price) / COUNT(requests.id), 0) AS adjusted_revenue_value,
-        COALESCE((SUM(total_price) / 0.83), 0) AS total_orders
+        COALESCE((SUM(total_price)), 0) AS total_orders
       SQL
       .group(:branch_id, "branches.branch_number")
       .index_by(&:branch_id)
@@ -31,8 +31,8 @@ class Request < ApplicationRecord
       .where(closing_id: closing_id)
       .select(<<~SQL.squish)
         requests.branch_id AS branch_id,
-        COALESCE(SUM(amount_received), 0) AS amount_received,
-        COALESCE(((SUM(amount_received) - SUM(total_discounts) - SUM(total_fees)) / 0.85), 0) AS billing
+        COALESCE(SUM(amount_received) / 0.85, 0) AS amount_received,
+        COALESCE((((SUM(amount_received)) - SUM(total_discounts) - SUM(total_fees))), 0) AS billing
       SQL
       .group(:branch_id, "branches.branch_number")
       .index_by(&:branch_id)

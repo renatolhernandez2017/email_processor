@@ -10,12 +10,6 @@
         <%= render TextFieldComponent.new(form: f, field_name: :closing, label: "Fechamento", error_message: closing.errors.messages[:closing]) %>
         <%= render TextFieldComponent.new(form: f, field_name: :start_date, type: "date", label: "Data inicial", error_message: closing.errors.messages[:start_date]) %>
         <%= render TextFieldComponent.new(form: f, field_name: :end_date, type: "date", label: "Data final", error_message: closing.errors.messages[:end_date]) %>
-        
-        <% if closing.persisted? %>
-          <%= render TextFieldComponent.new(form: f, field_name: :last_envelope, type: "number", label: "Número do último envelope", error_message: closing.errors.messages[:last_envelope]) %>
-        <% else %>
-          <input type="hidden" name="closing[last_envelope]" value="<%= Closing.last&.last_envelope.to_i + 1 %>">
-        <% end %>
       </div>
 
       <hr class="left-0 absolute w-full mt-5 border-black">

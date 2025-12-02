@@ -50,11 +50,11 @@ module Pdfs
 
       rows = [
         [
-          loose.quantity,
-          number_to_currency(loose.adjusted_revenue_value),
-          number_to_currency(loose.total_discounts),
-          number_to_currency(loose.total_fees),
-          number_to_currency(loose.total_orders)
+          loose&.quantity,
+          number_to_currency(loose&.adjusted_revenue_value),
+          number_to_currency(loose&.total_discounts),
+          number_to_currency(loose&.total_fees),
+          number_to_currency(loose&.total_orders)
         ]
       ]
 
