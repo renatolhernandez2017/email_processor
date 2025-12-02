@@ -7,6 +7,7 @@ class ClosingsController < ApplicationController
   before_action :set_closing, only: %i[update perform_closing modify_for_this_closure]
   before_action :set_banks, only: %i[deposits_in_banks download_pdf]
   before_action :set_note_divisions, only: %i[note_divisions download_pdf]
+  before_action :set_last_envelope, only: %i[create]
 
   def index
     @pagy, @closings = pagy(Closing.all.order(start_date: :desc))
@@ -30,6 +31,8 @@ class ClosingsController < ApplicationController
     @current_closing.update(active: false)
 
     if @closing.save
+      @closing.update(last_envelope: @last_envelope)
+
       flash[:success] = "Fechamento criado com sucesso!"
       turbo_redirect_back(fallback_location: closings_path)
     else
@@ -141,5 +144,9 @@ class ClosingsController < ApplicationController
       available_value = totals[representative.id][:real_sale][:available_value].to_f
       @total_in_cash[representative.id] = divide_into_notes(available_value)
     end
+  end
+
+  def set_last_envelope
+    @last_envelope = Closing.last&.last_envelope.to_i + 1
   end
 end
