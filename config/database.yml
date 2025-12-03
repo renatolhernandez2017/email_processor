@@ -9,15 +9,15 @@ default: &default
 
 development:
   <<: *default
-  database: base_rails_7_development
+  database: email_processor_development
 
 test:
   <<: *default
-  database: base_rails_7_test
+  database: email_processor_test
 
 production:
   <<: *default
-  database: base_rails_7_production
+  database: email_processor_production
   username: root
   password: 'YOH2mLwso7m'
   host: db

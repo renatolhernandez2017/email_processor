@@ -1,18 +1,18 @@
 services:
-  base_rails_7:
+  email_processor:
     build:
-      context: ..
-      dockerfile: .devcontainer/Dockerfile
+      context: .
+      dockerfile: Dockerfile
     cap_add:
       - NET_ADMIN
     devices:
       - /dev/net/tun:/dev/net/tun
     volumes:
       - ../..:/workspaces:cached
-    working_dir: /workspaces/base_rails_7
+    working_dir: /workspaces/email_processor
     command: bash -c "rm -f tmp/pids/server.pid && bin/rails server -b 0.0.0.0 -p 3000"
     networks:
-      - base_rails_7_network
+      - email_processor_network
     ports:
       - 3000:3000
     environment:
@@ -30,19 +30,19 @@ services:
     ports:
       - 5432:5432
     volumes:
-      - base_rails_7_postgres_data:/var/lib/postgresql/data
+      - email_processor_postgres_data:/var/lib/postgresql/data
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
     networks:
-      - base_rails_7_network
+      - email_processor_network
 
   redis:
     image: redis:7.4
     ports:
       - "6379:6379"
     networks:
-      - base_rails_7_network
+      - email_processor_network
     healthcheck:
       test: ["CMD", "redis-cli", "ping"]
       interval: 2s
@@ -52,14 +52,14 @@ services:
 
   sidekiq:
     build:
-      context: ..
-      dockerfile: .devcontainer/Dockerfile
+      context: .
+      dockerfile: Dockerfile
     volumes:
       - ../..:/workspaces:cached
-    working_dir: /workspaces/base_rails_7
+    working_dir: /workspaces/email_processor
     command: bash -c "until redis-cli -h redis ping; do echo 'Esperando Redis...'; sleep 2; done; bundle exec sidekiq"
     networks:
-      - base_rails_7_network
+      - email_processor_network
     environment:
       RAILS_ENV: "development"
       DB_HOST: postgres
@@ -73,8 +73,8 @@ services:
         condition: service_started
 
 volumes:
-  base_rails_7_postgres_data:
+  email_processor_postgres_data:
 
 networks:
-  base_rails_7_network:
-    name: base_rails_7_network
+  email_processor_network:
+    name: email_processor_network
