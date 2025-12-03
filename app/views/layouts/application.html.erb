@@ -17,6 +17,9 @@
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Jost:wght@400&display=swap" rel="stylesheet">
 
+    <link href="https://cdn.jsdelivr.net/npm/daisyui@5" rel="stylesheet" type="text/css" />
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+
     <%= action_cable_meta_tag %>
     <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
     <%= javascript_include_tag "application", "data-turbo-track": "reload", type: "module" %>
@@ -38,7 +41,7 @@
     </script>
   </head>
 
-  <body class="bg-white">
+  <body>
     <div id="flash-message" data-controller="home" data-home-timeout-value="6000" class="w-full fixed z-50">
       <% flash.each do |type, message| %>
         <% daisy_class = { notice: "alert-info", success: "alert-success", error: "alert-error", alert: "alert-warning" }[type.to_sym] || "alert-info" %>
@@ -53,16 +56,9 @@
       <% end %>
     </div>
 
+    <%= render "shared/navbar" %>
     <%= render "shared/notification_card" %>
 
-    <div class="grid grid-cols-12 font-jost h-screen">
-      <div class="xl:col-start-3 xl:col-span-10 lg:col-start-4 lg:col-span-10 md:col-start-5 md:col-span-8 p-5">
-        <%= render "layouts/navbar" %>
-
-        <main>
-          <%= yield %>
-        </main>
-      </div>
-    </div>
+    <%= yield %>
   </body>
 </html>

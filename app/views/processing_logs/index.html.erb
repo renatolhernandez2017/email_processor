@@ -1,0 +1,43 @@
+<div class="p-5">
+  <h1 class="text-2xl text-center mb-5">Processing Logs</h1>
+  <hr>
+
+  <div class="overflow-x-auto">
+    <table class="table table-zebra">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>File</th>
+          <th>Status</th>
+          <th>Date</th>
+          <th></th>
+        </tr>
+      </thead>
+    
+      <tbody>
+        <% @processing_logs.each do |customer| %>
+          <tr>
+            <td><%= log.id %></td>
+            <td><%= log.file_name %></td>
+
+            <td>
+              <% if log.success? %>
+                <span class="badge bg-success">Sucesso</span>
+              <% else %>
+                <span class="badge bg-danger">Falha</span>
+              <% end %>
+            </td>
+
+            <td><%= log.created_at.strftime("%d/%m/%Y %H:%M") %></td>
+
+            <td>
+              <%= link_to "Ver", log_path(log), class: "btn btn-sm btn-primary" %>
+            </td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+
+  <%= pagy_nav(@pagy) if @pagy.pages > 1 %>
+</div>

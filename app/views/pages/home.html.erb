@@ -1,0 +1,20 @@
+<div class="flex justify-center items-center p-5">
+  <div class="card-body text-center">
+    <h1 class="card-title text-4xl justify-center">Processador de E-mails (.eml)</h1>
+
+    <p class="text-lg mt-3">
+      Envie arquivos .eml e veja os clientes extraídos e logs de processamento.
+    </p>
+
+    <div class="mt-6 flex flex-col items-center">
+      <%= form_with url: upload_emails_email_files_path, multipart: true, local: true, class: "space-y-4" do |f| %>
+        <div class="form-control mb-5 border rounded-lg p-5">
+          <%= f.label :files, "Selecione arquivos .eml", class: "label" %>
+          <%= f.file_field :files, multiple: true, accept: ".eml", class: "file-input file-input-bordered file-input-lg w-full" %>
+        </div>
+
+        <%= f.submit "Enviar e Processar", class: "btn btn-primary btn-lg w-52" %>
+      <% end %>
+    </div>
+  </div>
+</div>

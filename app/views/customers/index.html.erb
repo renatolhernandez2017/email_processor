@@ -1,0 +1,32 @@
+<div class="p-5">
+  <h1 class="text-2xl text-center mb-5">Customers</h1>
+  <hr>
+
+  <div class="overflow-x-auto">
+    <table class="table table-zebra">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>E-mail</th>
+          <th>Phone</th>
+          <th>Product</th>
+          <th>Date</th>
+        </tr>
+      </thead>
+    
+      <tbody>
+        <% @customers.each do |customer| %>
+          <tr>
+            <td><%= customer.name %></td>
+            <td><%= customer.email %></td>
+            <td><%= customer.phone %></td>
+            <td><%= customer.product_code %></td>
+            <td><%= customer.created_at.strftime("%d/%m/%Y %H:%M") %></td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+
+  <%= pagy_nav(@pagy) if @pagy.pages > 1 %>
+</div>

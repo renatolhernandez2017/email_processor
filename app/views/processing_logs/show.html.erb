@@ -1,0 +1,26 @@
+<div class="card shadow-sm p-4">
+  <h3>Log <%= @log.id %></h3>
+  <hr>
+
+  <p><strong>Arquivo:</strong> <%= @log.file_name %></p>
+
+  <p><strong>Status:</strong>
+    <% if @log.success? %>
+      <span class="badge bg-success">Sucesso</span>
+    <% else %>
+      <span class="badge bg-danger">Falha</span>
+    <% end %>
+  </p>
+
+  <h5>Dados extraídos</h5>
+  <pre class="bg-light p-3 border rounded">
+<%= JSON.pretty_generate(@log.data || {}) %>
+  </pre>
+
+  <h5>Erro (se houver)</h5>
+  <pre class="bg-light p-3 border rounded text-danger">
+<%= @log.error_message || "—" %>
+  </pre>
+
+  <%= link_to "Voltar", logs_path, class: "btn btn-secondary mt-3" %>
+</div>
