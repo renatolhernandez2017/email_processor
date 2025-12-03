@@ -8,7 +8,7 @@ services:
     devices:
       - /dev/net/tun:/dev/net/tun
     volumes:
-      - ../..:/workspaces:cached
+      - .:/workspaces/email_processor:cached
     working_dir: /workspaces/email_processor
     command: bash -c "rm -f tmp/pids/server.pid && bin/rails server -b 0.0.0.0 -p 3000"
     networks:
@@ -55,7 +55,7 @@ services:
       context: .
       dockerfile: Dockerfile
     volumes:
-      - ../..:/workspaces:cached
+      - .:/workspaces/email_processor:cached
     working_dir: /workspaces/email_processor
     command: bash -c "until redis-cli -h redis ping; do echo 'Esperando Redis...'; sleep 2; done; bundle exec sidekiq"
     networks:

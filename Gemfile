@@ -4,7 +4,6 @@ source "https://rubygems.org"
 
 ruby "3.3.1"
 
-gem "fb_adapter", "~> 0.6.2"
 gem "audited", "~> 5.0"
 gem "bootsnap", require: false
 gem "cssbundling-rails"
@@ -13,7 +12,6 @@ gem "devise_invitable"
 gem "devise"
 gem "dotenv"
 gem "httparty"
-gem "rest-client"
 gem "image_processing", ">= 1.2"
 gem "jbuilder"
 gem "jsbundling-rails"

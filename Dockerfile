@@ -14,8 +14,6 @@ RUN apt-get update && apt-get install -y \
     nodejs \
     npm \
     gettext-base \
-    firebird-dev firebird-utils \
-    openvpn \
     redis-tools \
     && rm -rf /var/lib/apt/lists/*
 
