@@ -1,6 +1,0 @@
-<%= form_with url: url, method: :get, class: "filter" do |f| %>
-  <input type="hidden" name="select_action" value="<%= params[:select_action] %>">
-  <input class="btn <%= params[:filter].present? && params[:filter] == "all" ? 'bg-primary text-white' : 'bg-default' %>" type="radio" name="filter" value="all" aria-label="Todos" onchange="this.form.submit()" />
-  <input class="btn <%= params[:filter].present? && params[:filter] == "accumulated" ? 'bg-primary text-white' : 'bg-default' %>" type="radio" name="filter" value="accumulated" aria-label="Acumulados" onchange="this.form.submit()" />
-  <input class="btn <%= params[:filter].present? && params[:filter] == "unaccumulated" ? 'bg-primary text-white' : 'bg-default' %>" type="radio" name="filter" value="unaccumulated" aria-label="Desacumulados" onchange="this.form.submit()" />
-<% end %>

@@ -9,15 +9,15 @@ default: &default
 
 development:
   <<: *default
-  database: pharmus_development
+  database: base_rails_7_development
 
 test:
   <<: *default
-  database: pharmus_test
+  database: base_rails_7_test
 
 production:
   <<: *default
-  database: pharmus_production
+  database: base_rails_7_production
   username: root
   password: 'YOH2mLwso7m'
   host: db

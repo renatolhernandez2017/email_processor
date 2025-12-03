@@ -1,54 +1,80 @@
 services:
-  db:
-    image: postgres:15
-    restart: always
-    environment:
-      POSTGRES_USER: root
-      POSTGRES_PASSWORD: YOH2mLwso7m
-      POSTGRES_DB: database
+  base_rails_7:
+    build:
+      context: ..
+      dockerfile: .devcontainer/Dockerfile
+    cap_add:
+      - NET_ADMIN
+    devices:
+      - /dev/net/tun:/dev/net/tun
     volumes:
-      - pgdata:/var/lib/postgresql/data
+      - ../..:/workspaces:cached
+    working_dir: /workspaces/base_rails_7
+    command: bash -c "rm -f tmp/pids/server.pid && bin/rails server -b 0.0.0.0 -p 3000"
+    networks:
+      - base_rails_7_network
+    ports:
+      - 3000:3000
+    environment:
+      RAILS_ENV: "development"
+      DB_HOST: postgres
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      REDIS_URL: redis://redis:6379/0
+    depends_on:
+      - redis
+      - postgres
+
+  postgres:
+    image: postgres:16.1
+    ports:
+      - 5432:5432
+    volumes:
+      - base_rails_7_postgres_data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    networks:
+      - base_rails_7_network
 
   redis:
-    image: redis:7
-    restart: always
+    image: redis:7.4
     ports:
       - "6379:6379"
-
-  web:
-    build: .
-    image: pharmus_v2
-    ports:
-      - "3000:3000"
-    environment:
-      RAILS_ENV: production
-      SECRET_KEY_BASE: f45a8b738106fa056ef7ec5adebca72e4ad37e8974503c06a0b7b540b3eddb7cb8077131392557279431bfbe6fdc86ee09c71235d7c6b56a20b87dee024d02c6
-      DATABASE_URL: postgres://root:YOH2mLwso7m@db:5432/database
-      REDIS_URL: redis://redis:6379/0
-    volumes:
-      - ./log:/rails/log
-      - ./storage:/rails/storage
-      - ./tmp:/rails/tmp
-    depends_on:
-      - db
-      - redis
-    restart: always
-    command: sh -c "chmod -R 775 /rails/tmp && bundle exec puma -C config/puma.rb"
+    networks:
+      - base_rails_7_network
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 2s
+      timeout: 2s
+      retries: 10
+      start_period: 2s
 
   sidekiq:
-    build: .
-    image: pharmus_v2
-    depends_on:
-      - db
-      - redis
-    environment:
-      RAILS_ENV: production
-      DATABASE_URL: postgres://root:YOH2mLwso7m@db:5432/database
-      REDIS_URL: redis://redis:6379/0
-      SECRET_KEY_BASE: f45a8b738106fa056ef7ec5adebca72e4ad37e8974503c06a0b7b540b3eddb7cb8077131392557279431bfbe6fdc86ee09c71235d7c6b56a20b87dee024d02c6
+    build:
+      context: ..
+      dockerfile: .devcontainer/Dockerfile
     volumes:
-      - ./log:/rails/log
-    command: bundle exec sidekiq
+      - ../..:/workspaces:cached
+    working_dir: /workspaces/base_rails_7
+    command: bash -c "until redis-cli -h redis ping; do echo 'Esperando Redis...'; sleep 2; done; bundle exec sidekiq"
+    networks:
+      - base_rails_7_network
+    environment:
+      RAILS_ENV: "development"
+      DB_HOST: postgres
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      REDIS_URL: redis://redis:6379/0
+    depends_on:
+      redis:
+        condition: service_healthy
+      postgres:
+        condition: service_started
 
 volumes:
-  pgdata:
+  base_rails_7_postgres_data:
+
+networks:
+  base_rails_7_network:
+    name: base_rails_7_network

@@ -28,14 +28,6 @@ pt-BR:
       SP: SP
       SE: SE
       TO: TO
-  bank:
-    names:
-      BRADESCO: BRADESCO
-      BANCO DO BRASIL: BANCO DO BRASIL
-      CAIXA ECONOMICA: CAIXA ECONOMICA
-      HSBC: HSBC
-      ITAU: ITAU
-      SANTANDER: SANTANDER
   date:
     abbr_month_names: [~, Jan, Fev, Mar, Abr, Mai, Jun, Jul, Ago, Set, Out, Nov, Dez]
     month_names: [~, Janeiro, Fevereiro, Março, Abril, Maio, Junho, Julho, Agosto, Setembro, Outubro, Novembro, Dezembro]
@@ -58,20 +50,7 @@ pt-BR:
       Dec: Dezembro
   activerecord:
     models:
-      address: Endereço
-      bank: Banco
-      branch: Filial
-      closing: Fechamento
-      current_account: Conta Corrente
-      discount: Desconto
-      prescriber: Prescritor
-      representative: Representante
     attributes:
-      closing:
-        closing: Fechamento
-        start_date: Data inicial
-        end_date: Data final
-        last_envelope: Último envelope
       user:
         name: Nome
         email: E-mail
