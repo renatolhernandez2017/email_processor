@@ -56,4 +56,6 @@ Os comandos acima vai:
 ---
 
 ## Para rodar os testes
-- docker-compose exec email_processor bundle exec rspec
+Abra um outro terminal e execute os seguintes comandos:
+- docker-compose run --rm email_processor bash
+- bundle exec rspec

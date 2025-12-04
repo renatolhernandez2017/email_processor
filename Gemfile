@@ -46,6 +46,10 @@ group :development, :test do
   gem "debug", platforms: %i[mri windows]
   gem "faker"
   gem "selenium-webdriver"
+  gem "rspec-rails"
+  gem "factory_bot_rails"
+  gem "shoulda-matchers", "~> 6.0"
+  gem "webmock"
 end
 
 group :development do
