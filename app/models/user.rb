@@ -10,20 +10,4 @@ class User < ApplicationRecord
 
   validates :name, presence: true
   validates :email, format: {with: URI::MailTo::EMAIL_REGEXP}
-
-  pg_search_scope :search_global,
-    against: [:name],
-    using: {
-      tsearch: {
-        prefix: true,
-        any_word: true, # Busca qualquer palavra do nome
-        dictionary: "portuguese"
-      }
-    },
-    order_within_rank: "name",
-    ignoring: :accents
-
-  def admin?
-    role == "admin"
-  end
 end

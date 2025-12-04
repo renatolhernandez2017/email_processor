@@ -4,9 +4,9 @@ class ProcessorEmail
     /parceiroB@gmail.com/i => 'Parsers::PartnerBParser'
   }
 
-  def initialize(email_file)
+  def initialize(email_file, mail_object = nil)
+    @mail = mail_object || Mail.read_from_string(email_file.raw)
     @email_file = email_file
-    @mail = Mail.read_from_string(email_file.raw)
   end
 
   def process!
@@ -46,7 +46,7 @@ class ProcessorEmail
     end
   rescue => e
     log = log_failure(e.message)
-    broadcast("Error: #{log}", true, 6)
+    broadcast_step("Error: #{log}", true, 6)
     sleep(2)
     false
   end
