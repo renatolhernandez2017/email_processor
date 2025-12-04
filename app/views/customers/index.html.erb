@@ -10,6 +10,7 @@
           <th>E-mail</th>
           <th>Phone</th>
           <th>Product</th>
+          <th>Kind</th>
           <th>Date</th>
         </tr>
       </thead>
@@ -21,12 +22,17 @@
             <td><%= customer.email %></td>
             <td><%= customer.phone %></td>
             <td><%= customer.product_code %></td>
+            <td><%= customer.kind.upcase %></td>
             <td><%= customer.created_at.strftime("%d/%m/%Y %H:%M") %></td>
           </tr>
         <% end %>
       </tbody>
     </table>
+
+    <div class="card-actions justify-start mt-5">
+      <%= link_to "← Voltar", root_path, class: "btn btn-secondary" %>
+    </div>
   </div>
 
-  <%= pagy_nav(@pagy) if @pagy.pages > 1 %>
+  <%= render PaginationComponent.new(pagy: pagy_nav(@pagy), pages: @pagy.pages) %>
 </div>

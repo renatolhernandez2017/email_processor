@@ -1,20 +1,37 @@
-<div class="flex justify-center items-center p-5">
-  <div class="card-body text-center">
-    <h1 class="card-title text-4xl justify-center">Processador de E-mails (.eml)</h1>
+<div class="flex items-center justify-center bg-base-200 my-10">
+  <div class="card shadow-2xl bg-base-100">
+    <div class="card-body items-center text-center">
+      <h1 class="card-title text-4xl font-bold">
+        Processador de E-mails (.eml)
+      </h1>
 
-    <p class="text-lg mt-3">
-      Envie arquivos .eml e veja os clientes extraídos e logs de processamento.
-    </p>
+      <p class="text-lg text-base-content/80 mt-2">
+        Envie arquivos .eml e veja os clientes extraídos e os logs de processamento.
+      </p>
 
-    <div class="mt-6 flex flex-col items-center">
-      <%= form_with url: upload_emails_email_files_path, multipart: true, local: true, class: "space-y-4" do |f| %>
-        <div class="form-control mb-5 border rounded-lg p-5">
-          <%= f.label :files, "Selecione arquivos .eml", class: "label" %>
-          <%= f.file_field :files, multiple: true, accept: ".eml", class: "file-input file-input-bordered file-input-lg w-full" %>
+      <div class="divider mt-4"></div>
+
+      <%= form_with url: upload_emails_email_files_path, multipart: true, local: true, class: "w-full max-w-lg space-y-6", method: :post do |f| %>
+        <div class="form-control border rounded-lg p-2">
+          <label class="label">
+            <span class="label-text font-semibold text-base">Selecione arquivos .eml</span>
+          </label>
+
+          <%= f.file_field :files, multiple: true, accept: ".eml",
+              class: "file-input file-input-bordered file-input-lg w-full bg-gray-200"
+          %>
         </div>
 
-        <%= f.submit "Enviar e Processar", class: "btn btn-primary btn-lg w-52" %>
+        <div class="flex justify-center">
+          <%= f.submit "Enviar e Processar", class: "btn btn-primary btn-lg px-10 shadow-lg" %>
+        </div>
       <% end %>
+
+      <div class="divider mt-6"></div>
+
+      <p class="text-sm text-base-content/60">
+        Arquivos permitidos: <span class="font-semibold">.eml</span>
+      </p>
     </div>
   </div>
 </div>

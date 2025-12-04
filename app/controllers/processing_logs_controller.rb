@@ -7,5 +7,6 @@ class ProcessingLogsController < ApplicationController
 
   def show
     @processing_log = ProcessingLog.find(params[:id])
+    @email_file = @processing_log.email_file
   end
 end

@@ -26,22 +26,23 @@
 
     <script type="module">
       document.addEventListener("turbo:load", () => {
-        const closingId = <%= @current_closing&.id || 'null' %>;
+        const closingId = <%= 1 || 'null' %>;
+        console.log(closingId);
         if (closingId) {
-          window.subscribeToClosing(closingId);
+          window.subscribeToEmail(closingId);
         }
       });
 
       document.addEventListener("DOMContentLoaded", () => {
-        const closingId = <%= @current_closing&.id || 'null' %>;
+        const closingId = <%= 1 || 'null' %>;
         if (closingId) {
-          window.subscribeToClosing(closingId);
+          window.subscribeToEmail(closingId);
         }
       });
     </script>
   </head>
 
-  <body>
+  <body class="bg-base-200 h-screen">
     <div id="flash-message" data-controller="home" data-home-timeout-value="6000" class="w-full fixed z-50">
       <% flash.each do |type, message| %>
         <% daisy_class = { notice: "alert-info", success: "alert-success", error: "alert-error", alert: "alert-warning" }[type.to_sym] || "alert-info" %>
@@ -56,7 +57,7 @@
       <% end %>
     </div>
 
-    <%= render "shared/navbar" %>
+    <%= render "shared/navbar" unless params[:controller].include?('users/sessions') %>
     <%= render "shared/notification_card" %>
 
     <%= yield %>
