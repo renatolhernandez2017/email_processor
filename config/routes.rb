@@ -1,9 +1,7 @@
 require "sidekiq/web"
 
 Rails.application.routes.draw do
-  authenticate :user, ->(u) { u.admin? } do
-    mount Sidekiq::Web => "/sidekiq"
-  end
+  mount Sidekiq::Web => "/sidekiq"
 
   devise_for :users, controllers: {
     sessions: "users/sessions",
@@ -30,4 +28,6 @@ Rails.application.routes.draw do
   # API namespace (mantido vazio por enquanto)
   namespace :api do
   end
+
+  mount ActionCable.server => "/cable"
 end
