@@ -22,6 +22,7 @@ class EmailFilesController < ApplicationController
 
       # Envia para processamento async
       EmailProcessorJob.perform_async(email.id)
+      sleep(5)
     end
 
     redirect_to root_path

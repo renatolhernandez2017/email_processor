@@ -1,7 +1,7 @@
 class ProcessorEmail
   PARSERS = {
-    /fornecedorA@gmail.com/i => 'Parsers::SupplierAParser',
-    /parceiroB@gmail.com/i => 'Parsers::PartnerBParser'
+    /loja@fornecedorA.com/i => 'Parsers::SupplierAParser',
+    /contato@parceiroB.com/i => 'Parsers::PartnerBParser'
   }
 
   def initialize(email_file, mail_object = nil)
@@ -11,7 +11,7 @@ class ProcessorEmail
 
   def process!
     broadcast_step("Arquivo recebido", false, 1)
-    sleep(2)
+    sleep(3)
 
     parser_class = select_parser
 
@@ -21,33 +21,33 @@ class ProcessorEmail
     end
 
     broadcast_step("Lendo arquivo", false, 2)
-    sleep(2)
+    sleep(3)
 
     parser = parser_class.constantize.new(@mail)
     result = parser.call
 
     if valid_result?(result)
       broadcast_step("Criando customers", false, 3)
-      sleep(2)
+      sleep(3)
       create_customer(result)
 
       broadcast_step("Criando logs", false, 4)
-      sleep(2)
+      sleep(3)
       log_success(result)
 
       broadcast_step("Concluído", true, 5)
-      sleep(2)
+      sleep(3)
       true
     else
       log_failure("Missing contact info", result)
       broadcast_step("Concluído", true, 5)
-      sleep(2)
+      sleep(3)
       false
     end
   rescue => e
     log = log_failure(e.message)
     broadcast_step("Error: #{log}", true, 6)
-    sleep(2)
+    sleep(3)
     false
   end
 
@@ -71,12 +71,14 @@ class ProcessorEmail
   def create_customer(res)
     customer = Customer.find_or_create_by(email: res[:email], product_code: res[:product_code])
 
-    customer.update(
-      name: res[:name],
-      phone: res[:phone],
-      source: @mail.from&.first,
-      kind: res[:kind]
-    )
+    if customer.present?
+      customer.update(
+        name: res[:name],
+        phone: res[:phone],
+        source: @mail.from&.first,
+        kind: res[:kind]
+      )
+    end
   end
 
   def log_success(res)
