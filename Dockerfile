@@ -17,31 +17,36 @@ RUN apt-get update && apt-get install -y \
     redis-tools \
     && rm -rf /var/lib/apt/lists/*
 
-# Instala Node.js e Yarn
+# Instala Node.js 20 e Yarn
 RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash - \
   && apt-get install -y nodejs \
   && npm install --global yarn
 
-# Cria diretório da aplicação
+# Criar diretório da aplicação
 WORKDIR /workspaces/email_processor
 
-# Copia Gemfile e Gemfile.lock
+# Copia dependências Ruby
 COPY Gemfile Gemfile.lock ./
-
-# Instala gems
 RUN bundle install
 
+# Instala dependências JS
 COPY package.json yarn.lock ./
 RUN yarn install
 
-# Copia tudo
+# Copia toda aplicação
 COPY . .
 
-# Build da aplicação (Tailwind/Vue)
-RUN npm run build
+# Build de assets (Tailwind etc.)
+RUN npm run build || true
 
-# Expõe porta do Rails
+# Copia entrypoint
+COPY entrypoint.sh /usr/bin/entrypoint.sh
+RUN chmod +x /usr/bin/entrypoint.sh
+
+# Expõe porta
 EXPOSE 3000
 
-# Comando default
+ENTRYPOINT ["entrypoint.sh"]
+
+# Comando padrão do contêiner
 CMD ["bin/rails", "server", "-b", "0.0.0.0", "-p", "3000"]

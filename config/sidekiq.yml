@@ -3,7 +3,7 @@
 :verbose: true
 
 :queues:
-  - [closings, 5]
+  - [email, 5]
   - [default, 4]
   - [mailers, 3]
   - [active_storage_analysis, 2]

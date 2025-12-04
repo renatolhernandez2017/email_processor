@@ -11938,7 +11938,18 @@ var mask_controller_default = class extends Controller {
 
 // app/javascript/controllers/notification_controller.js
 var notification_controller_default = class extends Controller {
-  static targets = ["card", "message", "closeButton", "steps", "waiting", "error", "success"];
+  static targets = [
+    "card",
+    "message",
+    "customersButton",
+    "logsButton",
+    "closeButton",
+    "steps",
+    "waiting",
+    "error",
+    "success",
+    "line"
+  ];
   connect() {
     close();
     this.element.addEventListener("notification:show", this.handleShow.bind(this));
@@ -11953,50 +11964,28 @@ var notification_controller_default = class extends Controller {
   show(data) {
     this.messageTarget.textContent = data.message;
     this.cardTarget.classList.remove("hidden");
-    if (data.step < 7) {
-      sessionStorage.setItem("lastStep", data.step);
-    }
-    this.updateSteps(data.step);
     if (data.status == true) {
+      this.successTarget.classList.remove("hidden");
+      this.waitingTarget.classList.add("hidden");
+      this.errorTarget.classList.add("hidden");
+      this.lineTarget.classList.remove("hidden");
+      this.customersButtonTarget.classList.remove("hidden");
+      this.logsButtonTarget.classList.remove("hidden");
       this.closeButtonTarget.classList.remove("hidden");
     } else {
+      this.waitingTarget.classList.remove("hidden");
+      this.errorTarget.classList.add("hidden");
+      this.successTarget.classList.add("hidden");
+      this.lineTarget.classList.add("hidden");
+      this.customersButtonTarget.classList.add("hidden");
+      this.logsButtonTarget.classList.add("hidden");
       this.closeButtonTarget.classList.add("hidden");
     }
     sessionStorage.setItem("lastNotification", JSON.stringify(data));
   }
-  updateSteps(step) {
-    if (!this.hasStepsTarget)
-      return;
-    const steps = this.stepsTarget.querySelectorAll("li.step");
-    steps.forEach((el, index) => {
-      const lastStep = sessionStorage.getItem("lastStep");
-      el.classList.remove("step-primary", "step-success", "step-error");
-      if (step === steps.length) {
-        el.classList.add("step-success");
-        this.waitingTarget.classList.add("hidden");
-        this.errorTarget.classList.add("hidden");
-        this.successTarget.classList.remove("hidden");
-      } else if (step === 7) {
-        if (lastStep > index + 1) {
-          el.classList.add("step-primary");
-        } else if (index === lastStep - 1) {
-          el.classList.add("step-error");
-          this.waitingTarget.classList.add("hidden");
-          this.errorTarget.classList.remove("hidden");
-          this.successTarget.classList.add("hidden");
-        }
-      } else if (index < step) {
-        el.classList.add("step-primary");
-        this.waitingTarget.classList.remove("hidden");
-        this.errorTarget.classList.add("hidden");
-        this.successTarget.classList.add("hidden");
-      }
-    });
-  }
   close() {
     this.cardTarget.classList.add("hidden");
     sessionStorage.removeItem("lastNotification");
-    sessionStorage.removeItem("lastStep");
     this.waitingTarget.classList.remove("hidden");
     this.errorTarget.classList.add("hidden");
     this.successTarget.classList.add("hidden");
@@ -12551,23 +12540,23 @@ function getConfig2(name) {
 // app/javascript/channels/consumer.js
 var consumer_default = createConsumer3();
 
-// app/javascript/channels/closing_channel.js
-var closingSubscription;
-window.subscribeToClosing = function(closingId) {
+// app/javascript/channels/email_channel.js
+var emailSubscription;
+window.subscribeToEmail = function(closingId) {
   if (!closingId)
     return;
-  if (closingSubscription) {
-    consumer_default.subscriptions.remove(closingSubscription);
+  if (emailSubscription) {
+    consumer_default.subscriptions.remove(emailSubscription);
   }
-  closingSubscription = consumer_default.subscriptions.create(
-    { channel: "ClosingChannel", closing_id: closingId },
+  emailSubscription = consumer_default.subscriptions.create(
+    { channel: "EmailChannel", closing_id: closingId },
     {
       connected() {
-        console.log("\u2705 Conectado ao ClosingChannel");
+        console.log("\u2705 Conectado ao EmailChannel");
       },
       disconnected() {
-        console.log("\u274C Desconectado do ClosingChannel");
-        window.subscribeToClosing();
+        console.log("\u274C Desconectado do EmailChannel");
+        window.subscribeToEmail();
       },
       received(data) {
         const element = document.querySelector('[data-controller="notification"]');
