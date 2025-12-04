@@ -26,17 +26,17 @@
 
     <script type="module">
       document.addEventListener("turbo:load", () => {
-        const closingId = <%= 1 || 'null' %>;
-        console.log(closingId);
-        if (closingId) {
-          window.subscribeToEmail(closingId);
+        const id = <%= 1 || 'null' %>;
+        console.log(id);
+        if (id) {
+          window.subscribeToEmail(id);
         }
       });
 
       document.addEventListener("DOMContentLoaded", () => {
-        const closingId = <%= 1 || 'null' %>;
-        if (closingId) {
-          window.subscribeToEmail(closingId);
+        const id = <%= 1 || 'null' %>;
+        if (id) {
+          window.subscribeToEmail(id);
         }
       });
     </script>

@@ -12542,14 +12542,14 @@ var consumer_default = createConsumer3();
 
 // app/javascript/channels/email_channel.js
 var emailSubscription;
-window.subscribeToEmail = function(closingId) {
-  if (!closingId)
+window.subscribeToEmail = function(id) {
+  if (!id)
     return;
   if (emailSubscription) {
     consumer_default.subscriptions.remove(emailSubscription);
   }
   emailSubscription = consumer_default.subscriptions.create(
-    { channel: "EmailChannel", closing_id: closingId },
+    { channel: "EmailChannel" },
     {
       connected() {
         console.log("\u2705 Conectado ao EmailChannel");

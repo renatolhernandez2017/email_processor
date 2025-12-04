@@ -2,15 +2,15 @@ import consumer from "./consumer"
 
 let emailSubscription;
 
-window.subscribeToEmail = function(closingId) {
-  if (!closingId) return;
+window.subscribeToEmail = function(id) {
+  if (!id) return;
 
   if (emailSubscription) {
     consumer.subscriptions.remove(emailSubscription);
   }
 
   emailSubscription = consumer.subscriptions.create(
-    { channel: "EmailChannel", closing_id: closingId  },
+    { channel: "EmailChannel" },
     {
       connected() {
         console.log("✅ Conectado ao EmailChannel")
