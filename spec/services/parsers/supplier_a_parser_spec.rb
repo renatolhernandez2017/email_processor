@@ -6,7 +6,7 @@ RSpec.describe Parsers::SupplierAParser do
       Nome: Maria Oliveira
       E-mail: maria.oliveira@example.com
       Telefone: +55 (21) 98888-7777
-      Código do Produto: PROD567
+      Produto de interesse: PROD567
       Subject: Pedido
     TEXT
   end
