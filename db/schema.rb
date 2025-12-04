@@ -43,6 +43,7 @@ ActiveRecord::Schema[7.1].define(version: 2025_12_03_131928) do
     t.string "phone"
     t.string "product_code"
     t.string "source"
+    t.string "kind"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end

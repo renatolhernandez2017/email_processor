@@ -6,6 +6,7 @@ class CreateCustomers < ActiveRecord::Migration[7.1]
       t.string :phone
       t.string :product_code
       t.string :source
+      t.string :kind
 
       t.timestamps
     end
