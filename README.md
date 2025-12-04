@@ -1,7 +1,7 @@
 # E-mails MVP Rails
 
 ## Visão geral
-Uma aplicação Ruby on Rails para processar arquivos .eml (e-mails) e extrair informações estruturadas, salvando os resultados no banco de dados. Com uma arquitetura limpa, background jobs, logs persistentes e interface web intuitiva.
+Aplicação Ruby on Rails para processar arquivos .eml (e-mails), extrair informações estruturadas e salvar os resultados no banco de dados, contando com arquitetura limpa, background jobs, logs persistentes e interface web intuitiva.
 
 ---
 
@@ -9,7 +9,7 @@ Uma aplicação Ruby on Rails para processar arquivos .eml (e-mails) e extrair i
 
 - **Rails 7.1.3** – Framework principal.
 - **Ruby 3.3.1** – Linguagem principal.
-- **Docker e Docker-compose.yml** – Para executar o ambiente de Desenvolvimento
+- **Docker e Docker-compose.yml** – Para executar o ambiente de Desenvolvimento.
 - **PostgreSQL** – Banco de dados relacional.
 - **Sidekiq** – Para execução de tarefas em segundo plano.
 - **Redis** – Para mensagens do progresso em tempo real.
@@ -46,12 +46,12 @@ Os comandos acima vai:
 ---
 
 ## Como enviar emails para processamento
-- Na tela principal é só anexar os arquivos .eml (Pode anexar vários ao mesmo tempo) e cliclar em **Enviar e Processar**
+- Na tela principal, basta anexar os arquivos .eml (é possível anexar vários ao mesmo tempo) e clicar em **Enviar e Processar**
 
 ---
 
 ## Para visualizar os resultados (customers + logs).
-- Na tela principal tem um menu em cima para poder visualizar os resultados de **customers** e **logs**
+- Na tela principal, há um menu no topo que permite visualizar os resultados de **customers** e **logs**
 
 ---
 
