@@ -4,10 +4,10 @@ RSpec.describe Parsers::PartnerBParser do
   let(:body_text) do
     <<~TEXT
       Cliente: João da Silva
-      Contato: joao.silva@example.com
-      Celular: (11) 99999-8888
-      Ref: ABC123
-      Assunto: Suporte
+      Email: joao.silva@example.com
+      Telefone: (11) 99999-8888
+      Produto de interesse: ABC123
+      Subject: Suporte
     TEXT
   end
 

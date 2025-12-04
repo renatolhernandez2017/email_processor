@@ -5,7 +5,7 @@ RSpec.describe ProcessorEmail do
   let(:mail_object) { Mail.read_from_string(raw_email) }
   let(:raw_email) do
     <<~EMAIL
-      From: fornecedorA@gmail.com
+      From: loja@fornecedorA.com
       To: test@example.com
       Subject: Test
       Content-Type: text/plain

@@ -7,7 +7,7 @@ RSpec.describe Parsers::SupplierAParser do
       E-mail: maria.oliveira@example.com
       Telefone: +55 (21) 98888-7777
       Código do Produto: PROD567
-      Assunto: Pedido
+      Subject: Pedido
     TEXT
   end
 
@@ -18,7 +18,7 @@ RSpec.describe Parsers::SupplierAParser do
   subject { described_class.new(mail) }
 
   describe "#call" do
-    it "returns a hash with parsed fields" do
+    it "retorna um hash com os campos extraídos corretamente" do
       result = subject.call
 
       expect(result).to be_a(Hash)
@@ -30,7 +30,7 @@ RSpec.describe Parsers::SupplierAParser do
       expect(result[:kind]).to eq("supplier")
     end
 
-    it "returns nil for fields not found" do
+    it "retorna nil para campos que não existem no corpo" do
       mail_missing = double("Mail", body: double("Body", decoded: "Nome: Maria"))
       parser = described_class.new(mail_missing)
 
@@ -40,6 +40,7 @@ RSpec.describe Parsers::SupplierAParser do
       expect(result[:phone]).to be_nil
       expect(result[:product_code]).to be_nil
       expect(result[:subject]).to be_nil
+      expect(result[:kind]).to eq("supplier") # kind sempre definido
     end
   end
 end
